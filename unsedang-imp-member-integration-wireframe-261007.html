@@ -1,0 +1,736 @@
+<meta charset="utf-8">
+<title>휴대폰번호 기준 회원통합 — 와이어프레임 — 운세당</title>
+<style>
+  :root {
+    --ink: #1c1c22;
+    --sub: #5b5b66;
+    --line: #e3e3ea;
+    --bg: #f6f6f9;
+    --card: #ffffff;
+    --accent: #5b4bff;
+    --accent-soft: #eeecff;
+    --warn: #b5590a;
+    --warn-bg: #fff2e2;
+    --ok: #0a7a4d;
+    --ok-bg: #e7f7f0;
+  }
+
+  * {
+    box-sizing: border-box
+  }
+
+  body {
+    margin: 0;
+    padding: 32px 20px 80px 220px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    line-height: 1.55;
+  }
+
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto
+  }
+
+  .devnav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 190px;
+    background: #fff;
+    border-right: 1px solid var(--line);
+    padding: 18px 10px;
+    overflow-y: auto;
+    z-index: 200;
+  }
+
+  .devnav-link {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    padding: 9px 8px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px dashed var(--accent);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .devnav-link:hover {
+    background: var(--accent-soft);
+  }
+
+  h1 {
+    font-size: 22px;
+    margin: 0 0 4px
+  }
+
+  .banner {
+    background: var(--warn-bg);
+    color: var(--warn);
+    border: 1px solid #f3d3a6;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 14px 0 28px;
+  }
+
+  .section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+
+  .section h3 {
+    font-size: 16px;
+    margin: 0 0 12px
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 28px;
+    align-items: start
+  }
+
+  @media (max-width:720px) {
+    .row {
+      grid-template-columns: 1fr
+    }
+  }
+
+  .phone {
+    width: 260px;
+    border: 6px solid #23232b;
+    border-radius: 28px;
+    background: #fff;
+    overflow: hidden;
+    margin: 0 auto;
+  }
+
+  .phone .status {
+    height: 18px;
+    background: #23232b
+  }
+
+  .phone .screen {
+    padding: 12px;
+    min-height: 300px
+  }
+
+  .compare {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .compare-col {
+    text-align: center;
+  }
+
+  .compare-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--sub);
+    margin-bottom: 10px;
+    letter-spacing: .03em;
+  }
+
+  .compare-col:last-child .compare-label {
+    color: var(--accent);
+  }
+
+  .mock-pagetitle {
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 10px;
+  }
+
+  .mock-backbtn {
+    flex: 0 0 auto;
+    width: 20px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+    text-align: center;
+  }
+
+  .mock-pagetitle-text {
+    flex: 1 1 auto;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .mock-pagetitle-spacer {
+    flex: 0 0 auto;
+    width: 20px;
+  }
+
+  .mock-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .mock-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 6px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .mock-menu-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: #dcdcec;
+    flex: 0 0 auto;
+  }
+
+  .mock-menu-label {
+    flex: 1 1 auto;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .mock-menu-chevron {
+    font-size: 12px;
+    color: var(--sub);
+  }
+
+  .mock-menu-item.new {
+    background: var(--accent-soft);
+    border-radius: 8px;
+    border-bottom: none;
+  }
+
+  .mock-menu-item.new .mock-menu-icon {
+    background: var(--accent);
+  }
+
+  .mock-menu-item.new .mock-menu-label {
+    color: var(--accent);
+  }
+
+  .mock-new-tag {
+    font-size: 8px;
+    font-weight: 800;
+    color: #fff;
+    background: var(--accent);
+    border-radius: 999px;
+    padding: 2px 6px;
+    margin-left: 6px;
+  }
+
+  .mock-note {
+    font-size: 9px;
+    color: var(--sub);
+    margin-top: 10px;
+  }
+
+  .mock-textlink {
+    font-size: 9px;
+    color: var(--sub);
+    text-decoration: underline;
+    text-align: center;
+    margin-top: 14px;
+  }
+
+  .mock-linkrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 2px;
+  }
+
+  .mock-linkrow-label {
+    flex: 1 1 auto;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .mock-toggle {
+    width: 30px;
+    height: 17px;
+    border-radius: 999px;
+    background: #d8d8e2;
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  .mock-toggle::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  .mock-toggle.on {
+    background: var(--accent);
+  }
+
+  .mock-toggle.on::after {
+    left: auto;
+    right: 2px;
+  }
+
+  .mock-linkrow-divider {
+    border-top: 1px solid var(--line);
+    margin: 4px 0;
+  }
+
+  .mock-inline-toast {
+    background: var(--ok-bg);
+    color: var(--ok);
+    font-size: 9px;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 6px 8px;
+    margin: 0 0 6px;
+  }
+
+  .mock-form-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--sub);
+    margin: 10px 0 4px;
+  }
+
+  .mock-field {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 11px;
+    color: var(--sub);
+    background: #fafafd;
+  }
+
+  .mock-btn {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 10px 0;
+  }
+
+  .mock-btn.primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .mock-btn.ghost {
+    background: #fff;
+    color: var(--sub);
+    border: 1px solid var(--line);
+    margin-top: 8px;
+  }
+
+  .mock-result-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--ok-bg);
+    color: var(--ok);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin: 4px auto 10px;
+  }
+
+  .mock-result-title {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  .mock-result-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 11px;
+  }
+
+  .mock-result-row .v {
+    font-weight: 700;
+  }
+
+  .mock-result-foot {
+    font-size: 9px;
+    color: var(--sub);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  .mock-dialog-wrap {
+    background: rgba(28,28,34,.35);
+    padding: 40px 10px;
+  }
+
+  .mock-dialog {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.18);
+  }
+
+  .mock-dialog-title {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .mock-dialog-body {
+    font-size: 10.5px;
+    color: var(--sub);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .mock-notice {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,.06);
+  }
+
+  .mock-notice-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 12px;
+    background: var(--warn-bg);
+    color: var(--warn);
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  .mock-notice-body {
+    padding: 12px;
+  }
+
+  .mock-notice-title {
+    font-size: 11px;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  .mock-notice-text {
+    font-size: 10px;
+    color: var(--ink);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .mock-notice-link {
+    margin-top: 10px;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .flow-arrow {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin: -12px 0 28px;
+  }
+
+  .desc h4 {
+    font-size: 13px;
+    margin: 0 0 6px;
+    color: var(--accent)
+  }
+
+  .desc p {
+    font-size: 13px;
+    margin: 0 0 10px
+  }
+
+  .desc ul {
+    margin: 0 0 12px;
+    padding-left: 18px;
+    font-size: 13px
+  }
+
+  .desc li {
+    margin-bottom: 4px
+  }
+
+  .desc code {
+    background: var(--bg);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 12px;
+  }
+</style>
+
+<div class="devnav">
+  <a class="devnav-link" href="unsedang-imp-member-integration-prd-261007.html">← 기획서+정책서</a>
+</div>
+
+<div class="wrap">
+  <h1>휴대폰번호 기준 회원통합 — 와이어프레임</h1>
+  <div class="banner">⚠ 와이어프레임 — 실제 서비스 화면이 아닙니다.
+    <code>unsedang-imp-member-integration-prd-261007.html</code> §4 정책(p01~p10 확정분)의 파생물이며,
+    기존 화면코드 레지스트리(<code>ia.html</code> §8)와는 무관한 신규 화면입니다.</div>
+
+  <!-- 0 -->
+  <div class="section" id="w-0">
+    <h3>0. 마이페이지 &gt; 계정 관리 — AS-IS → TO-BE</h3>
+    <div class="compare">
+      <div class="compare-col">
+        <div class="compare-label">AS-IS</div>
+        <div class="phone">
+          <div class="status"></div>
+          <div class="screen">
+            <div class="mock-pagetitle">
+              <div class="mock-backbtn">‹</div>
+              <div class="mock-pagetitle-text">계정 관리</div>
+              <div class="mock-pagetitle-spacer"></div>
+            </div>
+            <div class="mock-menu">
+              <div class="mock-menu-item">
+                <div class="mock-menu-icon"></div>
+                <div class="mock-menu-label">로그아웃</div>
+                <div class="mock-menu-chevron">›</div>
+              </div>
+              <div class="mock-menu-item">
+                <div class="mock-menu-icon"></div>
+                <div class="mock-menu-label">계정삭제</div>
+                <div class="mock-menu-chevron">›</div>
+              </div>
+            </div>
+            <div class="mock-note">사업자 고지 정보 (상호명·대표자·사업자등록번호 등)</div>
+          </div>
+        </div>
+      </div>
+      <div class="compare-col">
+        <div class="compare-label">TO-BE</div>
+        <div class="phone">
+          <div class="status"></div>
+          <div class="screen">
+            <div class="mock-pagetitle">
+              <div class="mock-backbtn">‹</div>
+              <div class="mock-pagetitle-text">계정 관리</div>
+              <div class="mock-pagetitle-spacer"></div>
+            </div>
+            <div class="mock-menu-label" style="font-size:10px;font-weight:700;color:var(--sub);padding:6px 2px 2px;">계정 연동<span class="mock-new-tag">NEW</span></div>
+            <div class="mock-linkrow">
+              <div class="mock-menu-icon"></div>
+              <div class="mock-linkrow-label">카카오</div>
+              <div class="mock-toggle on"></div>
+            </div>
+            <div class="mock-inline-toast">✓ 카카오 계정이 연동됐어요 · 포인트·코인 합산 완료</div>
+            <div class="mock-linkrow">
+              <div class="mock-menu-icon"></div>
+              <div class="mock-linkrow-label">네이버</div>
+              <div class="mock-toggle"></div>
+            </div>
+            <div class="mock-linkrow">
+              <div class="mock-menu-icon"></div>
+              <div class="mock-linkrow-label">애플</div>
+              <div class="mock-toggle"></div>
+            </div>
+            <div class="mock-linkrow">
+              <div class="mock-menu-icon"></div>
+              <div class="mock-linkrow-label">PASS</div>
+              <div class="mock-toggle"></div>
+            </div>
+            <div class="mock-menu-item">
+              <div class="mock-menu-icon"></div>
+              <div class="mock-menu-label">아이디 연동</div>
+              <div class="mock-menu-chevron">›</div>
+            </div>
+            <div class="mock-linkrow-divider"></div>
+            <div class="mock-menu">
+              <div class="mock-menu-item">
+                <div class="mock-menu-icon"></div>
+                <div class="mock-menu-label">로그아웃</div>
+                <div class="mock-menu-chevron">›</div>
+              </div>
+            </div>
+            <div class="mock-textlink">계정삭제</div>
+            <div class="mock-note">사업자 고지 정보 (상호명·대표자·사업자등록번호 등)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="desc">
+      <h4>확정 내용</h4>
+      <p>계정 연동을 로그인 방식별로 둘로 나눈다(p09) — <b>아이디(ID/PW) 로그인</b>은 비밀번호 확인이
+        필요해 별도 화면(①)으로 이동하고, <b>소셜 로그인(카카오·네이버·애플·PASS)</b>은 계정 관리
+        화면 안에서 <b>토글(on/off)</b>로 그 자리에서 바로 연동한다 — 별도 페이지를 만들지 않는다.</p>
+      <ul>
+        <li>토글을 켜면 해당 플랫폼 로그인(OAuth)으로 소유권을 확인하고 즉시 연동 완료 — 결과는
+          토글 아래 인라인 안내로만 보여주고 별도 결과 화면(②)으로 넘어가지 않는다</li>
+        <li>토글을 끄면 연동이 해제된다 — 해제 시 포인트·코인 처리(원복 여부)는 PRD에 없는 추가
+          결정 필요</li>
+        <li>로그아웃·사업자 고지 정보는 AS-IS 그대로 유지하되, <b>계정삭제는 메뉴 행이 아니라 화면
+          하단의 작은 텍스트 링크로</b> 내린다 — 계정 연동이 새로 추가되며 메뉴가 길어진 만큼,
+          되돌릴 수 없는 동작은 눈에 덜 띄게 둔다</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="flow-arrow">↓ [아이디 연동] 클릭 (ID/PW 로그인인 경우만)</div>
+
+  <!-- 1 -->
+  <div class="section" id="w-1">
+    <h3>① 아이디 연동 — 아이디/비밀번호 입력</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-pagetitle">
+            <div class="mock-backbtn">‹</div>
+            <div class="mock-pagetitle-text">아이디 연동</div>
+            <div class="mock-pagetitle-spacer"></div>
+          </div>
+          <p style="font-size:10.5px;color:var(--sub);margin:4px 0 14px;line-height:1.6;">
+            연동할 계정의 아이디/비밀번호를 입력해주세요. 소유권 확인 후 포인트·코인이
+            합산됩니다.</p>
+          <div class="mock-form-label">아이디</div>
+          <div class="mock-field">아이디 입력</div>
+          <div class="mock-form-label">비밀번호</div>
+          <div class="mock-field">비밀번호 입력</div>
+          <div class="mock-btn primary">연동하기</div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>아이디(ID/PW) 로그인 계정을 연동할 때만 이 화면을 쓴다 — 비밀번호 입력으로 소유권을
+          확인한다(p05, PRD §3-3). 소셜 로그인(카카오·네이버·애플·PASS)은 이 화면을 거치지 않고
+          0의 계정 관리 화면에서 토글로 바로 연동한다.</p>
+        <ul>
+          <li>번호가 달라도 소유권만 확인되면 연동을 허용한다(요구사항 7)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow">↓ 소유권 확인 성공</div>
+
+  <!-- 2 -->
+  <div class="section" id="w-2">
+    <h3>② 아이디 연동 완료 결과</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-result-badge">✓</div>
+          <div class="mock-result-title">계정 연동이 완료됐어요</div>
+          <div class="mock-result-row"><span>포인트</span><span class="v">합산 완료</span></div>
+          <div class="mock-result-row"><span>상담 코인</span><span class="v">합산 완료</span></div>
+          <div class="mock-result-row"><span>상담내역·구매내역·리뷰</span><span class="v">통합 조회</span></div>
+          <div class="mock-result-foot">두 계정의 자산·이력이 대표 계정 기준으로 합쳐졌습니다.</div>
+          <div class="mock-btn primary">확인</div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>포인트·상담 코인은 대표 계정으로 합산되고(p06), 상담내역·구매내역·리뷰는 대표 계정에서
+          통합 조회된다(p07). 아이디 연동(①)은 별도 화면으로 이동했던 플로우라 결과도 별도 화면으로
+          보여준다 — 소셜 토글 연동은 0 화면 안에서 인라인 토스트로 끝난다(별도 결과 화면 없음).</p>
+        <ul>
+          <li>합산 결과 화면에 정확한 포인트·코인 수치를 보여줄지, "합산 완료"로만 안내할지는 PRD
+            §5 C-1(이력 레코드 이관 여부)과 함께 추가 결정이 필요하다 — 와이어프레임은 두 값을
+            보여주는 안으로 그렸다</li>
+          <li>비금전 이력은 원 계정에 둔 채 조회 화면만 통합하는 방식이다(§5 C-1) — 레코드 자체가
+            이동하는 것은 아니다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow">↓ (별도 플로우) 신규가입 시 동일 번호 감지</div>
+
+  <!-- 3 -->
+  <div class="section" id="w-3">
+    <h3>③ 신규가입 시 중복번호 감지 안내</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen mock-dialog-wrap">
+          <div class="mock-dialog">
+            <div class="mock-dialog-title">이미 가입된 번호예요</div>
+            <div class="mock-dialog-body">입력하신 휴대폰번호로 가입된 계정이 있어요.<br>
+              기존 계정으로 진행할까요?</div>
+            <div class="mock-btn primary">기존 계정으로 로그인</div>
+            <div class="mock-btn ghost">취소</div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>가입 시도 중 휴대폰 인증 단계에서 동일 번호의 기존(대표) 계정이 있으면, 신규 계정을
+          만들지 않고 안내 후 기존 계정 세션으로 연결한다(p04, PRD §3-2).</p>
+        <ul>
+          <li>경로별로 번호를 확보하는 시점이 달라 이 다이얼로그가 뜨는 가입 단계도 경로마다
+            다르다 — PASS는 인증 완료 시점, 카카오/네이버/애플은 OAuth 콜백 시점, ID/PW는 번호
+            입력란 단계(PRD §3-2)</li>
+          <li>"취소" 선택 시 동작(가입 중단 vs 번호 재입력)은 PRD에 명시돼 있지 않다 — 번호
+            재입력으로 돌아가는 안으로 그렸다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow">↓ (별도 플로우) 기존 회원 소급 일괄통합 — 1회성 시행 전 고지</div>
+
+  <!-- 4 -->
+  <div class="section" id="w-4">
+    <h3>④ 소급 통합 사전 공지</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-notice">
+            <div class="mock-notice-header">공지</div>
+            <div class="mock-notice-body">
+              <p class="mock-notice-title">계정 통합 안내</p>
+              <p class="mock-notice-text">동일한 휴대폰번호로 가입된 계정이 하나로
+                통합됩니다.<br>
+                포인트·상담 코인은 마지막으로 로그인한 계정 기준으로
+                합산됩니다.</p>
+              <div class="mock-notice-link">자세히 보기 ›</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>소급 통합은 개별 사전동의를 받지 않고, 시행 전 전체 공지로 고지한다 — 약관 제3조
+          (변경사항 사전고지로 효력 발생) 방식을 준용한다(p03, PRD §3-1).</p>
+        <ul>
+          <li>노출 위치·형식(팝업/배너/알림 중 무엇)은 PRD에서 "팝업/이메일/알림 등"으로만 열려
+            있다 — 와이어프레임은 팝업/배너형 공지 1안으로 그렸다</li>
+          <li>그룹 내 대표 계정은 "마지막 로그인" 계정이다(p02) — 공지 문구에 그 기준을 그대로
+            반영했다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,296 @@
+<meta charset="utf-8">
+<title>신통↔운세당 2중 선불요금 체계 — 기능기획서 — 운세당</title>
+<style>
+  :root {
+    --ink: #1c1c22;
+    --sub: #5b5b66;
+    --line: #e3e3ea;
+    --bg: #f6f6f9;
+    --card: #ffffff;
+    --accent: #2f4bdb;
+    --accent-soft: #eaedfd;
+    --warn: #b5590a;
+    --warn-bg: #fff2e2;
+    --danger: #a8242b;
+    --danger-bg: #fdeef1;
+    --ok: #1a7a4c;
+    --ok-bg: #e9f7ef;
+    --gray-badge: #5c5c68;
+  }
+
+  * { box-sizing: border-box }
+
+  body {
+    margin: 0;
+    padding: 32px 20px 80px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    line-height: 1.6;
+  }
+
+  .wrap { max-width: 1080px; margin: 0 auto }
+
+  h1 { font-size: 22px; margin: 0 0 4px }
+  h2 { font-size: 18px; margin: 0 0 4px }
+  h3 { font-size: 15px; margin: 24px 0 8px }
+
+  .banner { background: var(--warn-bg); color: var(--warn); border: 1px solid #f3d3a6; border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 600; margin: 14px 0 20px; }
+
+  .meta { list-style: none; margin: 0 0 24px; padding: 0; font-size: 13px; }
+  .meta li { padding: 6px 0 6px 0; border-bottom: 1px dashed var(--line); }
+  .meta li:last-child { border-bottom: none; }
+  .meta b { display: inline-block; min-width: 72px; color: var(--accent); }
+
+  .top { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 28px; }
+  @media (max-width:720px) { .top { grid-template-columns: 1fr } }
+  .top .box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+  .top .box h2 { font-size: 14px; margin: 0 0 10px; color: var(--accent) }
+  .top .box ul { margin: 0; padding-left: 18px; font-size: 13px; color: var(--ink) }
+  .top .box li { margin-bottom: 6px }
+
+  .section { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 24px; margin-bottom: 28px; }
+  .section .sub { font-size: 12px; color: var(--sub); margin-bottom: 14px; }
+
+  .table-wrap { overflow-x: auto; margin: 14px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  thead th { background: #f0f1f7; font-weight: 700; }
+  td.nowrap, th.nowrap { white-space: nowrap; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; background: #f0f1f7; padding: 1px 5px; border-radius: 5px; }
+
+  .formula { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; background: #15182b; color: #c7e0ff; border-radius: 8px; padding: 10px 14px; margin: 10px 0; overflow-x: auto; }
+
+  .callout { border-radius: 10px; padding: 14px 16px; margin: 14px 0; }
+  .callout-title { display: block; font-weight: 800; font-size: 13px; margin-bottom: 6px; }
+  .callout.warn { background: var(--warn-bg); color: #5c3a10; border: 1px solid #f3d3a6; }
+  .callout.warn .callout-title { color: var(--warn); }
+  .callout.danger { background: var(--danger-bg); border: 1px solid #f3c6cb; }
+  .callout.danger .callout-title { color: var(--danger); }
+  .callout.ok { background: var(--ok-bg); border: 1px solid #bfe6cf; }
+  .callout.ok .callout-title { color: var(--ok); }
+  .callout.unknown { background: #f0f1f7; border: 1px solid var(--line); }
+  .callout.unknown .callout-title { color: var(--sub); }
+
+  .badge { display: inline-block; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+  .badge.need { background: var(--warn-bg); color: var(--warn); }
+  .badge.unknown { background: #eceef5; color: var(--gray-badge); }
+  .badge.ok { background: var(--ok-bg); color: var(--ok); }
+
+  .src { font-size: 12px; color: var(--sub); margin: -6px 0 16px; }
+
+  ol, ul.plain { padding-left: 20px; font-size: 13px; }
+  ol li, ul.plain li { margin-bottom: 6px; }
+</style>
+
+<div class="wrap">
+  <h1>신통↔운세당 2중 선불요금 체계 — 기능기획서</h1>
+  <div class="banner">⚠️ 기능기획서(초안) — 아직 개발 착수 전 문서입니다. 화면 설계는 다루지 않고 데이터·규칙
+    수준의 프로세스만 규정합니다.</div>
+
+  <ul class="meta">
+    <li><b>목적</b> 자체 상담사 단가를 조정해 매출·수익을 개선한다. 신통 상담사 단위 요금을 그대로 두고
+      <strong>신통 요금에 비율을 더해 산정한 요금으로 사용자에게 과금하는 구조</strong>를 만들어, 상담사·
+      신통 정산은 신통 요금 기준으로 유지하면서 사용자 과금만 올려 그 차액을 운세당 매출로 가져간다.</li>
+    <li><b>배경</b> 운세당은 상담사를 신통(ssintong.com)에서 공급받고, 사용자에게 보이는 30초 단가도 신통이
+      API로 전달하는 값을 그대로 쓴다. 신통이 이 요금을 전달할 때마다 값이 바뀔 수 있다. 상담사 단위로
+      요금을 올리면 타 플랫폼 교차등록 때문에 이탈 리스크가 있다는 것이 기존 조사로 확인됐다.</li>
+  </ul>
+
+  <!-- 1. 목적·제한 -->
+  <h2 id="s1">1. 목적·제한</h2>
+  <div class="section">
+    <div class="top" style="margin-bottom:0;">
+      <div class="box">
+        <h2>목적</h2>
+        <ul>
+          <li>자체 상담사 단가를 조정하여 매출과 수익을 개선한다</li>
+          <li>상담사·신통 정산은 신통 전달 요금 기준을 그대로 유지한다 — 상담사가 체감하는 정산액은
+            바뀌지 않는다</li>
+          <li>사용자 과금만 운세당이 올린 요금으로 적용하고, 그 차액을 운세당 매출로 집계한다</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h2>제한</h2>
+        <ul>
+          <li>위 목적 외로 확대 해석하지 않는다</li>
+          <li><strong>후불(060) 요금은 이번 범위 밖이다</strong> — 선불 전화 상담만 다룬다. 선불·후불
+            요금이 상담사마다 다르게 책정돼 있으나, 이 기획의 2중 요금 구조는 선불 경로에만 적용한다</li>
+          <li>이 문서는 "가격을 어떻게 덮어쓸 수 있는 구조를 만들 것인가"를 다룬다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 요금 결정 규칙 -->
+  <h2 id="s2">2. 요금 결정 규칙</h2>
+  <div class="section">
+    <div class="sub">입력 2개로 사용자에게 보여줄 최종 요금을 결정한다.</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="nowrap">입력</th><th>정의</th><th>등록 주체</th></tr></thead>
+        <tbody>
+          <tr><td class="nowrap"><code>S: 신통</code></td><td>신통이 API로 전달하는 선불요금 — 현재
+            운세당이 사용자에게 노출하는 30초 단가의 원천값. 신통이 전달할 때마다 값이 갱신될 수
+            있다</td><td>신통(공급처) → API로 전달</td></tr>
+          <tr><td class="nowrap"><code>R: 비율</code></td><td>신통 요금 기준 가산 비율(%) — 운세당
+            관리자가 상담사별로 등록하는 값. <strong>미등록을 허용</strong>하고,
+            <strong>음수도 허용</strong>한다(의도적 할인 운영 — 아래 ⚠️ 참고)</td>
+            <td>운세당 관리자</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2케이스 — 적용 요금 <code>A</code></h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="nowrap"><code>R</code> 등록</th>
+          <th class="nowrap">적용 요금 <code>A</code></th><th>설명</th></tr></thead>
+        <tbody>
+          <tr><td>미등록</td><td><code>S</code></td><td><strong>기본값</strong> — 비율을 등록하지
+            않았으면 신통 전달 요금을 그대로 쓴다</td></tr>
+          <tr><td>등록</td><td><code>S × (1 + R/100)</code></td><td>신통 요금에 비율을 가산해 운세당
+            요금을 산정한다. 신통 요금과 운세당 요금은 항상 1:1로 매핑되므로 별도의 적용 여부
+            토글은 두지 않는다 — 아래 확정 사항 참고</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="formula">A = R 등록 시  S × (1 + R/100)
+    R 미등록 시  S</div>
+
+    <div class="callout ok">
+      <span class="callout-title">✅ 확정 — 정액이 아니라 비율로 등록한다</span>
+      <p>운세당 요금을 정액으로 저장해두면, 신통 요금이 그 정액보다 더 올라갈 경우 운세당 요금이
+        신통 요금보다 낮아지는 <strong>역마진</strong>이 생긴다. 신통 요금 기준 비율로 등록해두면
+        신통 요금이 오르내릴 때마다 운세당 요금도 같은 방향으로 따라 움직여, 신통이 전달하는 요금이
+        바뀌어도 마진 구조가 깨지지 않는다.</p>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-title">⚠️ 비율을 음수로 등록하면 역마진이다</span>
+      <p>비율(<code>R</code>) 입력값 자체에는 제한을 두지 않아 음수 등록(의도적 할인 운영)도
+        허용한다. 다만 음수를 등록하면 운세당 요금이 신통 요금보다 낮아져, 그 차액을 운세당이
+        부담하게 된다.</p>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-title">🔧 소수점 처리 규칙 — 개발팀 확정 필요</span>
+      <p><code>S × (1 + R/100)</code>이 정수로 떨어지지 않는 경우(예: 1,250 × 107% = 1,337.5) 100원 단위 올림 처리를 한다</p>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-title">🔧 과금 개시 시점 스냅샷 규칙 — 개발팀 확정 필요</span>
+      <p>상담 시작(과금 개시) 시점의 <code>S</code>·<code>R</code>·<code>A</code> 값을 상담건에
+        <strong>스냅샷으로 고정</strong>해야 한다 — 상담 도중에 신통이 요금을 다시 전달하거나
+        관리자가 비율을 바꿔도 이미 시작된 상담건의 과금 단가는 바뀌지 않는다는 뜻이다. 상담건
+        저장 필드는 이 스냅샷을 전제로 설계한다.</p>
+    </div>
+
+    <p>신통이 API로 요금을 새로 전달하면 그 시점에 등록된 비율을 적용해 운세당 요금을 다시
+      계산하고 저장한다. 비율만 바뀐 경우에도 동일하게 재계산한다.</p>
+  </div>
+
+  <!-- 3. 상담건 저장 필드 -->
+  <h2 id="s3">3. 상담건 저장 필드 — 2중 저장</h2>
+  <div class="section">
+    <div class="sub">사용자 상담정보(상담건) 레코드에 신통 정산용 필드와 운세당 매출 집계용 필드를 각각
+      둔다 — 둘 다 <strong>항상</strong> 저장한다(비율 미등록 상태여도 동일).</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>필드</th><th>정의</th><th>쓰임</th></tr></thead>
+        <tbody>
+          <tr><td>신통 도수당 요금</td><td><code>S</code> 스냅샷 — 상담 시작 시점의 신통 전달 요금</td>
+            <td>상담사 정산·신통 정산 기준</td></tr>
+          <tr><td>운세당 도수당 요금</td><td><code>A</code> 스냅샷 — 상담 시작 시점의 적용 요금. <strong>
+            비율이 등록되지 않았어도 이 필드에는 S와 동일한 값이 그대로 들어간다</strong> — 비워두거나
+            null로 두지 않는다</td><td>운세당 매출 집계 기준</td></tr>
+          <tr><td>신통 매출액</td><td>신통 도수당 요금 × 해당 상담건의 과금 도수(30초 단위)</td>
+            <td>신통 정산 기준</td></tr>
+          <tr><td>운세당 매출액</td><td>운세당 도수당 요금 × 해당 상담건의 과금 도수(30초 단위)</td>
+            <td>운세당 매출 집계 기준</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <div class="callout warn">
+      <span class="callout-title">🔧 기존 상담건(필드 도입 전) 소급 처리 — 개발팀 확정 필요</span>
+      <p>이 필드를 도입하기 전에 생성된 과거 상담건에는 과거 건에 소급으로 (신통 도수당 요금과 동일한 값을 채워) 넣는다</p>
+    </div>
+  </div>
+
+  <!-- 4. 사용자 화면 노출 지점 전수 점검 -->
+  <h2 id="s4">4. 사용자 화면 노출 지점 전수 점검표</h2>
+  <div class="section">
+    <div class="sub">요금이 실제로 노출되는 모든 지점에서 <code>S</code>(신통)·<code>A</code>(운세당
+      적용 요금) 중 무엇을 보여줘야 하는지 판정한다.</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th class="nowrap">화면/지점</th><th>현재 노출 실측</th><th class="nowrap">노출해야
+          할 값</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr><td class="nowrap"><code>CSL-LIST</code> 카드 30초 단가</td>
+            <td>카드 표시가가 선불 기준인 상담사와 <strong>후불 기준인 상담사가 섞여 있다</strong>(후불
+            배지 유무로 표시 기준 자체가 갈림)</td>
+            <td><code>A</code></td><td>선불 표시 카드만 <code>A</code>로 교체 대상. 후불 기준 카드는
+            이번 범위(선불 전용) 밖 — 아래 콜아웃 참고</td></tr>
+          <tr><td class="nowrap"><code>CSL-DETAIL</code> 단가</td>
+            <td>선불가·후불가가 DOM에 함께 실린다</td>
+            <td><code>A</code> (선불가 쪽만)</td><td>후불가 표시는 유지, 변경 없음</td></tr>
+          <tr><td class="nowrap"><code>CSL-CALL-CONF</code> 모달 선불
+            블록</td><td>요금·코인 잔액·환산 시간·충전 버튼이 <strong>이 한 곳에만</strong> 나온다</td>
+            <td><strong><code>A</code> (필수)</strong></td><td>실제 발신 직전 과금
+            고지 화면 — 가장 중요한 변경 지점</td></tr>
+          <tr><td class="nowrap"><code>PT-COIN-TIME</code> 환산표</td>
+            <td>충전금액 × 30초 단가별 상담 가능 시간 환산표</td>
+            <td><code>A</code></td><td>해당 상담사 선택 맥락에서 노출되는 경우로 한정(환산표 자체는
+            상담사 비종속적인 공용 화면일 가능성 — ⚠️ 미확인)</td></tr>
+          <tr><td class="nowrap">페이지 <code>&lt;title&gt;</code></td><td>후불가를 쓴다(표본 2건 모두
+            일치)</td><td>변경 없음</td><td>선불 요금 변경과 무관 — 범위 밖
+            (후불가 그대로)</td></tr>
+          <tr><td class="nowrap"><code>MY-CALLS</code> 사용 코인</td>
+            <td>상담 이력 카드에 라벨-값으로 노출</td><td><code>A</code></td>
+            <td>과거 상담건은 소급 처리 여부에 따라 값이 달라질 수 있음</td></tr>
+          <tr><td class="nowrap">통화 중 실시간 코인 차감</td><td>통화 중 실시간으로 코인이 차감된다</td>
+            <td><strong><code>A</code> (필수)</strong></td>
+            <td>실제 과금 로직 — 표시뿐 아니라 차감 금액 자체가 <code>A</code> 기준이어야 한다</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <span class="callout-title">🔧 선불·후불 가격 역전 리스크 — 사업 확정 필요</span>
+      <p>실측 사례(별성애기 <code>cslKey=34</code> 선불 1,300코인·후불 1,600원 /
+        청타로 <code>cslKey=56</code> 선불 1,000코인·후불 1,300원)처럼 <strong>현재 선불가가 후불가보다
+        낮은 구조</strong>에서 선불요금(<code>A</code>)만 올리면, 올린 선불가가 후불가를 넘어서는 역전이
+        생길 수 있다. 비율 구조에서는 신통이 요금을 올릴 때 운세당 요금(<code>A</code>)도
+        <strong>자동으로</strong> 따라 올라가므로, 관리자가 비율을 손대지 않아도 역전이 발생할 수 있다
+        — 후불가 대비 상한 감시가 필요하다.</p>
+    </div>
+  </div>
+
+  <!-- 5. 성공지표 -->
+  <h2 id="s5">5. 성공지표</h2>
+  <div class="section">
+    <p>"매출·수익 개선"(목적)을 측정 가능한 지표로 분해한다. 목표 수치는 비워 둔다.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>지표</th><th>정의</th><th>목표</th></tr></thead>
+        <tbody>
+          <tr><td>운세당 선불매출 증가분</td><td><code>Σ(운세당 도수당 요금 − 신통 도수당 요금) ×
+            과금 도수</code> — "운세당 마진" 산식의 전체 집계</td><td><span class="badge need">🔧
+            사업 확정 필요</span></td></tr>
+          <tr><td>적용 범위(커버리지)</td><td>비율(<code>R</code>)이 등록된 상담사 수 / 전체 상담사 수</td>
+            <td><span class="badge need">🔧 사업 확정 필요</span></td></tr>
+          <tr><td>인상 상담사의 상담 건수·이탈 변화</td><td>인상 전후 해당 상담사의 상담 건수·찜·후기
+            추이를 실제 데이터로 모니터링(이탈 리스크 관찰)</td><td><span class="badge need">🔧 사업
+            확정 필요</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

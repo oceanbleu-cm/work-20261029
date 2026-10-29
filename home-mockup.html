@@ -1,0 +1,1015 @@
+<meta charset="utf-8">
+<title>홈 개선 목업 — 운세당</title>
+<style>
+  :root {
+    --brand: #c8272e;
+    --ink: #1c1c22;
+    --sub: #767683;
+    --line: #ececf1;
+    --bg: #f3f3f6;
+    --orange: #ff6a3d;
+    --gray-badge: #5c5c68;
+    --changed: #7c4dff;
+    --changed-soft: #efe9ff;
+  }
+
+  * {
+    box-sizing: border-box
+  }
+
+  html {
+    background: var(--bg)
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    padding: 24px 0 60px;
+  }
+
+  .phone {
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    background: #fff;
+    min-height: 100vh;
+    box-shadow: 0 0 0 1px var(--line), 0 20px 40px rgba(0, 0, 0, .08);
+  }
+
+  /* 변경 지점 표시 뱃지 (실제 서비스 화면 오인 방지, 배너 대신 섹션별 표시) */
+  .changed {
+    position: relative
+  }
+
+  .changed-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--changed);
+    background: var(--changed-soft);
+    border-radius: 999px;
+    padding: 2px 8px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* 헤더 */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: #fff;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px
+  }
+
+  .logo {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--brand);
+    letter-spacing: -.5px
+  }
+
+  .coin-badge {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .login-btn {
+    background: var(--brand);
+    border: 1px solid var(--brand);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .search {
+    font-size: 18px;
+    color: var(--ink)
+  }
+
+  /* 히어로 캐러셀 (화면 전체 폭, 4장 스크롤) */
+  .hero-scroll {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    margin: 10px 0 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .hero-scroll::-webkit-scrollbar {
+    display: none
+  }
+
+  .hero {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    overflow: hidden;
+    background: linear-gradient(160deg, #3d1a4a, #160a1f);
+    color: #fff;
+    text-align: center;
+    padding: 30px 12px 26px;
+  }
+
+  .hero .cap {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 6px
+  }
+
+  .hero .rank {
+    font-size: 11px;
+    color: #f0d98c;
+    margin-bottom: 10px
+  }
+
+  .hero .cta {
+    display: inline-block;
+    background: var(--orange);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 7px 18px;
+  }
+
+  .hero-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin: 8px 0 2px
+  }
+
+  .hero-dots .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--line);
+    transition: width .2s, background .2s
+  }
+
+  .hero-dots .dot.active {
+    width: 16px;
+    border-radius: 6px;
+    background: var(--brand)
+  }
+
+  /* 퀵메뉴 · 카테고리 공용 타일 (아이콘+텍스트를 하나의 스퀘어 안에) */
+  .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+
+  .quickmenu {
+    padding: 16px 16px 8px;
+  }
+
+  .tile {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    color: var(--ink);
+    text-align: center;
+    padding: 8px 2px;
+  }
+
+  .tile-ic {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .tile-label {
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+
+  /* 섹션 공통 */
+  .section {
+    padding: 18px 16px 6px
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 2px
+  }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 800
+  }
+
+  .section-sub {
+    font-size: 11px;
+    color: var(--sub);
+    margin-bottom: 10px
+  }
+
+  /* 인기태그 검색 — 해시태그형 */
+  .cat-tags {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .cat-tags::-webkit-scrollbar {
+    display: none
+  }
+
+  .cat-tag {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 400;
+    color: #4b4b52;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+
+
+  /* 전화상담사 리스트 (탭 4종 · 8명씩) */
+  .call-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 4px;
+    position: sticky;
+    top: 53px;
+    z-index: 15;
+    background: #fff;
+  }
+
+  .call-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--sub);
+    cursor: pointer;
+    border-bottom: 2px solid transparent
+  }
+
+  .call-tab.active {
+    color: var(--brand);
+    border-bottom-color: var(--brand);
+    font-weight: 800
+  }
+
+  .call-card {
+    display: flex;
+    gap: 10px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+
+  .call-card:last-child {
+    border-bottom: 0
+  }
+
+  .call-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    width: 92px;
+  }
+
+  .call-thumb {
+    position: relative;
+    width: 92px;
+    height: 92px;
+    border-radius: 12px;
+    flex: 0 0 auto;
+    background: linear-gradient(160deg, #e7e2d8, #c9c2b3);
+  }
+
+  .call-badge-top {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-size: 10px;
+    font-weight: 400;
+    color: #fff;
+    background: var(--gray-badge);
+    border-radius: 6px;
+    padding: 2px 5px;
+  }
+
+  .call-badge-bottom {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    font-size: 10px;
+    font-weight: 400;
+    color: #fff;
+    background: var(--gray-badge);
+    border-radius: 6px;
+    padding: 1px 4px;
+  }
+
+  .call-hashtags-under {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--gray-badge);
+    text-align: center;
+    line-height: 1.35;
+  }
+
+  .call-body {
+    flex: 1;
+    min-width: 0;
+    padding-right: 88px;
+  }
+
+  .call-name-row {
+    font-size: 13px;
+    font-weight: 800
+  }
+
+  .call-status {
+    display: inline-flex;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 400;
+    color: #fff;
+    border-radius: 999px;
+    padding: 2px 7px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .call-status.avail {
+    background: var(--gray-badge)
+  }
+
+  .call-status.busy {
+    background: var(--gray-badge)
+  }
+
+  .call-tagline {
+    font-size: 12px;
+    color: var(--ink);
+    margin: 4px 0 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .call-price-row {
+    display: flex;
+    align-items: center;
+    gap: 8px
+  }
+
+  .call-price {
+    color: var(--brand);
+    font-weight: 800;
+    font-size: 13px
+  }
+
+  .call-rate {
+    font-size: 11px;
+    color: var(--sub)
+  }
+
+  .call-cta {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    border: 1.5px solid var(--brand);
+    color: var(--brand);
+    background: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 7px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+
+  .call-stats {
+    margin-top: 4px;
+    font-size: 11px;
+    color: var(--sub);
+  }
+
+  /* 최근봤던/지금상담가능: 정사각 카드 그리드 */
+  .sq-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px
+  }
+
+  .sq-card {
+    flex: 0 0 auto;
+    width: 88px;
+    font-size: 11px
+  }
+
+  .sq-thumb {
+    position: relative;
+    width: 88px;
+    height: 88px;
+    border-radius: 12px;
+    background: linear-gradient(160deg, #e7e2d8, #c9c2b3);
+    margin-bottom: 5px;
+  }
+
+  /* 재회상담 추천 — 한 화면에 3명만 보이는 확대 카드 (5명 중 3명 노출, 스크롤로 나머지) */
+  .sq-card.lg {
+    width: 124px;
+    font-size: 12px;
+  }
+
+  .sq-card.lg .sq-thumb {
+    width: 124px;
+    height: 124px;
+    border-radius: 12px;
+  }
+
+  .status-badge {
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
+    font-size: 10px;
+    font-weight: 400;
+    color: #fff;
+    border-radius: 6px;
+    padding: 2px 5px;
+  }
+
+  .status-badge.away {
+    background: var(--gray-badge)
+  }
+
+  .status-badge.busy {
+    background: var(--gray-badge)
+  }
+
+  .status-badge.on {
+    background: var(--gray-badge)
+  }
+
+  .sq-name {
+    font-weight: 700
+  }
+
+  .sq-name .tag {
+    display: inline-flex;
+    align-items: center;
+    color: #3f3f47;
+    font-size: 10px;
+    font-weight: 400;
+    border: 1px solid var(--gray-badge);
+    border-radius: 6px;
+    padding: 1px 5px;
+    margin-left: 2px;
+    vertical-align: middle;
+  }
+
+  .policy-note {
+    font-size: 11px;
+    color: var(--sub);
+    background: #f7f7fb;
+    border: 1px dashed var(--line);
+    border-radius: 6px;
+    padding: 6px 9px;
+    margin-top: 8px;
+  }
+
+  /* 후기모음 — 실제 서비스 후기 화면(unsedang.com/view/csl/totalRatingComment) 카드에서
+     AI 한줄요약 + 선생님 정보만 발췌한 축약 카드 */
+  .review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .review-card {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .review-ai {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: var(--changed-soft);
+    padding: 10px 12px;
+  }
+
+  .review-ai-badge {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    background: var(--changed);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .review-ai-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: #3f2f80;
+    line-height: 1.4;
+  }
+
+  .review-teacher {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fdf6e3;
+    padding: 10px 12px;
+  }
+
+  .review-teacher-thumb {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .review-teacher-info {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .review-teacher-name {
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .review-teacher-tags {
+    font-size: 10px;
+    color: var(--sub);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .review-teacher-arrow {
+    flex: 0 0 auto;
+    color: var(--sub);
+    font-size: 13px;
+  }
+
+  /* 하단 네비 */
+  .navbar {
+    display: flex;
+    border-top: 1px solid var(--line);
+    padding: 8px 0 10px;
+    margin-top: 10px;
+    background: #fff;
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+  }
+
+  .nav-item {
+    flex: 1;
+    text-align: center;
+    font-size: 10px;
+    color: var(--sub);
+    font-weight: 700
+  }
+
+  .nav-item .ic {
+    font-size: 18px;
+    display: block;
+    margin-bottom: 2px
+  }
+
+  .nav-item.active {
+    color: var(--brand)
+  }
+</style>
+
+<div class="phone">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">운세당</div>
+      <div id="authArea" onclick="toggleAuth()"></div>
+    </div>
+    <div class="search">🔍</div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="hero">
+      <div class="cap">그 사람 다시 연락하게 만드는<br>재회 여왕 주주 선생님</div>
+      <div class="rank">🏆 재회 상담 부문 전체 1위</div>
+      <div class="cta">타로 상담사 확인하기</div>
+    </div>
+    <div class="hero">
+      <div class="cap">인연의 타이밍을 짚어주는<br>연애 마스터 하나 선생님</div>
+      <div class="rank">🏆 연애 상담 부문 전체 1위</div>
+      <div class="cta">사주 상담사 확인하기</div>
+    </div>
+    <div class="hero">
+      <div class="cap">막힌 재물운을 뚫어주는<br>재물운 1인자 미르 선생님</div>
+      <div class="rank">🏆 재물 상담 부문 전체 1위</div>
+      <div class="cta">타로 상담사 확인하기</div>
+    </div>
+    <div class="hero">
+      <div class="cap">신내림 3대째, 정확도로 소문난<br>신점 명장 별자매 선생님</div>
+      <div class="rank">🏆 신점 상담 부문 전체 1위</div>
+      <div class="cta">신점 상담사 확인하기</div>
+    </div>
+  </div>
+  <div class="hero-dots" id="heroDots">
+    <span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+  </div>
+
+  <div class="quickmenu tile-grid">
+    <div class="tile"><span class="tile-ic">💬</span><span class="tile-label">쪽지상담</span></div>
+    <div class="tile"><span class="tile-ic">💸</span><span class="tile-label">900원 상담</span></div>
+    <div class="tile"><span class="tile-ic">⚡</span><span class="tile-label">실시간 상담</span></div>
+    <div class="tile"><span class="tile-ic">⭐</span><span class="tile-label">후기</span></div>
+  </div>
+
+  <!-- 카테고리 타일 확대 (분해5 · 목적9) -->
+  <div class="section changed">
+    <div class="section-head">
+      <div class="section-title">인기 검색태그 <span class="changed-badge">변경</span></div>
+    </div>
+    <div class="section-sub">클릭 시 검색결과 페이지로 이동</div>
+    <div class="cat-tags">
+      <div class="cat-tag">#재회상담</div>
+      <div class="cat-tag">#연애상담</div>
+      <div class="cat-tag">#재물상담</div>
+      <div class="cat-tag">#건강상담</div>
+      <div class="cat-tag">#직업상담</div>
+    </div>
+  </div>
+
+  <!-- STAR 전화상담사 (분해1 정렬기준 칩 + 분해2 신뢰신호, UI 참고: reference/스크린샷 2026-09-11 오후 12.42.05.png) -->
+  <div class="section changed">
+    <div class="section-head">
+      <div class="section-title">추천 전화상담
+        <span class="changed-badge">변경</span>
+      </div>
+    </div>
+    <div class="section-sub">기획서에 정의된 프로세스 기준으로 노출 / 지금 상담가능 상담사 우선순위</div>
+    <div class="call-tabs">
+      <div class="call-tab active" onclick="setCallTab(this,'인기')">인기상담사</div>
+      <div class="call-tab" onclick="setCallTab(this,'타로')">전화타로</div>
+      <div class="call-tab" onclick="setCallTab(this,'신점')">전화신점</div>
+      <div class="call-tab" onclick="setCallTab(this,'사주')">전화사주</div>
+    </div>
+    <div id="callList"></div>
+  </div>
+
+  <!-- 최근 봤던 선생님 (분해3 — 기존 기능 + 정책개선) -->
+  <div class="section changed">
+    <div class="section-head">
+      <div class="section-title">최근 본 선생님</div>
+    </div>
+    <div class="sq-row">
+      <div class="sq-card">
+        <div class="sq-thumb" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Crect%20width%3D%27200%27%20height%3D%27200%27%20rx%3D%2726%27%20fill%3D%27%238a6fb3%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2756%25%27%20font-family%3D%27-apple-system%2Csans-serif%27%20font-size%3D%2792%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%ED%95%B4%3C/text%3E%3C/svg%3E');background-size:cover;background-position:center"><span class="status-badge busy">상담중</span></div>
+        <div class="sq-name">해성암 <span class="tag">신점</span></div>
+      </div>
+      <div class="sq-card">
+        <div class="sq-thumb" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Crect%20width%3D%27200%27%20height%3D%27200%27%20rx%3D%2726%27%20fill%3D%27%23c98a5c%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2756%25%27%20font-family%3D%27-apple-system%2Csans-serif%27%20font-size%3D%2792%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%84%9C%3C/text%3E%3C/svg%3E');background-size:cover;background-position:center"><span class="status-badge away">부재중</span></div>
+        <div class="sq-name">서준 <span class="tag">타로</span></div>
+      </div>
+      <div class="sq-card">
+        <div class="sq-thumb" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Crect%20width%3D%27200%27%20height%3D%27200%27%20rx%3D%2726%27%20fill%3D%27%234e8a7a%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2756%25%27%20font-family%3D%27-apple-system%2Csans-serif%27%20font-size%3D%2792%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%A0%9C%3C/text%3E%3C/svg%3E');background-size:cover;background-position:center"><span class="status-badge on">상담가능</span></div>
+        <div class="sq-name">제우스 <span class="tag">사주</span></div>
+      </div>
+    </div>
+    <div class="policy-note">정책: 열람 이력은 최근 조회 상담사 최대 10명, 열람일 기준
+      <b>7일간</b> 노출 후 자동 제외
+    </div>
+  </div>
+
+  <!-- 찜한 상담사 (최근 봤던 선생님과 동일한 UI/UX) -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-title">찜한 선생님</div>
+    </div>
+    <div class="sq-row">
+      <div class="sq-card">
+        <div class="sq-thumb" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Crect%20width%3D%27200%27%20height%3D%27200%27%20rx%3D%2726%27%20fill%3D%27%23b6577a%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2756%25%27%20font-family%3D%27-apple-system%2Csans-serif%27%20font-size%3D%2792%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EB%A6%AC%3C/text%3E%3C/svg%3E');background-size:cover;background-position:center"><span class="status-badge on">상담가능</span></div>
+        <div class="sq-name">리안 <span class="tag">타로</span></div>
+      </div>
+      <div class="sq-card">
+        <div class="sq-thumb" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Crect%20width%3D%27200%27%20height%3D%27200%27%20rx%3D%2726%27%20fill%3D%27%235c7bb0%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2756%25%27%20font-family%3D%27-apple-system%2Csans-serif%27%20font-size%3D%2792%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EB%B3%84%3C/text%3E%3C/svg%3E');background-size:cover;background-position:center"><span class="status-badge away">부재중</span></div>
+        <div class="sq-name">별자매 <span class="tag">신점</span></div>
+      </div>
+      <div class="sq-card">
+        <div class="sq-thumb" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Crect%20width%3D%27200%27%20height%3D%27200%27%20rx%3D%2726%27%20fill%3D%27%23a08b3f%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2756%25%27%20font-family%3D%27-apple-system%2Csans-serif%27%20font-size%3D%2792%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%86%8C%3C/text%3E%3C/svg%3E');background-size:cover;background-position:center"><span class="status-badge busy">상담중</span></div>
+        <div class="sq-name">소율 <span class="tag">사주</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 재회상담 추천 (5명 중 3명 노출, 찜한 선생님보다 확대 카드) -->
+  <div class="section changed">
+    <div class="section-head">
+      <div class="section-title">재회상담 추천 선생님 <span class="changed-badge">신규</span></div>
+    </div>
+    <div class="sq-row">
+      <div class="sq-card lg">
+        <div class="sq-thumb" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Crect%20width%3D%27200%27%20height%3D%27200%27%20rx%3D%2726%27%20fill%3D%27%237a6ab0%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2756%25%27%20font-family%3D%27-apple-system%2Csans-serif%27%20font-size%3D%2792%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%ED%95%98%3C/text%3E%3C/svg%3E');background-size:cover;background-position:center"><span class="status-badge on">상담가능</span></div>
+        <div class="sq-name">하온 <span class="tag">타로</span></div>
+      </div>
+      <div class="sq-card lg">
+        <div class="sq-thumb" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Crect%20width%3D%27200%27%20height%3D%27200%27%20rx%3D%2726%27%20fill%3D%27%233f9d8f%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2756%25%27%20font-family%3D%27-apple-system%2Csans-serif%27%20font-size%3D%2792%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%A7%80%3C/text%3E%3C/svg%3E');background-size:cover;background-position:center"><span class="status-badge busy">상담중</span></div>
+        <div class="sq-name">지수 <span class="tag">신점</span></div>
+      </div>
+      <div class="sq-card lg">
+        <div class="sq-thumb" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Crect%20width%3D%27200%27%20height%3D%27200%27%20rx%3D%2726%27%20fill%3D%27%23c25f5f%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2756%25%27%20font-family%3D%27-apple-system%2Csans-serif%27%20font-size%3D%2792%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%97%AC%3C/text%3E%3C/svg%3E');background-size:cover;background-position:center"><span class="status-badge away">부재중</span></div>
+        <div class="sq-name">여울 <span class="tag">사주</span></div>
+      </div>
+      <div class="sq-card lg">
+        <div class="sq-thumb" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Crect%20width%3D%27200%27%20height%3D%27200%27%20rx%3D%2726%27%20fill%3D%27%235f8ac2%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2756%25%27%20font-family%3D%27-apple-system%2Csans-serif%27%20font-size%3D%2792%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EB%8B%A4%3C/text%3E%3C/svg%3E');background-size:cover;background-position:center"><span class="status-badge on">상담가능</span></div>
+        <div class="sq-name">다인 <span class="tag">타로</span></div>
+      </div>
+      <div class="sq-card lg">
+        <div class="sq-thumb" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Crect%20width%3D%27200%27%20height%3D%27200%27%20rx%3D%2726%27%20fill%3D%27%239a7d4f%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2756%25%27%20font-family%3D%27-apple-system%2Csans-serif%27%20font-size%3D%2792%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%B1%84%3C/text%3E%3C/svg%3E');background-size:cover;background-position:center"><span class="status-badge busy">상담중</span></div>
+        <div class="sq-name">채아 <span class="tag">신점</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 후기모음 (실제 화면: unsedang.com/view/csl/totalRatingComment) — AI 한줄요약 + 선생님 정보만 발췌한 카드 3개.
+       2026-10-06: 노출 개수 2→3, 정렬기준을 "AI 한줄요약 보유 후기 중 가장 최근 3개"로 명시.
+       [실측: unsedang.com/view/csl/totalRatingComment, 최신순] AI 한줄요약 보유 후기는 전부
+       2026-08-20에 몰려 있고(그 이후 작성된 후기엔 한줄요약이 없음), 그중 최신 3개가 아래
+       카드다 — 유노 선생님이 1·3번째에 중복 등장한다. -->
+  <div class="section changed">
+    <div class="section-head">
+      <div class="section-title">후기모음 <span class="changed-badge">신규</span></div>
+    </div>
+    <div class="section-sub">실제 후기 화면 카드 중 AI 한줄요약과 선생님 정보만 발췌해 3건 노출</div>
+    <div class="review-list">
+      <div class="review-card">
+        <div class="review-ai">
+          <span class="review-ai-badge">AI</span>
+          <span class="review-ai-text">먼저 연락해도 될까? 기다림의 기준이 생겼다</span>
+        </div>
+        <div class="review-teacher">
+          <div class="review-teacher-thumb" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Crect%20width%3D%27200%27%20height%3D%27200%27%20rx%3D%27100%27%20fill%3D%27%235c7bb0%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2756%25%27%20font-family%3D%27-apple-system%2Csans-serif%27%20font-size%3D%2792%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%9C%A0%3C/text%3E%3C/svg%3E')"></div>
+          <div class="review-teacher-info">
+            <div class="review-teacher-name">유노 선생님</div>
+            <div class="review-teacher-tags">#직관형 #현실조언형 #공감형</div>
+          </div>
+          <span class="review-teacher-arrow">›</span>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-ai">
+          <span class="review-ai-badge">AI</span>
+          <span class="review-ai-text">앞이 안 보였는데, 사주 한 번에 미래 지도가 생겼다</span>
+        </div>
+        <div class="review-teacher">
+          <div class="review-teacher-thumb" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Crect%20width%3D%27200%27%20height%3D%27200%27%20rx%3D%27100%27%20fill%3D%27%23a08b3f%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2756%25%27%20font-family%3D%27-apple-system%2Csans-serif%27%20font-size%3D%2792%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%82%AC%3C/text%3E%3C/svg%3E')"></div>
+          <div class="review-teacher-info">
+            <div class="review-teacher-name">사주박사 선생님</div>
+            <div class="review-teacher-tags">#힐링형 #현실조언형 #직관형</div>
+          </div>
+          <span class="review-teacher-arrow">›</span>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-ai">
+          <span class="review-ai-badge">AI</span>
+          <span class="review-ai-text">후회하던 과거도 가치가 있었다… 시선이 바뀐 상담</span>
+        </div>
+        <div class="review-teacher">
+          <div class="review-teacher-thumb" style="background-image:url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27200%27%20height%3D%27200%27%3E%3Crect%20width%3D%27200%27%20height%3D%27200%27%20rx%3D%27100%27%20fill%3D%27%235c7bb0%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2756%25%27%20font-family%3D%27-apple-system%2Csans-serif%27%20font-size%3D%2792%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%20dominant-baseline%3D%27middle%27%3E%EC%9C%A0%3C/text%3E%3C/svg%3E')"></div>
+          <div class="review-teacher-info">
+            <div class="review-teacher-name">유노 선생님</div>
+            <div class="review-teacher-tags">#직관형 #현실조언형 #공감형</div>
+          </div>
+          <span class="review-teacher-arrow">›</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="navbar">
+    <div class="nav-item active"><span class="ic">🏠</span>추천</div>
+    <div class="nav-item"><span class="ic">📞</span>전화상담</div>
+    <div class="nav-item"><span class="ic">📝</span>AI 상담노트</div>
+    <div class="nav-item"><span class="ic">🔮</span>운세</div>
+    <div class="nav-item"><span class="ic">👤</span>마이페이지</div>
+  </div>
+
+</div>
+
+<script>
+  /* 헤더 로그인 상태 (탭해서 전환 — 데모용) */
+  var loggedIn = true;
+  function renderAuth() {
+    var el = document.getElementById('authArea');
+    if (loggedIn) {
+      el.className = 'coin-badge';
+      el.textContent = '보유코인 30,000';
+    } else {
+      el.className = 'login-btn';
+      el.textContent = '로그인';
+    }
+  }
+  function toggleAuth() {
+    loggedIn = !loggedIn;
+    renderAuth();
+  }
+  renderAuth();
+
+  /* 전화상담사 탭별 목록 (8명씩, 아침 7시 배치로 고정되는 후보 풀 — 2026-10-06 정렬 산식
+     교체). 실제 정책은 누적 상담 20건 이상 필터 + 최근 90일 재상담율 60%·평균평점 40%
+     가중합 점수(AI 상담노트 "상담지수"와 동일 산식) 상위 8명을 뽑는 것이지만, repeat90
+     필드는 이전 데모 그대로 남겨 상대적 순위 감만 보여준다(값 자체는 가상값, 실제 가중합
+     점수가 아님) — 타로/신점/사주 탭은 이 값 내림차순, 인기상담사 탭은 3개 카테고리를
+     합쳐 상위 8명을 뽑는 자리를 보여준다. */
+  var CALL_DATA = {
+    '사주': [
+      { name: '별하', no: '1408', badge: '사주', tagline: '20년 경력, 자녀운 특화', price: '1,000', tags: ['#자녀운', '#20년경력'], months: 400, reviews: 3120, repeat90: 172, partner: true },
+      { name: '명천', no: '1102', badge: '사주', tagline: '정확한 사주풀이, 인생상담 전문', price: '1,200', tags: ['#사주전문', '#인생상담'], months: 320, reviews: 2100, repeat90: 115, partner: true },
+      { name: '하율', no: '985', badge: '사주', tagline: '속마음까지 짚어주는 정통 사주', price: '1,000', tags: ['#정통사주', '#속마음'], months: 210, reviews: 1560, repeat90: 86 },
+      { name: '도담', no: '764', badge: '사주', tagline: '재물운 특화, 화통한 상담', price: '900', tags: ['#재물운', '#화통상담'], months: 150, reviews: 890, repeat90: 49, isNew: true },
+      { name: '채린', no: '877', badge: '사주', tagline: '연애운 족집게 사주', price: '1,050', tags: ['#연애운', '#족집게'], months: 130, reviews: 640, repeat90: 35 },
+      { name: '소율', no: '1290', badge: '사주', tagline: '궁합·이별 사주 전문', price: '1,300', tags: ['#궁합', '#이별사주'], months: 95, reviews: 430, repeat90: 24 },
+      { name: '정담', no: '553', badge: '사주', tagline: '직관력 강한 신점형 사주', price: '1,100', tags: ['#직관', '#신점형사주'], months: 60, reviews: 210, repeat90: 12 },
+      { name: '우진', no: '322', badge: '사주', tagline: '직장운·이직 타이밍 전문', price: '950', tags: ['#직장운', '#이직타이밍'], months: 40, reviews: 120, repeat90: 7, isNew: true }
+    ],
+    '타로': [
+      { name: '세이', no: '1201', badge: '타로', tagline: '궁합·인연 타로 전문', price: '1,200', tags: ['#궁합', '#인연타로'], months: 210, reviews: 1450, repeat90: 80, partner: true },
+      { name: '다온', no: '1033', badge: '타로', tagline: '연애 심리 상담 타로', price: '1,100', tags: ['#연애심리', '#타로상담'], months: 160, reviews: 980, repeat90: 54 },
+      { name: '로아', no: '890', badge: '타로', tagline: '직장운·시험운 타로', price: '1,050', tags: ['#직장운', '#시험운'], months: 120, reviews: 640, repeat90: 35 },
+      { name: '리안', no: '458', badge: '타로', tagline: '직관 하나로 짚는 재회 타로', price: '1,000', tags: ['#재회전문', '#직관타로'], months: 88, reviews: 512, repeat90: 28, partner: true },
+      { name: '지오', no: '542', badge: '타로', tagline: '빠른 답변, 직진 스타일', price: '1,000', tags: ['#직진스타일', '#빠른답변'], months: 70, reviews: 305, repeat90: 17 },
+      { name: '소하', no: '719', badge: '타로', tagline: '카드로 보는 오늘의 선택', price: '900', tags: ['#선택장애', '#카드리딩'], months: 45, reviews: 210, repeat90: 12, isNew: true },
+      { name: '유하', no: '274', badge: '타로', tagline: '이별 후 마음정리 전문', price: '950', tags: ['#이별타로', '#마음정리'], months: 30, reviews: 88, repeat90: 5 },
+      { name: '하늬', no: '65', badge: '타로', tagline: '초보 상담사, 친절 응대', price: '800', tags: ['#친절상담', '#초보'], months: 8, reviews: 22, repeat90: 1, isNew: true }
+    ],
+    '신점': [
+      { name: '별자매', no: '812', badge: '신점', tagline: '정확도로 소문난 신점', price: '1,400', tags: ['#정확도1위', '#신점'], months: 260, reviews: 2200, repeat90: 121, partner: true },
+      { name: '미르', no: '933', badge: '신점', tagline: '가족문제 특화 신점', price: '1,300', tags: ['#가족문제', '#신점상담'], months: 210, reviews: 1340, repeat90: 74, partner: true },
+      { name: '청하', no: '1044', badge: '신점', tagline: '인연·궁합 신점 전문', price: '1,150', tags: ['#인연궁합', '#신점'], months: 180, reviews: 1020, repeat90: 56 },
+      { name: '해성암', no: '301', badge: '신점', tagline: '신내림 20년, 조상풀이 전문', price: '1,300', tags: ['#조상풀이', '#신내림20년'], months: 140, reviews: 980, repeat90: 54 },
+      { name: '명도화', no: '655', badge: '신점', tagline: '재물운·사업운 신점', price: '1,250', tags: ['#재물운', '#사업운'], months: 95, reviews: 410, repeat90: 23 },
+      { name: '하랑', no: '421', badge: '신점', tagline: '취업·합격운 신점', price: '1,100', tags: ['#취업운', '#합격운'], months: 65, reviews: 280, repeat90: 15 },
+      { name: '수신당', no: '199', badge: '신점', tagline: '빙의·액운풀이 전문', price: '1,200', tags: ['#액운풀이', '#빙의상담'], months: 50, reviews: 190, repeat90: 10, isNew: true },
+      { name: '도천', no: '78', badge: '신점', tagline: '짧고 굵게, 핵심만 짚음', price: '1,000', tags: ['#핵심상담', '#단답형'], months: 12, reviews: 35, repeat90: 2, isNew: true }
+    ],
+    '인기': [
+      { name: '별하', no: '1408', badge: '사주', tagline: '20년 경력, 자녀운 특화', price: '1,000', tags: ['#자녀운', '#20년경력'], months: 400, reviews: 3120, repeat90: 172, partner: true },
+      { name: '별자매', no: '812', badge: '신점', tagline: '정확도로 소문난 신점', price: '1,400', tags: ['#정확도1위', '#신점'], months: 260, reviews: 2200, repeat90: 121, partner: true },
+      { name: '명천', no: '1102', badge: '사주', tagline: '정확한 사주풀이, 인생상담 전문', price: '1,200', tags: ['#사주전문', '#인생상담'], months: 320, reviews: 2100, repeat90: 115, partner: true },
+      { name: '하율', no: '985', badge: '사주', tagline: '속마음까지 짚어주는 정통 사주', price: '1,000', tags: ['#정통사주', '#속마음'], months: 210, reviews: 1560, repeat90: 86 },
+      { name: '세이', no: '1201', badge: '타로', tagline: '궁합·인연 타로 전문', price: '1,200', tags: ['#궁합', '#인연타로'], months: 210, reviews: 1450, repeat90: 80, partner: true },
+      { name: '미르', no: '933', badge: '신점', tagline: '가족문제 특화 신점', price: '1,300', tags: ['#가족문제', '#신점상담'], months: 210, reviews: 1340, repeat90: 74, partner: true },
+      { name: '청하', no: '1044', badge: '신점', tagline: '인연·궁합 신점 전문', price: '1,150', tags: ['#인연궁합', '#신점'], months: 180, reviews: 1020, repeat90: 56 },
+      { name: '다온', no: '1033', badge: '타로', tagline: '연애 심리 상담 타로', price: '1,100', tags: ['#연애심리', '#타로상담'], months: 160, reviews: 980, repeat90: 54 }
+    ]
+  };
+
+  /* 1·2위 고정 상담가능, 3위부터는 섞어서 노출 (8명 기준) — 데모용 고정 패턴이다.
+     실제 정책은 배치로 고정된 8명 풀 안에서 조회 시점마다 상담가능 > 상담중 > 부재중
+     순으로 실시간 재정렬하는 것이라, 이 패턴처럼 특정 자리가 영구히 상담가능으로
+     고정되지는 않는다 — 2026-10-06 추가 */
+  var STATUS_PATTERN = ['avail', 'avail', 'busy', 'avail', 'busy', 'avail', 'busy', 'busy'];
+
+  /* 이름 이니셜 로컬 SVG 아바타 — 탭이 바뀌어도 동일 인물은 같은 색을 유지하도록 이름 해시로 색을 고른다 */
+  var AVATAR_PALETTE = ['#8a6fb3', '#c98a5c', '#4e8a7a', '#b6577a', '#5c7bb0', '#a08b3f', '#7a6ab0', '#3f9d8f', '#c25f5f', '#5f8ac2', '#9a7d4f'];
+  function avatarBg(name) {
+    var sum = 0;
+    for (var i = 0; i < name.length; i++) sum += name.charCodeAt(i);
+    var color = AVATAR_PALETTE[sum % AVATAR_PALETTE.length];
+    var svg = "<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>"
+      + "<rect width='200' height='200' rx='26' fill='" + color + "'/>"
+      + "<text x='50%' y='56%' font-family='-apple-system,sans-serif' font-size='92' font-weight='700' fill='#ffffff' text-anchor='middle' dominant-baseline='middle'>" + name.charAt(0) + "</text>"
+      + "</svg>";
+    return "background-image:url('data:image/svg+xml;utf8," + encodeURIComponent(svg).replace(/'/g, '%27') + "');background-size:cover;background-position:center";
+  }
+
+  function renderCallList(cat) {
+    var wrap = document.getElementById('callList');
+    wrap.innerHTML = CALL_DATA[cat].map(function (c, idx) {
+      var badgeTop = cat === '인기' ? '<span class="call-badge-top">' + c.badge + '</span>' : '';
+      var badgeBottom = c.isNew ? '<span class="call-badge-bottom">NEW</span>' : '';
+      var priceHtml = '<span class="call-price">' + c.price + '원</span>';
+      var tagsHtml = c.tags.map(function (t) { return '<span>' + t + '</span>'; }).join(' ');
+      var isAvail = STATUS_PATTERN[idx] === 'avail';
+      var statusText = isAvail ? '상담가능' : '상담중';
+      var statusClass = 'call-status ' + (isAvail ? 'avail' : 'busy');
+      var statsHtml = '누적후기 💬(' + c.reviews + ')';
+      return ''
+        + '<div class="call-card">'
+        + '<div class="call-left">'
+        + '<div class="call-thumb" style="' + avatarBg(c.name) + '">' + badgeTop + badgeBottom + '</div>'
+        + '<div class="call-hashtags-under">' + tagsHtml + '</div>'
+        + '</div>'
+        + '<div class="call-body">'
+        + '<div class="call-name-row">' + c.name + ' 선생님<span class="' + statusClass + '">' + statusText + '</span></div>'
+        + '<div class="call-tagline">' + c.tagline + '</div>'
+        + '<div class="call-price-row">'
+        + '<div>' + priceHtml + ' <span class="call-rate">30초당</span></div>'
+        + '</div>'
+        + '<div class="call-stats">' + statsHtml + '</div>'
+        + '</div>'
+        + '<div class="call-cta">📞 상담하기</div>'
+        + '</div>';
+    }).join('');
+  }
+  function setCallTab(el, cat) {
+    el.parentElement.querySelectorAll('.call-tab').forEach(function (t) { t.classList.remove('active'); });
+    el.classList.add('active');
+    renderCallList(cat);
+  }
+  renderCallList('인기');
+
+  /* 히어로 배너 자동 롤링 */
+  (function () {
+    var scroller = document.querySelector('.hero-scroll');
+    var dots = document.querySelectorAll('#heroDots .dot');
+    var slideCount = dots.length;
+    var current = 0;
+    var timer = null;
+
+    function setActiveDot(i) {
+      dots.forEach(function (d, idx) { d.classList.toggle('active', idx === i); });
+    }
+    function goTo(i) {
+      current = (i + slideCount) % slideCount;
+      scroller.scrollTo({ left: current * scroller.clientWidth, behavior: 'smooth' });
+      setActiveDot(current);
+    }
+    function startAuto() {
+      timer = setInterval(function () { goTo(current + 1); }, 3000);
+    }
+    function stopAuto() {
+      clearInterval(timer);
+    }
+
+    /* 수동 스와이프 시 인디케이터 동기화 + 잠깐 자동롤링 정지 후 재개 */
+    var scrollTimeout = null;
+    scroller.addEventListener('scroll', function () {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(function () {
+        current = Math.round(scroller.scrollLeft / scroller.clientWidth);
+        setActiveDot(current);
+      }, 100);
+    });
+    scroller.addEventListener('pointerdown', stopAuto);
+    scroller.addEventListener('pointerup', function () { stopAuto(); startAuto(); });
+
+    startAuto();
+  })();
+</script>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>홈메인 상담사 리스트 개편 — 운세당</title>
+<style>
+:root {
+  --ink: #1f2430;
+  --sub: #5b6472;
+  --line: #e3e6ec;
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --accent: #e0556b;
+  --accent-soft: #fdeef1;
+  --note: #b5651d;
+  --note-bg: #fff4e8;
+  --note-line: #f0c896;
+  --good: #2f7d4f;
+  --good-bg: #eaf6ee;
+  --bad: #c23b3b;
+  --bad-bg: #fdecec;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 32px 20px 80px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  line-height: 1.6;
+}
+.wrap { max-width: 980px; margin: 0 auto; }
+
+header.doc-head {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
+}
+h1 { margin: 0 0 8px; font-size: 24px; }
+.meta { color: var(--sub); font-size: 14px; }
+
+h2.section-title {
+  font-size: 18px;
+  margin: 40px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--ink);
+}
+
+code { background: #eef0f3; padding: 1px 5px; border-radius: 4px; font-size: 0.92em; }
+
+.case-sub { font-size: 13px; color: var(--sub); margin: 0 0 18px; }
+.case-sub code { font-size: 0.95em; }
+
+.problem {
+  background: var(--bad-bg);
+  border: 1px solid #f0c9c9;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+.problem b { color: var(--bad); }
+.problem ul { margin: 4px 0 0; padding-left: 18px; }
+.problem li { margin-bottom: 4px; }
+
+.impl {
+  font-size: 13px;
+  color: var(--sub);
+  background: #fafbfc;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+.impl ul, .impl ol { margin: 4px 0 0; padding-left: 18px; }
+.impl li { margin-bottom: 4px; }
+.impl p { margin: 6px 0 0; }
+.impl b { color: var(--ink); }
+
+.funnel-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  overflow-x: auto;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+}
+.funnel-row figure { margin: 0; flex: 0 0 auto; }
+.funnel-row img {
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  display: block;
+}
+.funnel-row .funnel-chart img { width: 920px; max-width: 100%; }
+.funnel-row figcaption {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--sub);
+  text-align: center;
+}
+
+.scroll-shots {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 8px;
+  justify-items: center;
+}
+.scroll-shots figure { margin: 0; text-align: center; }
+.scroll-shots .scroll-frame {
+  width: 260px;
+  height: 520px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+.scroll-shots .scroll-frame img {
+  width: 100%;
+  display: block;
+}
+.scroll-shots figcaption {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--sub);
+}
+@media (max-width: 560px) {
+  .scroll-shots { grid-template-columns: 1fr; }
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="doc-head">
+    <h1>홈메인 상담사 리스트 개편</h1>
+    <div class="meta">작성일 2026-10-16 · 대상: 홈메인(/) 상담사 추천 영역 · 근거: GA4 핵심 전환 퍼널(2026-10-02~2026-10-15), 홈메인 AS-IS/TO-BE 캡처 직접 확인</div>
+  </header>
+
+  <h2 class="section-title">문제정의</h2>
+  <div class="funnel-row">
+    <figure class="funnel-chart"><img src="img/home-sprint-ga4-chart-261016.png" alt="GA4 핵심 전환 퍼널 차트"><figcaption>핵심 전환 퍼널(차트) · 활성사용자 기준, 단계별 독립 집계(연결 추적 아님) · 2026-10-02~2026-10-15</figcaption></figure>
+  </div>
+  <div class="problem">
+    <b>관찰</b>
+    <ul>
+      <li>활성사용자 최대 규모 지점: 홈메인 도달 6,406명(51.9%)</li>
+      <li>상담사 상세 도달: 1,857명(15.1%)까지 감소</li>
+      <li>이후 구간은 유지되는 편: 상담하기 클릭 1,026명(8.3%) · 클릭 1명당 상담수 0.76건 · 실제 상담 781건(6.3%)</li>
+    </ul>
+  </div>
+  <div class="impl">
+    <b>가설</b>
+    <p>상담사 상세 진입을 늘리면, 늘어난 만큼 상담하기 클릭·실제 상담도 같은 방향으로 증가한다.</p>
+  </div>
+  <div class="impl" style="margin-top:12px;">
+    <b>검증지표</b>
+    <p>상담사 상세 활성 사용자 수 ↑ → 상담하기 클릭·실제 상담 목표 절대치도 같은 비율로 상향.</p>
+    <p>기준값(2026-10-02~2026-10-15): 상담사 상세 1,857명 · 상담하기 클릭 1,026명 · 실제 상담 781건.</p>
+  </div>
+
+  <h2 class="section-title">목적</h2>
+  <div class="impl">
+    <b>이번 개편으로 달성하려는 것</b>
+    <ol>
+      <li>신규 방문자가 상담사를 선택하기 위한 기준을 명확히 인지할 수 있도록 한다.</li>
+      <li>상담 이력 없는 방문자가 첫 상담사를 쉽게 고를 수 있도록 정렬 프로세스를 개선한다.</li>
+      <li>재방문자에게 전에 본 선생님을 다시 찾을 수 있게 한다. <span style="color:var(--bad);">— 로그인 사용자에게 개인화 섹션 제공</span></li>
+      <li>즉시 상담 의향이 있는 사용자에게 지금 연결되는 선생님을 쉽게 찾을 수 있게 한다.</li>
+    </ol>
+  </div>
+
+  <h2 class="section-title">개선목표</h2>
+  <div class="impl">
+    <b>화면/영역별 요구사항</b>
+    <ol>
+      <li>홈 — 상담사 카드 영역: 카드에 상담가능 여부·후기·가격을 통일된 포맷으로 노출해 비교 기준을 제공한다.</li>
+      <li>홈 — 섹션 정렬/중복 노출: 정렬 기준을 탭·태그로 명시하고, 동일 상담사가 중복 노출되던 섹션을 통합한다.</li>
+    </ol>
+  </div>
+
+  <h2 class="section-title">상담사 노출 프로세스</h2>
+  <p class="case-sub" style="margin:0 0 12px;">"추천 전화상담" 영역의 TO-BE 노출 로직 · 배치(1층) + 실시간(2층) 2단계로 동작한다</p>
+  <div class="impl">
+    <b>1층 — 배치(매일 아침 7시)</b>
+    <ol>
+      <li>탭별 후보 풀 고정 — 전화타로·전화신점·전화사주는 카테고리 내에서, 인기상담사는 3개 카테고리 합산</li>
+      <li>콜드스타트 방지 — 누적 상담 20건 이상만 후보</li>
+      <li>상담지수 산식 — 최근 90일 재상담율 60% + 평균평점 40% 가중합(AI 상담노트와 동일)</li>
+      <li>상위 8명 선정, 다음 배치 전까지 고정</li>
+      <li>인기상담사 탭은 카테고리가 섞이므로 썸네일 좌상단에 카테고리 배지 표시</li>
+    </ol>
+  </div>
+  <div class="impl" style="margin-top:12px;">
+    <b>2층 — 실시간(조회 시점)</b>
+    <ol>
+      <li>배치로 고정된 8명 안에서 재정렬만 수행</li>
+      <li>순서 기준 — 상담가능 > 상담중 > 부재중</li>
+      <li>구성원은 고정, 순서만 조회할 때마다 변경</li>
+    </ol>
+  </div>
+  <div class="scroll-shots" style="margin-top:14px;">
+    <figure>
+      <div class="scroll-frame"><img src="img/home-sprint-process-asis-full-261016.png" alt="AS-IS 홈 전체 화면 — STAR 상담사 TOP5"></div>
+      <figcaption>AS-IS(layoutSet=1) · 전체 화면, 스크롤해서 확인</figcaption>
+    </figure>
+    <figure>
+      <div class="scroll-frame"><img src="img/home-sprint-process-tobe-full-261016.png" alt="TO-BE 홈 전체 화면 — 추천 전화상담 인기 탭"></div>
+      <figcaption>TO-BE(layoutSet=2) · 전체 화면, 스크롤해서 확인</figcaption>
+    </figure>
+  </div>
+
+</div>
+</body>
+</html>

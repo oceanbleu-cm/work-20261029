@@ -1,0 +1,863 @@
+<meta charset="utf-8">
+<title>홈메인 개선 기획 전체 와이어프레임 — 운세당</title>
+<style>
+  :root {
+    --ink: #1c1c22;
+    --sub: #5b5b66;
+    --line: #e3e3ea;
+    --bg: #f6f6f9;
+    --card: #ffffff;
+    --accent: #5b4bff;
+    --accent-soft: #eeecff;
+    --warn: #b5590a;
+    --warn-bg: #fff2e2;
+  }
+
+  * {
+    box-sizing: border-box
+  }
+
+  body {
+    margin: 0;
+    padding: 32px 20px 80px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    line-height: 1.55;
+  }
+
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto
+  }
+
+  h1 {
+    font-size: 22px;
+    margin: 0 0 4px
+  }
+
+  .banner {
+    background: var(--warn-bg);
+    color: var(--warn);
+    border: 1px solid #f3d3a6;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 14px 0 28px;
+  }
+
+  .top {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width:820px) {
+    .top {
+      grid-template-columns: 1fr
+    }
+  }
+
+  .top .box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+
+  .top .box h2 {
+    font-size: 14px;
+    margin: 0 0 10px;
+    color: var(--accent)
+  }
+
+  .top .box ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 13px;
+    color: var(--ink)
+  }
+
+  .top .box li {
+    margin-bottom: 6px
+  }
+
+  .top .box .num {
+    font-weight: 700;
+    color: var(--accent)
+  }
+
+  .section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+
+  .section h3 {
+    font-size: 16px;
+    margin: 0 0 2px
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 28px;
+    align-items: start
+  }
+
+  @media (max-width:720px) {
+    .row {
+      grid-template-columns: 1fr
+    }
+  }
+
+  /* 모바일 목업 프레임 */
+  .phone {
+    width: 260px;
+    border: 6px solid #23232b;
+    border-radius: 28px;
+    background: #fff;
+    overflow: hidden;
+    margin: 0 auto;
+  }
+
+  .phone .status {
+    height: 18px;
+    background: #23232b
+  }
+
+  .phone .screen {
+    padding: 12px;
+    min-height: 360px
+  }
+
+  .mock-hero {
+    height: 60px;
+    background: linear-gradient(135deg, #d8d3ff, #b9c8ff);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #4b4b70;
+  }
+
+  .mock-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    margin: 10px 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px
+  }
+
+  .mock-chip {
+    display: inline-block;
+    font-size: 10px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-weight: 700;
+  }
+
+  .mock-cardrow {
+    display: flex;
+    gap: 8px;
+    overflow: hidden
+  }
+
+  .mock-card {
+    flex: 0 0 auto;
+    width: 78px;
+    height: 96px;
+    background: #f0f0f5;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 6px;
+    font-size: 9px;
+    color: var(--sub);
+    position: relative;
+  }
+
+  .mock-card .avatar {
+    width: 100%;
+    height: 44px;
+    background: #dcdcec;
+    border-radius: 6px;
+    margin-bottom: 4px
+  }
+
+  .mock-dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .mock-dot.on {
+    background: #2fbf4f
+  }
+
+  .mock-dot.off {
+    background: #c7c7d1
+  }
+
+  .mock-badge {
+    position: absolute;
+    bottom: 4px;
+    left: 6px;
+    font-size: 8px;
+    font-weight: 700;
+    background: #2fbf4f;
+    color: #fff;
+    border-radius: 4px;
+    padding: 1px 4px;
+  }
+
+  .mock-filterbar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .mock-filterbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mock-filter {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-size: 9px;
+    font-weight: 700;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 10px;
+    color: var(--sub);
+  }
+
+  .mock-filter.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent)
+  }
+
+  /* 섹션 리스트 목업 (분해 1번 전용) */
+  .mock-sectionlist {
+    display: flex;
+    flex-direction: column;
+    gap: 8px
+  }
+
+  .mock-sectionrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f7f7fb;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .mock-sectionrow .no-chip {
+    font-size: 9px;
+    color: #b5b5c0;
+    font-weight: 400
+  }
+
+  /* 전화상담 리스트 카드 목업 (가로형 — 썸네일 + 정보 + CTA, 분해 1·2·4번 전용) */
+  .mock-callcard {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+
+  .mock-callcard:last-child {
+    border-bottom: 0
+  }
+
+  .mock-callcard .thumb {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 auto;
+    background: #dcdcec;
+    border-radius: 8px;
+  }
+
+  .mock-callcard .info {
+    flex: 1;
+    min-width: 0;
+    padding-right: 46px;
+  }
+
+  .mock-callcard .info .nm {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .mock-callcard .info .tl {
+    font-size: 8px;
+    color: var(--sub);
+    margin: 2px 0 4px;
+  }
+
+  .mock-callcard .cta {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    font-size: 8px;
+    font-weight: 700;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: 999px;
+    padding: 4px 7px;
+    white-space: nowrap;
+  }
+
+  /* 신뢰 신호 카드 목업 (분해 2번 전용) */
+  .mock-cardrow-lg {
+    display: flex;
+    gap: 10px
+  }
+
+  .mock-card-lg {
+    flex: 0 0 auto;
+    width: 104px;
+    background: #f7f7fb;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 8px;
+    font-size: 10px;
+    color: var(--sub);
+    position: relative;
+  }
+
+  .mock-card-lg .avatar {
+    width: 100%;
+    height: 56px;
+    background: #dcdcec;
+    border-radius: 8px;
+    margin-bottom: 6px
+  }
+
+  .mock-card-lg .name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px
+  }
+
+  .mock-review {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 1px 6px;
+    margin-top: 2px;
+  }
+
+  .mock-heart {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  /* 히어로 축소 + 카테고리 목업 (분해 5번 전용) */
+  .mock-hero-sm {
+    height: 32px;
+    background: linear-gradient(135deg, #d8d3ff, #b9c8ff);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #4b4b70;
+  }
+
+  .mock-catgrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px
+  }
+
+  .mock-cat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 4px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--ink);
+    word-break: keep-all;
+  }
+
+  .mock-cat .icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  /* 후기모음 목업 (섹션 8 전용) */
+  .mock-reviewcard {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .mock-reviewcard .ai {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    background: var(--accent-soft);
+    padding: 8px;
+    font-size: 10px;
+    color: #3f2f80;
+    font-weight: 700;
+  }
+
+  .mock-reviewcard .ai-badge {
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 8px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mock-reviewcard .teacher {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fdf6e3;
+    padding: 8px;
+  }
+
+  .mock-reviewcard .teacher .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #dcdcec;
+    flex: 0 0 auto;
+    margin-bottom: 0;
+  }
+
+  .mock-reviewcard .teacher .info {
+    min-width: 0
+  }
+
+  .mock-reviewcard .teacher .nm {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .mock-reviewcard .teacher .tags {
+    font-size: 8px;
+    color: var(--sub);
+  }
+
+  .desc h4 {
+    font-size: 13px;
+    margin: 0 0 6px;
+    color: var(--accent)
+  }
+
+  .desc p {
+    font-size: 13px;
+    margin: 0 0 10px
+  }
+
+  .desc ul {
+    margin: 0 0 12px;
+    padding-left: 18px;
+    font-size: 13px
+  }
+
+  .desc li {
+    margin-bottom: 4px
+  }
+</style>
+
+<div class="wrap">
+  <h1>홈메인 개선 기획 — 전체 와이어프레임</h1>
+  <div class="banner">⚠️ 와이어프레임 — 실제 서비스 화면이 아닙니다.</div>
+
+  <div class="top">
+    <div class="box">
+      <h2>현황</h2>
+      <ul>
+        <li>홈에 상담사 카드가 대량으로 깔려 있는데, 고르는 데 필요한 기준이 화면에 실려 있지 않다</li>
+        <li>섹션 제목은 정렬기준을 약속하는데 실제 카드 순서가 신뢰를 주는지 알 수 없다</li>
+        <li>baseline(90일, 9/10 기준): 활성사용자 <span class="num">8,037명</span> / 홈→상세 진입
+          <span class="num">1,434건(17.8%)</span> / 일평균 <span class="num">15.9명</span>
+        </li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>목적</h2>
+      <ul>
+        <li>신규 방문자에게 이 서비스가 믿을만한지 판단할 수 있게 한다</li>
+        <li>신규 방문자가 상담사를 선택하기 위한 기준을 명확히 인지할 수 있도록 한다</li>
+        <li>상담 이력 없는 방문자가 첫 상담사를 쉽게 고를 수 있도록 정렬 프로세스를 개선한다</li>
+        <li>재방문자에게 전에 본 선생님을 다시 찾을 수 있게 한다</li>
+        <li>즉시 상담 의향이 있는 사용자에게 지금 연결되는 선생님을 쉽게 찾을 수 있게 한다</li>
+        <li>히어로 캐러셀 노출 영역을 줄이고 하단 카테고리 탐색 영역을 늘린다</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>성공지표</h2>
+      <ul>
+        <li>목표: baseline 대비 <span class="num">2배</span> — 홈→상세 진입
+          <span class="num">2,868건(35.6%)</span> / 일평균 <span class="num">31.8명</span>
+        </li>
+        <li>활성 사용자 수가 늘면 목표 절대치도 같은 비율로 동시 증대(진입률 35.6% 고정 기준)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 섹션 1: 히어로 캐러셀 축소 -->
+  <div class="section">
+    <h3>히어로 캐러셀 축소</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-hero">히어로 배너 (축소)</div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>4장 자동 캐러셀(3초 간격), 스와이프 시 일시정지 후 재개, 하단 점 인디케이터로 위치를
+          표시한다.</p>
+        <ul>
+          <li>배경은 보라 그라디언트(#3d1a4a → #160a1f), 패딩 30px(위)/12px(좌우)/26px(아래)로
+            축소해 노출 영역을 줄였다</li>
+          <li>[목업실측: home-mockup.html, 430px 뷰포트] 배너(슬라이드) 1장 크기는 폭 430px ×
+            높이 156px(패딩 포함 콘텐츠 높이, 고정 height 지정 없이 내용 기준) — 높이는 뷰포트
+            폭이 아닌 패딩·텍스트 줄수에 따라 가변적이다. 하단 점 인디케이터는 높이 6px,
+            상하 여백 8px/2px를 더해 캐러셀 전체 블록 높이는 약 170px이다</li>
+          <li>슬라이드 구성: 상담사 소개 문구 + "부문 전체 1위" 랭킹 문구 + CTA 버튼 — 재회·연애·
+            재물·신점 4개 분야로 시작한다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 섹션 2: 퀵메뉴 -->
+  <div class="section">
+    <h3>퀵메뉴</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-catgrid" style="grid-template-columns:repeat(4,1fr)">
+            <div class="mock-cat"><span class="icon">💌</span>쪽지상담</div>
+            <div class="mock-cat"><span class="icon">💰</span>900원 상담</div>
+            <div class="mock-cat"><span class="icon">📞</span>실시간 상담</div>
+            <div class="mock-cat"><span class="icon">⭐</span>후기</div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>기존 기능을 그대로 유지한다 — 이번 개선 작업의 변경 대상이 아니다.</p>
+        <ul>
+          <li>쪽지상담 · 900원 상담 · 실시간 상담 · 후기 4개, 아이콘+라벨을 스퀘어 타일 안에
+            배치한다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 섹션 3: 인기 검색태그 -->
+  <div class="section">
+    <h3>인기 검색태그</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-section-title">인기 검색태그</div>
+          <div class="mock-filterbar">
+            <div class="mock-filter">#재회상담</div>
+            <div class="mock-filter">#연애상담</div>
+            <div class="mock-filter">#재물상담</div>
+            <div class="mock-filter">#건강상담</div>
+            <div class="mock-filter">#직업상담</div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>히어로 축소로 확보된 하단 공간은 카테고리 2×2 타일이 아니라 "인기 검색태그" 섹션으로
+          확정했다.</p>
+        <ul>
+          <li>#재회상담 #연애상담 #재물상담 #건강상담 #직업상담 5개 해시태그를 가로 스크롤 1줄로
+            노출하고, 클릭 시 검색결과 페이지로 이동한다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 섹션 4: 추천 전화상담 — 정렬기준 표시 + 카드 신뢰 신호 + 즉시상담 상태 (mockup: STAR 전화상담사) -->
+  <div class="section">
+    <h3>추천 전화상담 — 정렬기준 표시 + 카드 신뢰 신호</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-section-title">추천 전화상담</div>
+          <div class="mock-filterbar">
+            <div class="mock-filter active">인기상담사</div>
+            <div class="mock-filter">전화타로</div>
+            <div class="mock-filter">전화신점</div>
+            <div class="mock-filter">전화사주</div>
+          </div>
+          <div class="mock-callcard">
+            <div class="thumb"><span class="mock-badge" style="top:4px;left:4px;bottom:auto;background:#5c5c68">사주</span></div>
+            <div class="info">
+              <div class="nm">별하 선생님 <span class="mock-badge" style="position:static;display:inline-block;background:#5c5c68">상담가능</span></div>
+              <div class="tl">20년 경력, 자녀운 특화</div>
+              <span class="mock-review">누적후기 3120</span>
+            </div>
+            <div class="cta">상담하기</div>
+          </div>
+          <div class="mock-callcard">
+            <div class="thumb"><span class="mock-badge" style="top:4px;left:4px;bottom:auto;background:#5c5c68">신점</span></div>
+            <div class="info">
+              <div class="nm">별자매 선생님 <span class="mock-badge" style="position:static;display:inline-block;background:#5c5c68">상담가능</span></div>
+              <div class="tl">정확도로 소문난 신점</div>
+              <span class="mock-review">누적후기 2200</span>
+            </div>
+            <div class="cta">상담하기</div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>카드는 가로형 리스트로 배치한다 — 썸네일(좌) + 이름·상태·소개문구·가격·후기(중앙) +
+          상담하기 버튼(우, 세로 중앙 고정) 구조다.</p>
+        <p>정렬기준은 칩이 아니라 섹션 제목 바로 아래 고정 캡션으로 노출한다 — "기획서에 정의된
+          프로세스 기준으로 노출 / 지금 상담가능 상담사 우선순위".</p>
+        <ul>
+          <li>탭은 인기상담사 · 전화타로 · 전화신점 · 전화사주 4종, 탭당 8명씩 노출한다 —
+            타임특가 탭은 폐지하고 그 자리에 인기상담사 탭을 맨 앞에 둔다</li>
+          <li>노출 프로세스는 배치(1층)+실시간(2층) 2단계로 동작한다. <strong>1층 — 아침 7시
+            배치</strong>: 각 탭의 후보 풀을 고정한다 — 전화타로·전화신점·전화사주는 카테고리
+            안에서, 인기상담사는 타로·신점·사주 3개 카테고리를 합쳐, 누적 상담 20건 이상인
+            상담사만 후보로 두고(콜드스타트 방지) 그중 최근 90일 재상담율 60%·평균평점 40%
+            가중합 점수 상위 8명을 뽑는다(AI 상담노트 "상담지수"와 동일 산식) — 카테고리가
+            섞이므로 썸네일 좌상단에 카테고리 배지를 표시한다. 이 8명 구성은 다음 배치 전까지
+            바뀌지 않는다</li>
+          <li><strong>2층 — 조회 시점(실시간)</strong>: 배치로 고정된 8명 안에서 상담가능 >
+            상담중 > 부재중 순으로 매번 재정렬해 노출한다 — 구성원은 그대로 두고 순서만
+            조회할 때마다 바뀐다</li>
+          <li>카드 신뢰 신호는 후기수를 카드 하단에 "누적후기 💬(숫자)"로 노출한다</li>
+          <li>파트너 배지는 제거하고 신규 상담사 NEW 배지만 썸네일 우하단에 유지한다 — 해시태그는
+            썸네일 바로 아래로 옮긴다</li>
+          <li>즉시상담 가능 여부는 이름 옆 "상담가능"/"상담중" 텍스트 배지로 표시한다 — 색상 구분·
+            아이콘 없이 무채색 톤 1가지(#5c5c68)로 통일하고 일반 굵기 폰트를 쓴다. 이 목업은
+            데모 표현이라 1·2번째 카드를 항상 상담가능으로 고정해 보여주지만, 실제 정책은 위
+            2층처럼 조회 시점의 실제 상태로 순서가 정해진다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 섹션 5: 재방문자 '최근 본 선생님' -->
+  <div class="section">
+    <h3>재방문자 &#39;최근 본 선생님&#39; 동선</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-section-title">최근 본 선생님</div>
+          <div class="mock-cardrow">
+            <div class="mock-card">
+              <div class="avatar"></div>해성암 <span class="mock-badge" style="position:static;display:inline-block;background:#5c5c68">상담중</span><br>
+              <span style="border:1px solid #9b9ba6;border-radius:3px;padding:1px 4px;color:#3f3f47">신점</span>
+            </div>
+            <div class="mock-card">
+              <div class="avatar"></div>서준 <span class="mock-badge" style="position:static;display:inline-block;background:#5c5c68">부재중</span><br>
+              <span style="border:1px solid #9b9ba6;border-radius:3px;padding:1px 4px;color:#3f3f47">타로</span>
+            </div>
+            <div class="mock-card">
+              <div class="avatar"></div>제우스 <span class="mock-badge" style="position:static;display:inline-block;background:#5c5c68">상담가능</span><br>
+              <span style="border:1px solid #9b9ba6;border-radius:3px;padding:1px 4px;color:#3f3f47">사주</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>로그인한 재방문자에게만, 이전에 조회·상담했던 상담사를 정사각 카드 3장 가로 스크롤로
+          다시 보여준다.</p>
+        <ul>
+          <li>신규 방문자(열람 이력 없음)에게는 이 섹션 자체가 보이지 않는다</li>
+          <li>카드에는 이름 · 상태 텍스트 배지(상담가능/상담중/부재중, 무채색 1톤) · 상담분야
+            태그(사주/타로/신점)를 표시한다</li>
+          <li>상담분야 태그는 배경 채움 없이 회색 테두리(1px, radius 3px)만 두르고, 글자는 진한
+            회색(#3f3f47)으로 표시한다 — 분야별 색상 구분은 두지 않는다</li>
+          <li>정책: 최근 조회 상담사 최대 <strong>10명</strong>, 열람일 기준 <strong>7일간</strong>
+            노출 후 자동 제외한다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 섹션 6: 찜한 선생님 -->
+  <div class="section">
+    <h3>찜한 선생님</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-section-title">찜한 선생님</div>
+          <div class="mock-cardrow">
+            <div class="mock-card">
+              <div class="avatar"></div>리안 <span class="mock-badge" style="position:static;display:inline-block;background:#5c5c68">상담가능</span>
+            </div>
+            <div class="mock-card">
+              <div class="avatar"></div>별자매 <span class="mock-badge" style="position:static;display:inline-block;background:#5c5c68">부재중</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>"최근 본 선생님"과 동일한 UI/UX(정사각 카드, 상태 텍스트 배지, 상담분야 테두리 태그)로
+          별도 섹션을 구성한다 — 카드 단위 하트 토글은 두지 않는다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 섹션 7: 카테고리별(재회) 추천 -->
+  <div class="section">
+    <h3>카테고리별(재회) 추천 선생님</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-section-title">재회상담 추천 선생님</div>
+          <div class="mock-cardrow-lg">
+            <div class="mock-card-lg">
+              <div class="avatar"></div>
+              <div class="name">하온</div>
+            </div>
+            <div class="mock-card-lg">
+              <div class="avatar"></div>
+              <div class="name">지수</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>카테고리별 추천 선생님은 재회상담 1개 섹션만 배치한다 — 건강상담·연애상담 섹션은
+          제외했다.</p>
+        <ul>
+          <li>찜한 선생님보다 확대된 카드(124×124 썸네일)로 구성한다</li>
+          <li>5명 중 3명만 화면에 보이고 나머지는 가로 스크롤로 노출한다</li>
+          <li>상태 텍스트 배지·상담분야 테두리 태그는 "최근 본 선생님" · "찜한 선생님"과 동일한
+            방식을 재사용한다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 섹션 8: 후기모음 -->
+  <div class="section">
+    <h3>후기모음</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-section-title">후기모음</div>
+          <div class="mock-reviewcard">
+            <div class="ai"><span class="ai-badge">AI</span>먼저 연락해도 될까? 기다림의 기준이 생겼다</div>
+            <div class="teacher">
+              <div class="avatar"></div>
+              <div class="info">
+                <div class="nm">유노 선생님</div>
+                <div class="tags">#직관형 #현실조언형 #공감형</div>
+              </div>
+            </div>
+          </div>
+          <div class="mock-reviewcard">
+            <div class="ai"><span class="ai-badge">AI</span>앞이 안 보였는데, 사주 한 번에 미래 지도가 생겼다</div>
+            <div class="teacher">
+              <div class="avatar"></div>
+              <div class="info">
+                <div class="nm">사주박사 선생님</div>
+                <div class="tags">#힐링형 #현실조언형 #직관형</div>
+              </div>
+            </div>
+          </div>
+          <div class="mock-reviewcard">
+            <div class="ai"><span class="ai-badge">AI</span>후회하던 과거도 가치가 있었다… 시선이 바뀐 상담</div>
+            <div class="teacher">
+              <div class="avatar"></div>
+              <div class="info">
+                <div class="nm">유노 선생님</div>
+                <div class="tags">#직관형 #현실조언형 #공감형</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>카테고리별(재회) 추천 선생님 하단에 실제 서비스 후기 화면
+          (unsedang.com/view/csl/totalRatingComment) 카드에서 AI 한줄요약과 선생님 정보(사진·이름·
+          성향 해시태그)만 발췌한 축약 카드 3개를 배치한다 — 작성자 닉네임·날짜·Q&A 후기 본문·선생님
+          답글은 노출하지 않는다.</p>
+        <ul>
+          <li>[실측: unsedang.com/view/csl/totalRatingComment] 원본 카드는 작성자+날짜+카테고리 배지,
+            AI 한줄요약, "Q. 상담에서 어떤 점이 좋았나요?" 문답 본문("...자세히 보기" 말줄임), 선생님
+            정보(사진·이름·성향 해시태그), 선생님 답글 순으로 구성된다.</li>
+          <li>이 섹션은 그중 AI 한줄요약 + 선생님 정보 두 블록만 가져와 축약한다.</li>
+          <li>노출 프로세스는 "AI 한줄요약이 붙은 후기 중 가장 최근 3개"다. 기존 2개에서 3개로
+            늘렸다 — 2026-10-06 변경.</li>
+          <li>⚠️ [실측: unsedang.com/view/csl/totalRatingComment, 최신순 정렬] AI 한줄요약은
+            모든 후기에 자동으로 붙지 않는다 — 2026-08-20 작성 후기까지만 붙어 있고, 그 이후
+            작성된 후기(2026-08-21~10-06 기준 120건 전수)에는 한줄요약 자체가 없다. 즉 이
+            섹션의 "가장 최근 3개"는 작성일 기준 최신이 아니라 "한줄요약이 붙은 후기 중" 최신이며,
+            현재는 그 3개가 전부 2026-08-20 한 날짜에 몰려 있고 유노 선생님이 2회 중복
+            등장한다. AI 한줄요약 생성이 왜 8/20 이후 멈췄는지는 미확인 — 개발팀 확인 필요</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

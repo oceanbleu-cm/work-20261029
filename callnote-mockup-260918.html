@@ -1,0 +1,1561 @@
+<meta charset="utf-8">
+<title>AI 상담노트 목업 — 운세당</title>
+<style>
+  :root {
+    --brand: #c8272e;
+    --brand-soft: #fbe9ea;
+    --warn: #b5590a;
+    --warn-bg: #fff2e2;
+    --ink: #1c1c22;
+    --sub: #767683;
+    --line: #ececf1;
+    --bg: #f3f3f6;
+    --gray-badge: #5c5c68;
+    --bubble-theirs: #f0f0f3;
+    --bubble-mine: #fbe9ea;
+  }
+
+  * {
+    box-sizing: border-box
+  }
+
+  html {
+    background: var(--bg)
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    padding: 24px 0 60px 200px;
+  }
+
+  /* 좌측 단계 이동 메뉴 (데모 전용 — 실제 서비스 화면 아님) */
+  .devnav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 190px;
+    background: #fff;
+    border-right: 1px solid var(--line);
+    padding: 18px 10px;
+    overflow-y: auto;
+    z-index: 200;
+  }
+
+  .devnav-title {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--sub);
+    padding: 0 8px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+  }
+
+  .devnav-item {
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.4;
+    padding: 9px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .devnav-item:hover {
+    background: var(--bg);
+  }
+
+  .devnav-item.active {
+    background: var(--brand-soft);
+    color: var(--brand);
+    font-weight: 700;
+  }
+
+  .devnav-link {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--brand);
+    padding: 9px 8px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px dashed var(--brand);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .devnav-link:hover {
+    background: var(--brand-soft);
+  }
+
+  .phone {
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    background: #fff;
+    min-height: 100vh;
+    box-shadow: 0 0 0 1px var(--line), 0 20px 40px rgba(0, 0, 0, .08);
+    position: relative;
+  }
+
+  .screen {
+    min-height: 100vh;
+  }
+
+  /* 상단 페이지바 (뒤로가기 + 타이틀, 공용) */
+  .pagebar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: #fff;
+  }
+
+  .pagebar .back {
+    flex: 0 0 auto;
+    width: 22px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .pagebar .title {
+    flex: 1 1 auto;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .pagebar .demo-toggle {
+    flex: 0 0 auto;
+    font-size: 9px;
+    color: var(--sub);
+    background: #fff;
+    border: 1px dashed var(--line);
+    border-radius: 999px;
+    padding: 3px 8px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* 상담하기 — AI 상담노트 안내 토글 (하단 레이어 팝업, docs/unse-call.png 실측 레이아웃) */
+  .callsheet-backdrop {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 200px;
+    right: 0;
+    background: rgba(20, 20, 24, .45);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 40;
+  }
+
+  .callsheet-backdrop.hide {
+    display: none;
+  }
+
+  .callsheet-sheet {
+    width: 100%;
+    max-width: 430px;
+    max-height: 82vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    padding: 18px 16px 22px;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, .15);
+  }
+
+  .callsheet-sheet-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .callsheet-sheet-title {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .callsheet-sheet-title .help {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid var(--sub);
+    color: var(--sub);
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .callsheet-sheet-close {
+    margin-left: auto;
+    font-size: 16px;
+    color: var(--sub);
+    cursor: pointer;
+  }
+
+  .callsheet-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .callsheet-avatar {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .callsheet-profile .badge {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    color: #e14e9c;
+    margin-bottom: 2px;
+  }
+
+  .callsheet-profile .nm {
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .callsheet-pricebox {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+
+  .callsheet-price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .callsheet-price-row+.callsheet-price-row {
+    margin-top: 10px;
+  }
+
+  .callsheet-price-row .label {
+    font-size: 12px;
+    color: var(--sub);
+  }
+
+  .callsheet-price-row .value {
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .callsheet-price-row .value .unit {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--sub);
+  }
+
+  .callsheet-charge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .callsheet-charge-btn {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--brand);
+    border: 1px solid var(--brand);
+    border-radius: 999px;
+    padding: 3px 10px;
+    cursor: pointer;
+  }
+
+  .callsheet-highlight {
+    font-size: 12px;
+    color: var(--ink);
+    background: var(--warn-bg);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin: 10px 0 14px;
+  }
+
+  .callsheet-highlight .em {
+    color: var(--warn);
+    font-weight: 700;
+  }
+
+  .callsheet-note {
+    font-size: 12px;
+    color: var(--sub);
+    line-height: 1.5;
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+  }
+
+  .callsheet-cta-row {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .callsheet-toggle {
+    flex: 0 0 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    padding: 10px 0;
+    cursor: pointer;
+  }
+
+  .callsheet-toggle .check {
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
+    border: 1px solid var(--sub);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: transparent;
+  }
+
+  .callsheet-toggle.on {
+    border-color: var(--brand);
+    color: var(--brand);
+    background: var(--brand-soft);
+  }
+
+  .callsheet-toggle.on .check {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+  }
+
+  .callsheet-btn {
+    flex: 0 0 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--brand);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    text-align: center;
+    border-radius: 8px;
+    padding: 10px 0;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  /* AI 상담노트 이용 동의 팝업 */
+  .consent-popup {
+    width: 100%;
+    max-width: 340px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px 18px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .25);
+  }
+
+  .consent-title {
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 3px;
+  }
+
+  .consent-sub {
+    font-size: 12px;
+    color: var(--sub);
+    margin-bottom: 12px;
+  }
+
+  .consent-body {
+    position: relative;
+    max-height: 170px;
+    overflow: hidden;
+    font-size: 11px;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  .consent-body::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 32px;
+    background: linear-gradient(rgba(255, 255, 255, 0), #fff);
+  }
+
+  .consent-clause {
+    font-weight: 700;
+    margin-top: 10px;
+  }
+
+  .consent-scrollhint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--sub);
+    margin: 10px 0 14px;
+  }
+
+  .consent-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .consent-btn {
+    flex: 1 1 0;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 800;
+    border-radius: 8px;
+    padding: 11px 0;
+    cursor: pointer;
+  }
+
+  .consent-btn.cancel {
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  .consent-btn.agree {
+    background: var(--brand);
+    color: #fff;
+  }
+
+  /* 상담노트 생성 알림 */
+  .alarm-wrap {
+    padding: 16px;
+  }
+
+  .alarm-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+  }
+
+  .alarm-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--sub);
+  }
+
+  .alarm-badge {
+    background: var(--brand);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+
+  .alarm-body {
+    padding: 14px;
+  }
+
+  .alarm-title {
+    font-size: 13px;
+    font-weight: 800;
+    margin: 0 0 10px;
+  }
+
+  .alarm-text {
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .alarm-btn {
+    margin: 12px 14px 14px;
+    background: var(--brand-soft);
+    color: var(--brand);
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+    border-radius: 8px;
+    padding: 11px 0;
+    cursor: pointer;
+  }
+
+  .alarm-fallback {
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--sub);
+    text-align: center;
+  }
+
+  /* 상담노트 목록 */
+  .list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+  }
+
+  .list-item:active {
+    background: var(--bg);
+  }
+
+  .avatar {
+    flex: 0 0 auto;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .list-item .info {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .list-item .nm {
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .list-item .nm .count {
+    font-weight: 400;
+    color: var(--sub);
+  }
+
+  .list-item .meta {
+    font-size: 12px;
+    color: var(--sub);
+    margin-top: 3px;
+  }
+
+  .list-item .chevron {
+    flex: 0 0 auto;
+    font-size: 16px;
+    color: var(--sub);
+  }
+
+  /* 빈 상태(서비스 소개) */
+  .emptystate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 44px 20px 24px;
+  }
+
+  .emptystate .icon {
+    font-size: 44px;
+    margin-bottom: 14px;
+  }
+
+  .emptystate .title {
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .emptystate .desc {
+    font-size: 13px;
+    color: var(--sub);
+    line-height: 1.5;
+    margin-bottom: 22px;
+  }
+
+  .emptystate .features {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .emptystate .feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .emptystate .feature .fi {
+    flex: 0 0 auto;
+    font-size: 18px;
+  }
+
+  .emptystate .cta {
+    width: 100%;
+    background: var(--brand);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+    text-align: center;
+    border-radius: 10px;
+    padding: 14px 0;
+    cursor: pointer;
+  }
+
+  /* 상담 상세 화면 — 헤더/하단바 고정, 상담노트(대화)만 내부 스크롤 */
+  #screenDetail {
+    display: none;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 200px;
+    right: 0;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    background: #fff;
+    flex-direction: column;
+    z-index: 30;
+  }
+
+  .detail-header {
+    flex: 0 0 auto;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+  }
+
+  .dh-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .dh-profile .back {
+    flex: 0 0 auto;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .dh-avatar {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .dh-info {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .dh-info .nm {
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .dh-info .meta {
+    font-size: 11px;
+    color: var(--sub);
+    margin-top: 2px;
+  }
+
+  /* 상담일자 선택 칩 메뉴 — 2회 이상 상담 시에만 노출, 최근 날짜가 가장 좌측,
+     칩이 많으면 영역 스크롤 */
+  .date-chips {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    margin-top: 10px;
+  }
+
+  .date-chip {
+    flex: 0 0 auto;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .date-chip.active {
+    color: #fff;
+    background: var(--brand);
+    border-color: var(--brand);
+  }
+
+  /* 대화 영역(상담노트) — 헤더·하단바 사이 남는 공간을 차지하며 내부 스크롤 */
+  .chat-wrap {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .bubble-row {
+    display: flex;
+    flex-direction: column;
+    max-width: 82%;
+  }
+
+  .bubble-row.mine {
+    align-self: flex-end;
+    align-items: flex-end;
+  }
+
+  .bubble-row.theirs {
+    align-self: flex-start;
+    align-items: flex-start;
+  }
+
+  .bubble {
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 10px 13px;
+    border-radius: 14px 14px 14px 3px;
+    background: var(--bubble-theirs);
+    color: var(--ink);
+  }
+
+  .bubble-row.mine .bubble {
+    border-radius: 14px 14px 3px 14px;
+    background: var(--bubble-mine);
+  }
+
+  .bubble-meta {
+    font-size: 10px;
+    color: var(--sub);
+    margin-top: 4px;
+  }
+
+  .chat-chunk {
+    align-self: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--brand);
+    background: #fbe9ea;
+    border-radius: 999px;
+    padding: 3px 12px;
+  }
+
+  /* 상담후기 작성 팝업 (1/2 객관식 · 2/2 별점+자유텍스트) */
+  .review-backdrop {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 200px;
+    right: 0;
+    background: rgba(20, 20, 24, .55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 50;
+  }
+
+  .review-backdrop.hide {
+    display: none;
+  }
+
+  .review-popup {
+    width: 100%;
+    max-width: 340px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 22px 20px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .25);
+  }
+
+  .rp-step {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--brand);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .review-popup .rp-title {
+    font-size: 15px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .review-popup .rp-sub {
+    font-size: 12px;
+    color: var(--sub);
+    text-align: center;
+    margin-bottom: 14px;
+  }
+
+  .review-group {
+    margin-bottom: 14px;
+  }
+
+  .review-label {
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .review-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .review-chip {
+    font-size: 11px;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 12px;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .review-chip.on {
+    color: var(--brand);
+    background: var(--brand-soft);
+    border-color: var(--brand);
+    font-weight: 700;
+  }
+
+  .stars {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    font-size: 26px;
+    line-height: 1;
+    color: var(--line);
+    margin-bottom: 14px;
+  }
+
+  .star {
+    cursor: pointer;
+  }
+
+  .star.on {
+    color: #f5b400;
+  }
+
+  .review-popup textarea {
+    width: 100%;
+    min-height: 88px;
+    font: inherit;
+    font-size: 12px;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px;
+    resize: none;
+    margin-bottom: 14px;
+  }
+
+  .review-popup .rp-primary {
+    width: fit-content;
+    margin: 0 auto 10px;
+    background: var(--brand);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    text-align: center;
+    border-radius: 8px;
+    padding: 10px 22px;
+    cursor: pointer;
+  }
+
+  .review-popup .rp-skip {
+    font-size: 12px;
+    color: var(--sub);
+    text-align: center;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* 하단 고정바 */
+  .stickybar {
+    flex: 0 0 auto;
+    background: #fff;
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, .06);
+    padding: 12px 16px 16px;
+  }
+
+  .player {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .player-btn {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #f5e4e5;
+    color: var(--brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    cursor: pointer;
+  }
+
+  .player-track {
+    position: relative;
+    flex: 1 1 auto;
+    height: 4px;
+    background: var(--line);
+    border-radius: 999px;
+  }
+
+  .player-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 32%;
+    background: var(--brand);
+    border-radius: 999px;
+  }
+
+  .player-thumb {
+    position: absolute;
+    left: 32%;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--brand);
+    box-shadow: 0 0 0 2px #fff;
+    transform: translate(-50%, -50%);
+  }
+
+  .player-time {
+    flex: 0 0 auto;
+    font-size: 11px;
+    color: var(--sub);
+    white-space: nowrap;
+  }
+
+  .callbtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--brand);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+    border-radius: 10px;
+    padding: 13px 0;
+    cursor: pointer;
+  }
+
+  .callbtn .status-text {
+    font-size: 12px;
+    font-weight: 400;
+    opacity: .85;
+  }
+
+  .callbtn .sep {
+    width: 1px;
+    height: 13px;
+    background: rgba(255, 255, 255, .4);
+  }
+
+  /* 데모 토스트 */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 40px;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(28, 28, 34, .92);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 20px;
+    border-radius: 999px;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s, transform .2s;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+
+<div class="devnav">
+  <a class="devnav-link" href="./callnote-wireframe-260918.html">→ 와이어프레임으로 보기</a>
+  <div class="devnav-title">목업 단계 이동 (데모 전용)</div>
+  <div class="devnav-item" data-step="callsheet" onclick="goToStep('callsheet')">1. 상담하기 — AI 상담노트 토글</div>
+  <div class="devnav-item" data-step="consent" onclick="goToStep('consent')">2. AI 상담노트 이용 동의 팝업</div>
+  <div class="devnav-item" data-step="alarm" onclick="goToStep('alarm')">3. 상담노트 생성 알림</div>
+  <div class="devnav-item" data-step="list" onclick="goToStep('list')">4. 상담노트 목록</div>
+  <div class="devnav-item" data-step="listEmpty" onclick="goToStep('listEmpty')">5. 상담노트 목록 — 빈 상태</div>
+  <div class="devnav-item" data-step="detail" onclick="goToStep('detail')">6. 상담 상세(헤더·대화·하단바)</div>
+  <div class="devnav-item" data-step="review1" onclick="goToStep('review1')">7. 상담후기 팝업 1/2</div>
+  <div class="devnav-item" data-step="review2" onclick="goToStep('review2')">8. 상담후기 팝업 2/2</div>
+</div>
+
+<div class="phone">
+
+  <!-- 화면 0: 상담하기 — AI 상담노트 안내 토글 (하단 레이어 팝업) -->
+  <div class="screen" id="screenCallSheet">
+    <div class="pagebar">
+      <div class="back" onclick="toast('← 선생님 둘러보기 화면 (데모 범위 밖)')">‹</div>
+      <div class="title">선생님 둘러보기</div>
+    </div>
+  </div>
+
+  <div class="callsheet-backdrop" id="callsheetBackdrop">
+    <div class="callsheet-sheet">
+      <div class="callsheet-sheet-top">
+        <div class="callsheet-sheet-title">상담하기 <span class="help">?</span></div>
+        <div class="callsheet-sheet-close" onclick="toast('✕ 닫기 — 선생님 둘러보기로 복귀 (데모 범위 밖)')">✕</div>
+      </div>
+      <div class="callsheet-profile">
+        <div class="callsheet-avatar" id="csAvatar"></div>
+        <div class="info">
+          <div class="badge">신점</div>
+          <div class="nm">보영 선생님</div>
+        </div>
+      </div>
+      <div class="callsheet-pricebox">
+        <div class="callsheet-price-row">
+          <div class="label">선불 상담</div>
+          <div class="value">1,300코인 <span class="unit">(30초)</span></div>
+        </div>
+        <div class="callsheet-price-row">
+          <div class="label callsheet-charge">보유 코인
+            <span class="callsheet-charge-btn" onclick="toast('→ 코인 충전 (데모 범위 밖)')">충전</span>
+          </div>
+          <div class="value">369,000코인</div>
+        </div>
+      </div>
+      <div class="callsheet-highlight">보유 코인으로 약
+        <span class="em">141분</span> 상담 가능해요</div>
+      <div class="callsheet-pricebox">
+        <div class="callsheet-price-row">
+          <div class="label">후불 상담</div>
+          <div class="value">1,600원 <span class="unit">(30초)</span></div>
+        </div>
+      </div>
+      <div class="callsheet-note">상담을 시작하면 AI가 대화를 자동으로 정리해
+        상담노트로 만들어드려요.</div>
+      <div class="callsheet-cta-row">
+        <div class="callsheet-toggle" id="noteToggle" onclick="onToggleNote()">
+          <span class="check">✓</span>
+          <span class="toggle-label">AI 상담노트</span>
+        </div>
+        <div class="callsheet-btn" onclick="startCall()">상담하기</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI 상담노트 이용 동의 팝업 -->
+  <div class="review-backdrop hide" id="consentBackdrop">
+    <div class="consent-popup">
+      <div class="consent-title">AI 상담노트를 이용하려면 필요해요</div>
+      <div class="consent-sub">AI 상담노트 이용 동의</div>
+      <div class="consent-body">
+        <p>주식회사 운세당(이하 "회사")은 AI 상담노트 서비스를 이용하는 고객·선생님의
+          개인정보를 보호하기 위해, 수집 항목과 목적, 보관 기간을 아래와 같이
+          안내합니다.</p>
+        <div class="consent-clause">제1조 수집하는 개인정보</div>
+        <p>상담 내용을 녹음해 이름·상담 사유·생년월일시·연락처 등을 수집합니다.</p>
+        <div class="consent-clause">제2조 민감정보 수집</div>
+        <p>상담 특성상 녹취에 건강, 신념 등 민감정보가 포함될 수 있습니다.</p>
+      </div>
+      <div class="consent-scrollhint">스크롤해서 계속 확인 ↓</div>
+      <div class="consent-actions">
+        <div class="consent-btn cancel" onclick="cancelConsent()">취소</div>
+        <div class="consent-btn agree" onclick="agreeConsent()">동의하기</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 화면: 상담노트 생성 알림 -->
+  <div class="screen" id="screenAlarm" style="display:none">
+    <div class="pagebar">
+      <div class="back" onclick="backToCallSheet()">‹</div>
+      <div class="title">알림</div>
+    </div>
+    <div class="alarm-wrap">
+      <div class="alarm-card">
+        <div class="alarm-header"><span class="alarm-badge">알림톡</span>운세당</div>
+        <div class="alarm-body">
+          <p class="alarm-title">[운세당] AI 상담노트가 도착했어요</p>
+          <p class="alarm-text">이지은님 안녕하세요 :)<br>
+            김도현 선생님과의 대화가<br>
+            AI 상담노트로 완성됐어요.<br><br>
+            다시 듣고 싶을 때, 문득 생각날 때<br>
+            언제든 편하게 열어보세요!</p>
+        </div>
+        <div class="alarm-btn" onclick="goFromAlarmToList()">상담노트 보러가기</div>
+      </div>
+      <div class="alarm-fallback">※ 알림톡 수신이 어려운 경우 문자(SMS)로 대체 발송</div>
+    </div>
+  </div>
+
+  <!-- 화면 1: 상담노트 목록 -->
+  <div class="screen" id="screenList" style="display:none">
+    <div class="pagebar">
+      <div class="back" onclick="toast('← 마이페이지로 이동 (데모 범위 밖)')">‹</div>
+      <div class="title">운세당 AI 상담노트</div>
+      <div class="demo-toggle" onclick="toggleEmptyDemo()">데모: 빈 상태 보기</div>
+    </div>
+
+    <div id="listHasHistory"></div>
+
+    <div id="listEmptyState" class="emptystate" style="display:none">
+      <div class="icon">📝</div>
+      <div class="title">아직 상담노트가 없어요</div>
+      <div class="desc">상담을 마치면 선생님과 나눈 대화가<br>이곳에 자동으로 정리돼요</div>
+      <div class="features">
+        <div class="feature"><span class="fi">🗨️</span>대화 내용 텍스트로 다시 확인</div>
+        <div class="feature"><span class="fi">🎧</span>상담 음성 다시듣기</div>
+        <div class="feature"><span class="fi">📞</span>선생님과 바로 재상담 연결</div>
+      </div>
+      <div class="cta" onclick="toast('→ 상담사 목록(/view/csl, 상담가능 필터) 이동 — 데모 범위 밖')">상담하러 가기 ›</div>
+    </div>
+  </div>
+
+  <!-- 화면 2: 상담노트 상세 -->
+  <div class="screen" id="screenDetail" style="display:none">
+    <div class="detail-header">
+      <div class="dh-profile">
+        <div class="back" onclick="goBackToList()">‹</div>
+        <div class="dh-avatar" id="dhAvatar"></div>
+        <div class="dh-info">
+          <div class="nm" id="dhName"></div>
+          <div class="meta" id="dhMeta"></div>
+        </div>
+      </div>
+      <div class="date-chips" id="dhChips"></div>
+    </div>
+
+    <div class="chat-wrap" id="chatWrap"></div>
+
+    <div class="stickybar">
+      <div class="player">
+        <div class="player-btn">▶</div>
+        <div class="player-track">
+          <div class="player-fill"></div>
+          <div class="player-thumb"></div>
+        </div>
+        <div class="player-time">03:12 / 10:00</div>
+      </div>
+      <div class="callbtn" onclick="toast('→ 통화 연결 — 데모 범위 밖')">
+        <span class="status-text">상담가능</span>
+        <span class="sep"></span>
+        <span>상담하기</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 상담후기 작성 팝업 (1/2 객관식 · 2/2 별점+자유텍스트, 대화 1회 스크롤 시 노출) -->
+  <div class="review-backdrop hide" id="reviewBackdrop">
+    <div class="review-popup" id="reviewPopupBody"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+</div>
+
+<script>
+  /* 이름 이니셜 로컬 SVG 아바타 — home-mockup.html의 avatarBg()와 동일 기법 재사용 */
+  var AVATAR_PALETTE = ['#8a6fb3', '#c98a5c', '#4e8a7a', '#b6577a', '#5c7bb0', '#a08b3f', '#7a6ab0', '#3f9d8f'];
+  function avatarBg(name) {
+    var sum = 0;
+    for (var i = 0; i < name.length; i++) sum += name.charCodeAt(i);
+    var color = AVATAR_PALETTE[sum % AVATAR_PALETTE.length];
+    var svg = "<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>"
+      + "<rect width='200' height='200' rx='26' fill='" + color + "'/>"
+      + "<text x='50%' y='56%' font-family='-apple-system,sans-serif' font-size='92' font-weight='700' fill='#ffffff' text-anchor='middle' dominant-baseline='middle'>" + name.charAt(0) + "</text>"
+      + "</svg>";
+    return "background-image:url('data:image/svg+xml;utf8," + encodeURIComponent(svg).replace(/'/g, '%27') + "')";
+  }
+
+  document.getElementById('csAvatar').setAttribute('style', avatarBg('보영'));
+
+  /* 상담하기 — AI 상담노트 안내 토글 + 이용 동의 팝업 + 상담노트 생성 알림 */
+  var noteToggleOn = false;
+
+  function onToggleNote() {
+    noteToggleOn = !noteToggleOn;
+    document.getElementById('noteToggle').classList.toggle('on', noteToggleOn);
+    if (noteToggleOn) document.getElementById('consentBackdrop').classList.remove('hide');
+  }
+
+  function cancelConsent() {
+    noteToggleOn = false;
+    document.getElementById('noteToggle').classList.remove('on');
+    document.getElementById('consentBackdrop').classList.add('hide');
+  }
+
+  function agreeConsent() {
+    document.getElementById('consentBackdrop').classList.add('hide');
+    toast('AI 상담노트 이용에 동의했어요');
+  }
+
+  function startCall() {
+    toast('통화 연결 및 상담 진행 — 데모 생략');
+    document.getElementById('screenCallSheet').style.display = 'none';
+    document.getElementById('callsheetBackdrop').classList.add('hide');
+    document.getElementById('screenAlarm').style.display = 'block';
+    window.scrollTo(0, 0);
+  }
+
+  function backToCallSheet() {
+    document.getElementById('screenAlarm').style.display = 'none';
+    document.getElementById('screenCallSheet').style.display = 'block';
+    document.getElementById('callsheetBackdrop').classList.remove('hide');
+    window.scrollTo(0, 0);
+  }
+
+  function goFromAlarmToList() {
+    document.getElementById('screenAlarm').style.display = 'none';
+    document.getElementById('screenList').style.display = 'block';
+    window.scrollTo(0, 0);
+  }
+
+  /* 상담노트 목록 데이터 — 선생님별 그룹 + 총 상담횟수, 회차는 최신순 정렬 */
+  var TEACHERS = {
+    kdh: { name: '김도현', sessions: [
+      { date: '2026.09.15', time: '14:20', dur: 10 },
+      { date: '2026.08.02', time: '21:10', dur: 15 }
+    ] },
+    lsy: { name: '이서연', sessions: [
+      { date: '2026.07.20', time: '11:05', dur: 8 }
+    ] },
+    pjh: { name: '박지훈', sessions: [
+      { date: '2026.06.11', time: '19:40', dur: 12 }
+    ] }
+  };
+
+  function shortDate(s) {
+    return s.date.slice(5).replace('.', '.') + ' ' + s.time;
+  }
+
+  function renderList() {
+    var wrap = document.getElementById('listHasHistory');
+    wrap.innerHTML = Object.keys(TEACHERS).map(function (key) {
+      var t = TEACHERS[key];
+      var count = t.sessions.length;
+      var latest = t.sessions[0];
+      var metaText = (count > 1 ? '최근: ' : '') + latest.date + ' ' + latest.time + ' · ' + latest.dur + '분 상담';
+      return ''
+        + '<div class="list-item" onclick="openDetail(\'' + key + '\',0)">'
+        + '<div class="avatar" style="' + avatarBg(t.name) + '"></div>'
+        + '<div class="info">'
+        + '<div class="nm">' + t.name + ' 선생님 <span class="count">· ' + count + '회</span></div>'
+        + '<div class="meta">' + metaText + '</div>'
+        + '</div>'
+        + '<div class="chevron">›</div>'
+        + '</div>';
+    }).join('');
+  }
+  renderList();
+
+  function toggleEmptyDemo() {
+    var hist = document.getElementById('listHasHistory');
+    var empty = document.getElementById('listEmptyState');
+    var btn = document.querySelector('.demo-toggle');
+    var isEmpty = empty.style.display !== 'none';
+    hist.style.display = isEmpty ? '' : 'none';
+    empty.style.display = isEmpty ? 'none' : 'flex';
+    btn.textContent = isEmpty ? '데모: 빈 상태 보기' : '데모: 목록 보기';
+  }
+
+  /* 상담 상세 — 대화 샘플 데이터는 공용(분해 4 "10분 상담 데모"), 종료 안내만 실제 소요시간으로 치환 */
+  var MESSAGES = [
+    { t: '14:20', label: '상담 시작', mine: false, text: '안녕하세요, 오늘 예약하신 상담 시작할게요. 먼저 생년월일부터 여쭤볼게요.' },
+    { t: '14:20', label: '12초', mine: true, text: '92년 3월생이고 재회 관련해서 여쭤보고 싶어요.' },
+    { t: '14:21', label: '18초', mine: false, text: '생년월일 감사합니다. 사주를 보니 올해 하반기에 인연운이 들어오는 시기가 있어요.' },
+    { t: '14:22', label: '40초', mine: true, text: '정말요? 그 사람이랑 다시 될 가능성이 있다는 뜻일까요?' },
+    { t: '14:22', label: '55초', mine: false, text: '네, 다만 먼저 연락하시는 것보다는 상대방이 다가올 때까지 기다리시는 흐름이 더 좋아 보여요.' },
+    { chunk: '1 / 3' },
+    { t: '14:23', label: '2분 10초', mine: true, text: '얼마나 기다려야 할까요? 벌써 3개월째 연락을 안 하고 있어서 답답해요.' },
+    { t: '14:24', label: '2분 40초', mine: false, text: '지금 상황에서는 급하게 다가가기보다 안부 인사 정도로 가볍게 시작하시는 걸 추천드려요.' },
+    { t: '14:25', label: '3분 20초', mine: true, text: '안부 인사만 해도 괜찮을까요? 상대가 부담스러워하지 않을지 걱정돼요.' },
+    { t: '14:25', label: '3분 45초', mine: false, text: '타이밍만 잘 맞으면 오히려 반가워할 가능성이 높아요. 다만 재촉하는 티는 내지 않으시는 게 좋겠어요.' },
+    { chunk: '2 / 3' },
+    { t: '14:26', label: '4분 30초', mine: true, text: '혹시 다른 사람이 생겼을 가능성도 있을까요?' },
+    { t: '14:26', label: '4분 50초', mine: false, text: '사주상으로는 그런 기운은 보이지 않아요. 오히려 본인 쪽 마음 정리가 아직 안 된 것 같아요.' },
+    { t: '14:27', label: '5분 20초', mine: true, text: '그럼 제가 먼저 연락해도 괜찮을까요?' },
+    { t: '14:28', label: '6분 5초', mine: false, text: '네, 다만 급하게 다가가기보다는 안부 인사부터 가볍게 시작하시는 걸 추천드려요.' },
+    { t: '14:29', label: '8분 10초', mine: true, text: '알겠습니다. 오늘 말씀 정말 도움이 많이 됐어요, 감사합니다.' },
+    { t: '14:30', label: '상담 종료(총 {DUR}분)', mine: false, text: '오늘 상담은 여기까지 할게요, 좋은 하루 되세요.' }
+  ];
+
+  var reviewed = {};
+  var current = { key: null, idx: 0 };
+
+  function renderChat(dur) {
+    var wrap = document.getElementById('chatWrap');
+    wrap.innerHTML = MESSAGES.map(function (m) {
+      if (m.chunk) return '<div class="chat-chunk">' + m.chunk + '</div>';
+      var label = m.label.replace('{DUR}', dur);
+      return ''
+        + '<div class="bubble-row ' + (m.mine ? 'mine' : 'theirs') + '">'
+        + '<div class="bubble">' + m.text + '</div>'
+        + '<div class="bubble-meta">' + m.t + ' · ' + label + '</div>'
+        + '</div>';
+    }).join('');
+    wrap.scrollTop = 0;
+  }
+
+  function openDetail(key, idx) {
+    current = { key: key, idx: idx };
+    var t = TEACHERS[key];
+    var s = t.sessions[idx];
+
+    document.getElementById('screenList').style.display = 'none';
+    document.getElementById('screenDetail').style.display = 'flex';
+
+    document.getElementById('dhAvatar').setAttribute('style', avatarBg(t.name));
+    document.getElementById('dhName').textContent = t.name + ' 선생님';
+    document.getElementById('dhMeta').textContent = s.date + ' ' + s.time + ' · ' + s.dur + '분 상담';
+
+    var chips = document.getElementById('dhChips');
+    if (t.sessions.length > 1) {
+      chips.style.display = '';
+      chips.innerHTML = t.sessions.map(function (sess, i) {
+        return '<div class="date-chip' + (i === idx ? ' active' : '') + '" onclick="openDetail(\'' + key + '\',' + i + ')">' + shortDate(sess) + '</div>';
+      }).join('');
+    } else {
+      chips.style.display = 'none';
+      chips.innerHTML = '';
+    }
+
+    renderChat(s.dur);
+
+    document.getElementById('reviewBackdrop').classList.add('hide');
+    popupShownThisView = false;
+  }
+
+  function goBackToList() {
+    document.getElementById('reviewBackdrop').classList.add('hide');
+    document.getElementById('screenDetail').style.display = 'none';
+    document.getElementById('screenList').style.display = 'block';
+    window.scrollTo(0, 0);
+  }
+
+  /* 상담후기 작성 팝업 — 대화 내용을 1번 스크롤한 시점에 1/2(객관식) 노출,
+     "다음"으로 2/2(별점+자유텍스트)로 이동, 2단계까지 모두 작성해야 500코인 지급 */
+  var GOOD_KEYWORDS = ['편안한 경청', '쉬운 설명', '높은 적중률', '구체적 조언'];
+  var BAD_KEYWORDS = ['아쉬운 경청', '어려운 설명', '낮은 적중률', '두루뭉술한 조언'];
+  var popupShownThisView = false;
+  var reviewState = { step: 1, good: [], bad: [], rating: 0 };
+
+  document.getElementById('chatWrap').addEventListener('scroll', function () {
+    if (popupShownThisView) return;
+    var reviewKey = current.key + '-' + current.idx;
+    if (reviewed[reviewKey]) return;
+    popupShownThisView = true;
+    reviewState = { step: 1, good: [], bad: [], rating: 0 };
+    document.getElementById('reviewBackdrop').classList.remove('hide');
+    renderReviewPopup();
+  });
+
+  function renderChipGroup(label, items, key) {
+    return ''
+      + '<div class="review-group">'
+      + '<div class="review-label">' + label + '</div>'
+      + '<div class="review-chips">'
+      + items.map(function (kw) {
+        var on = reviewState[key].indexOf(kw) > -1;
+        return '<div class="review-chip' + (on ? ' on' : '') + '" onclick="toggleChip(\'' + key + '\',\'' + kw + '\')">' + kw + '</div>';
+      }).join('')
+      + '</div>'
+      + '</div>';
+  }
+
+  function toggleChip(key, kw) {
+    var arr = reviewState[key];
+    var i = arr.indexOf(kw);
+    if (i > -1) arr.splice(i, 1); else arr.push(kw);
+    renderReviewPopup();
+  }
+
+  function renderStars() {
+    var html = '<div class="stars">';
+    for (var i = 1; i <= 5; i++) {
+      html += '<span class="star' + (i <= reviewState.rating ? ' on' : '') + '" onclick="setRating(' + i + ')">★</span>';
+    }
+    return html + '</div>';
+  }
+
+  function setRating(n) {
+    reviewState.rating = n;
+    renderReviewPopup();
+  }
+
+  function goToStep2() {
+    reviewState.step = 2;
+    renderReviewPopup();
+  }
+
+  function renderReviewPopup() {
+    var body = document.getElementById('reviewPopupBody');
+    if (reviewState.step === 1) {
+      body.innerHTML = ''
+        + '<div class="rp-step">1 / 2</div>'
+        + '<div class="rp-title">상담 후기를 남겨주세요</div>'
+        + '<div class="rp-sub">어떤 점이 좋았고 아쉬웠는지 골라주세요.</div>'
+        + renderChipGroup('좋은 점', GOOD_KEYWORDS, 'good')
+        + renderChipGroup('아쉬운 점', BAD_KEYWORDS, 'bad')
+        + '<div class="rp-primary" onclick="goToStep2()">다음</div>'
+        + '<div class="rp-skip" onclick="closeReview()">건너뛰고 상담노트 보기</div>';
+    } else {
+      body.innerHTML = ''
+        + '<div class="rp-step">2 / 2</div>'
+        + '<div class="rp-title">상담은 어떠셨나요?</div>'
+        + '<div class="rp-sub">별점과 함께 느낀 점을 자유롭게 남겨주세요.</div>'
+        + renderStars()
+        + '<textarea placeholder="후기를 자유롭게 남겨주세요."></textarea>'
+        + '<div class="rp-primary" onclick="submitReview()">후기 작성하고 500코인 받기</div>'
+        + '<div class="rp-skip" onclick="closeReview()">건너뛰고 상담노트 보기</div>';
+    }
+  }
+
+  function closeReview() {
+    document.getElementById('reviewBackdrop').classList.add('hide');
+  }
+
+  function submitReview() {
+    reviewed[current.key + '-' + current.idx] = true;
+    document.getElementById('reviewBackdrop').classList.add('hide');
+    toast('500코인이 지급됐어요');
+  }
+
+  /* 데모 토스트 */
+  var toastTimer = null;
+  function toast(msg) {
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('show'); }, 1800);
+  }
+
+  /* 좌측 단계 이동 메뉴 — 각 단계 화면을 클릭 한 번에 바로 확인 */
+  function hideAllScreens() {
+    document.getElementById('screenCallSheet').style.display = 'none';
+    document.getElementById('callsheetBackdrop').classList.add('hide');
+    document.getElementById('screenAlarm').style.display = 'none';
+    document.getElementById('screenList').style.display = 'none';
+    document.getElementById('screenDetail').style.display = 'none';
+    document.getElementById('consentBackdrop').classList.add('hide');
+    document.getElementById('reviewBackdrop').classList.add('hide');
+  }
+
+  function setActiveNav(key) {
+    var items = document.querySelectorAll('.devnav-item');
+    for (var i = 0; i < items.length; i++) items[i].classList.remove('active');
+    var el = document.querySelector('.devnav-item[data-step="' + key + '"]');
+    if (el) el.classList.add('active');
+  }
+
+  function goToStep(key) {
+    hideAllScreens();
+    setActiveNav(key);
+    window.scrollTo(0, 0);
+
+    if (key === 'callsheet') {
+      noteToggleOn = false;
+      document.getElementById('noteToggle').classList.remove('on');
+      document.getElementById('screenCallSheet').style.display = 'block';
+      document.getElementById('callsheetBackdrop').classList.remove('hide');
+    } else if (key === 'consent') {
+      noteToggleOn = true;
+      document.getElementById('noteToggle').classList.add('on');
+      document.getElementById('screenCallSheet').style.display = 'block';
+      document.getElementById('callsheetBackdrop').classList.remove('hide');
+      document.getElementById('consentBackdrop').classList.remove('hide');
+    } else if (key === 'alarm') {
+      document.getElementById('screenAlarm').style.display = 'block';
+    } else if (key === 'list') {
+      document.getElementById('listHasHistory').style.display = '';
+      document.getElementById('listEmptyState').style.display = 'none';
+      document.querySelector('#screenList .demo-toggle').textContent = '데모: 빈 상태 보기';
+      document.getElementById('screenList').style.display = 'block';
+    } else if (key === 'listEmpty') {
+      document.getElementById('listHasHistory').style.display = 'none';
+      document.getElementById('listEmptyState').style.display = 'flex';
+      document.querySelector('#screenList .demo-toggle').textContent = '데모: 목록 보기';
+      document.getElementById('screenList').style.display = 'block';
+    } else if (key === 'detail') {
+      openDetail('kdh', 0);
+    } else if (key === 'review1') {
+      openDetail('kdh', 0);
+      popupShownThisView = true;
+      reviewState = { step: 1, good: ['편안한 경청', '높은 적중률'], bad: ['낮은 적중률'], rating: 0 };
+      document.getElementById('reviewBackdrop').classList.remove('hide');
+      renderReviewPopup();
+    } else if (key === 'review2') {
+      openDetail('kdh', 0);
+      popupShownThisView = true;
+      reviewState = { step: 2, good: ['편안한 경청', '높은 적중률'], bad: ['낮은 적중률'], rating: 4 };
+      document.getElementById('reviewBackdrop').classList.remove('hide');
+      renderReviewPopup();
+    }
+  }
+
+  goToStep('callsheet');
+</script>

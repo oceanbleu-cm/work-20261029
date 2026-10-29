@@ -1,0 +1,1176 @@
+<meta charset="utf-8">
+<title>선생님 입점신청 목업 — 운세당</title>
+<style>
+  :root {
+    --brand: #c8272e;
+    --brand-soft: #fbe6e7;
+    --warn: #b5590a;
+    --warn-bg: #fff2e2;
+    --ink: #1c1c22;
+    --sub: #767683;
+    --line: #ececf1;
+    --bg: #f3f3f6;
+    --ok: #2fbf4f;
+  }
+
+  * {
+    box-sizing: border-box
+  }
+
+  html {
+    background: var(--bg)
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    padding: 24px 0 60px 200px;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  /* 좌측 단계 이동 메뉴 (데모 전용 — 실제 서비스 화면 아님, counselor-app-mockup-261012.html
+     패턴 재사용) */
+  .devnav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 190px;
+    background: #fff;
+    border-right: 1px solid var(--line);
+    padding: 18px 10px;
+    overflow-y: auto;
+    z-index: 400;
+  }
+
+  .devnav-title {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--sub);
+    padding: 0 8px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+  }
+
+  .devnav-item {
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.4;
+    padding: 9px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .devnav-item:hover {
+    background: var(--bg);
+  }
+
+  .devnav-item.active {
+    background: var(--brand-soft);
+    color: var(--brand);
+    font-weight: 700;
+  }
+
+  .devnav-link {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--brand);
+    padding: 9px 8px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px dashed var(--brand);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .devnav-link:hover {
+    background: var(--brand-soft);
+  }
+
+  .phone {
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    background: #fff;
+    min-height: 100vh;
+    box-shadow: 0 0 0 1px var(--line), 0 20px 40px rgba(0, 0, 0, .08);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .screen {
+    min-height: 100vh;
+  }
+
+  .banner-fixture {
+    background: var(--warn-bg);
+    color: var(--warn);
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    padding: 6px 8px;
+  }
+
+  /* ── 안내 페이지 ── */
+  .hero {
+    min-height: 240px;
+    background: linear-gradient(145deg, #2a1c22, #5c2a30 60%, #7a2f33);
+    color: #fff;
+    padding: 32px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero .tag {
+    font-size: 13px;
+    font-weight: 700;
+    opacity: .85;
+    margin-bottom: 10px;
+  }
+
+  .hero h1 {
+    font-size: 21px;
+    line-height: 1.4;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  .hero h1 .num {
+    color: #ffd27a;
+  }
+
+  .hero .lead {
+    font-size: 12px;
+    opacity: .8;
+    margin: 0 0 18px;
+  }
+
+  .hero .cta {
+    display: block;
+    background: var(--brand);
+    color: #fff;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 0;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .hero .cta2 {
+    display: block;
+    text-align: center;
+    color: #fff;
+    opacity: .75;
+    font-size: 12px;
+    margin-top: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .sec {
+    padding: 28px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .sec h2 {
+    font-size: 16px;
+    margin: 0 0 4px;
+  }
+
+  .sec .sub {
+    font-size: 12px;
+    color: var(--sub);
+    margin: 0 0 16px;
+  }
+
+  .ops-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ops-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+
+  .ops-item .ic {
+    color: var(--brand);
+    font-size: 16px;
+    flex: none;
+  }
+
+  .ch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .ch {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .ch .t {
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .step {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+
+  .step.done {
+    opacity: .6;
+  }
+
+  .step .n {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--brand);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .step.done .n {
+    background: var(--ok);
+  }
+
+  .step .status {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ok);
+  }
+
+  .faq {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--line);
+    padding: 12px 0;
+  }
+
+  .faq-item .q {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .faq-item .a {
+    font-size: 12px;
+    color: var(--sub);
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  .sticky-cta {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    border-top: 1px solid var(--line);
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    display: flex;
+    gap: 8px;
+    z-index: 30;
+  }
+
+  .sticky-cta .main {
+    flex: 1;
+    background: var(--brand);
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    padding: 13px 0;
+    cursor: pointer;
+  }
+
+  .sticky-cta .ghost {
+    flex: 0 0 90px;
+    background: #fff;
+    border: 1px solid var(--line);
+    color: var(--sub);
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  /* ── 상단 페이지바 (폼/완료 화면용) ── */
+  .pagebar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: #fff;
+  }
+
+  .pagebar .back {
+    flex: 0 0 auto;
+    width: 22px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+
+  .pagebar .title {
+    flex: 1 1 auto;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .pagebar .sp {
+    flex: 0 0 auto;
+    width: 22px;
+  }
+
+  /* ── 신청 폼 ── */
+  .form-wrap {
+    padding: 20px 16px 110px;
+  }
+
+  .field {
+    margin-bottom: 18px;
+  }
+
+  .field .lbl {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .field .lbl .req {
+    color: var(--brand);
+  }
+
+  .field input[type=text],
+  .field input[type=tel],
+  .field select {
+    width: 100%;
+    height: 44px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0 12px;
+    font-size: 13px;
+    color: var(--ink);
+    background: #fff;
+    font-family: inherit;
+  }
+
+  .field input::placeholder {
+    color: #b7b7c0;
+  }
+
+  .field .hint {
+    font-size: 11px;
+    color: var(--sub);
+    margin-top: 5px;
+  }
+
+  .field .err {
+    font-size: 11px;
+    color: var(--brand);
+    margin-top: 5px;
+    display: none;
+    font-weight: 700;
+  }
+
+  .field.has-err input,
+  .field.has-err select {
+    border-color: var(--brand);
+  }
+
+  .field.has-err .err {
+    display: block;
+  }
+
+  .addr-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .addr-row input {
+    flex: 1;
+  }
+
+  .addr-row button {
+    flex: 0 0 76px;
+    border: 1px solid var(--brand);
+    color: var(--brand);
+    background: #fff;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .addr-panel {
+    display: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+
+  .addr-panel.open {
+    display: block;
+  }
+
+  .addr-panel .ap-head {
+    background: var(--bg);
+    font-size: 11px;
+    color: var(--sub);
+    padding: 8px 10px;
+  }
+
+  .addr-panel .ap-item {
+    padding: 10px 12px;
+    font-size: 12px;
+    border-top: 1px solid var(--line);
+    cursor: pointer;
+  }
+
+  .addr-panel .ap-item:hover {
+    background: var(--bg);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chip {
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--sub);
+    border-radius: 999px;
+    padding: 7px 14px;
+    cursor: pointer;
+  }
+
+  .chip.sel {
+    background: var(--brand-soft);
+    color: var(--brand);
+    border-color: var(--brand);
+  }
+
+  .check-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+
+  .check-row .box {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--line);
+    border-radius: 4px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #fff;
+  }
+
+  .check-row .box.on {
+    background: var(--brand);
+    border-color: var(--brand);
+  }
+
+  .check-row.disabled {
+    color: #b7b7c0;
+  }
+
+  .agree-box {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+
+  .agree-box.has-err {
+    border-color: var(--brand);
+  }
+
+  .agree-box .err {
+    font-size: 11px;
+    color: var(--brand);
+    margin-top: 8px;
+    display: none;
+    font-weight: 700;
+  }
+
+  .agree-box.has-err .err {
+    display: block;
+  }
+
+  .agree-box .sep {
+    border-top: 1px solid var(--line);
+    margin: 8px 0;
+  }
+
+  .agree-box .all {
+    font-weight: 800;
+  }
+
+  .agree-box .link {
+    color: var(--sub);
+    text-decoration: underline;
+    font-size: 12px;
+    margin-left: auto;
+  }
+
+  /* ── 약관 모달 (통화녹취 동의) — 목업 화면(.phone) 중앙에 떠 있는 센터 모달.
+     devnav(200px) 폭을 제외한 나머지 영역 기준으로 중앙 정렬한다(counselor-app-mockup.html
+     .api-modal 패턴 재사용) ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 200px;
+    background: rgba(0, 0, 0, .45);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .modal-overlay.open {
+    display: flex;
+  }
+
+  .modal-sheet {
+    width: 100%;
+    max-width: 380px;
+    max-height: 82vh;
+    background: #fff;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .3);
+  }
+
+  .modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid var(--line);
+    flex: none;
+  }
+
+  .modal-head .t {
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .modal-head .x {
+    font-size: 18px;
+    color: var(--sub);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+
+  .modal-body {
+    padding: 14px 16px 24px;
+    overflow-y: auto;
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+
+  .modal-body h4 {
+    font-size: 12px;
+    margin: 16px 0 6px;
+  }
+
+  .modal-body h4:first-child {
+    margin-top: 0;
+  }
+
+  .modal-body ul {
+    margin: 4px 0;
+    padding-left: 16px;
+  }
+
+  .modal-body .src {
+    font-size: 11px;
+    color: var(--sub);
+    margin-top: 2px;
+  }
+
+  .modal-foot {
+    border-top: 1px solid var(--line);
+    padding-top: 10px;
+    margin-top: 16px;
+    font-size: 11px;
+    color: var(--sub);
+    line-height: 1.6;
+  }
+
+  .submit-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-width: 430px;
+    margin: 0 auto;
+    background: #fff;
+    border-top: 1px solid var(--line);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .submit-bar button {
+    width: 100%;
+    background: var(--brand);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 0;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* ── 접수 완료 ── */
+  .complete-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 64px 24px 24px;
+    text-align: center;
+  }
+
+  .complete-wrap .check {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--brand-soft);
+    color: var(--brand);
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+
+  .complete-wrap h2 {
+    font-size: 18px;
+    margin: 0 0 8px;
+  }
+
+  .complete-wrap .no {
+    font-size: 13px;
+    color: var(--sub);
+  }
+
+  .complete-wrap .steps {
+    width: 100%;
+    margin-top: 28px;
+    text-align: left;
+  }
+
+  .complete-wrap .home-btn {
+    margin-top: 24px;
+    width: 100%;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink);
+    border-radius: 10px;
+    padding: 13px 0;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+</style>
+
+<div class="devnav">
+  <a class="devnav-link" href="unsedang-teller-apply-wireframe-261015.html">→ 와이어프레임으로 보기</a>
+  <div class="devnav-title">선생님 입점신청 — 목업</div>
+  <div class="devnav-item" data-step="landing" onclick="goToStep('landing')">1. 입점 안내</div>
+  <div class="devnav-item" data-step="form" onclick="goToStep('form')">2. 입점 신청 폼</div>
+  <div class="devnav-item" data-step="complete" onclick="goToStep('complete')">3. 신청 접수 완료</div>
+</div>
+
+<div class="phone">
+  <div class="banner-fixture">⚠️ 목업 — 실제 서비스 화면이 아닙니다 (일부 운영 정책·소요기간은 미정입니다)</div>
+
+  <!-- 1. 안내 페이지 -->
+  <div class="screen" id="screenLanding">
+    <div class="hero">
+      <div class="tag">#신점 #사주 #타로</div>
+      <h1>당신의 말을 <span class="num">기다리는 사람이 있습니다</span></h1>
+      <div class="lead">내담자의 마음에 답하는 선생님을, 운세당이 연결합니다.</div>
+      <button class="cta" onclick="goToStep('form')">입점 신청하기</button>
+      <button class="cta2" onclick="goToStep('landing')">운세당 둘러보기</button>
+    </div>
+
+    <div class="sec">
+      <h2>내담자는 이런 고민을 들고 옵니다</h2>
+      <div class="sub">운세당 후기가 나뉘는 고민 분야 — 내담자가 실제로 묻는 주제입니다</div>
+      <div class="chips" style="margin-bottom:14px">
+        <span class="chip sel" style="cursor:default">재회</span>
+        <span class="chip sel" style="cursor:default">연애</span>
+        <span class="chip sel" style="cursor:default">재물</span>
+        <span class="chip sel" style="cursor:default">건강</span>
+        <span class="chip sel" style="cursor:default">진로</span>
+      </div>
+      <div class="ops-list">
+        <div class="ops-item"><span class="ic">☎</span>지금 바로 묻고 싶은 내담자는
+          상담가능 필터로 연결되는 선생님만 추려 전화를 걸어요</div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>내담자가 선생님을 먼저 알아봐요</h2>
+      <div class="sub">새로 들어온 선생님, 후기 좋은 선생님, 내담자가 찜한 선생님까지 —
+        운세당이 화면 곳곳에서 먼저 보여드려요</div>
+      <div class="ch-grid">
+        <div class="ch"><div class="t">상담사 목록</div></div>
+        <div class="ch"><div class="t">상담사 상세</div></div>
+        <div class="ch"><div class="t">후기 모음</div></div>
+        <div class="ch"><div class="t">검색 · 선생님 탭</div></div>
+      </div>
+      <div class="ops-list">
+        <div class="ops-item"><span class="ic">✨</span>새로 들어온 선생님을 소개하는
+          자리가 있어요</div>
+        <div class="ops-item"><span class="ic">⭐</span>상담사 목록 노출 순서는
+          상담품질이 기준이에요 — 자체 분석시스템을 통해 좋은 상담을 한 선생님이
+          먼저 보여요</div>
+        <div class="ops-item"><span class="ic">💛</span>내담자가 찜한 선생님은
+          개인화 영역에서 리스트로 보여드려요</div>
+        <div class="ops-item"><span class="ic">🔍</span>네이버 검색광고와 검색
+          노출 개선으로, 아직 운세당을 모르는 내담자까지 선생님한테 연결해요</div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>상담 방식은 그대로, 번거로움만 덜어냅니다</h2>
+      <div class="sub">대표번호 연결, 전화·쪽지 상담, 30초 단위 정산, AI 상담노트까지 — 상담
+        말고 나머지는 운세당이 챙겨드려요</div>
+      <div class="ops-list">
+        <div class="ops-item"><span class="ic">☎</span>고객 전화는 운세당 대표번호로 연결돼
+          개인 연락처가 서로 노출되지 않아요</div>
+        <div class="ops-item"><span class="ic">✉</span>전화·쪽지 2가지 방식으로 상담할 수
+          있어요</div>
+        <div class="ops-item"><span class="ic">💰</span>상담 시간(30초) 단위로 정산돼요</div>
+        <div class="ops-item"><span class="ic">🤖</span>AI가 상담 내용을 정리해주는 상담노트를
+          제공해요</div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>상담 전, 어떤 손님인지 먼저 알아요</h2>
+      <div class="sub">전화가 오는 순간, 지난 상담 맥락을 앱이 먼저 보여드려요 — 기억에
+        의존하지 않아도 돼요</div>
+      <div class="ops-list">
+        <div class="ops-item"><span class="ic">📞</span>전화가 오면 지난 상담의 핵심 내용과
+          이번에 확인할 사항을 요약 화면으로 먼저 보여줘요</div>
+        <div class="ops-item"><span class="ic">🔒</span>고객 정보는 상담할 때 자동으로
+          열려요 — 보안 관리는 운세당이 책임져요</div>
+        <div class="ops-item"><span class="ic">🤖</span>AI 상담노트가 쌓일수록 고객·고민
+          프로파일이 더 정교해져요</div>
+        <div class="ops-item"><span class="ic">📱</span>상담사 전용 Android 앱으로
+          제공돼요</div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>간편한 입점 절차</h2>
+      <div class="step-list">
+        <div class="step"><span class="n">1</span>신청서 작성</div>
+        <div class="step"><span class="n">2</span>검토 및 1차 연락</div>
+        <div class="step"><span class="n">3</span>계약 및 상담사 정보 등록</div>
+        <div class="step"><span class="n">4</span>상담 시작</div>
+      </div>
+    </div>
+
+    <div class="sec" style="border-bottom:none">
+      <h2>운세당에게 질문해요!</h2>
+      <div class="faq" id="faqList">
+        <div class="faq-item">
+          <div class="q">Q. 상담 후 정산은 어떻게 되나요?</div>
+          <div class="a">매월 10일 전에 전월 상담비용을 정산해드려요</div>
+        </div>
+        <div class="faq-item">
+          <div class="q">Q. 신청 후 실제 상담까지 얼마나 걸리나요?</div>
+          <div class="a">입점 신청 후 심사가 완료되는 기간은 최대 2주예요</div>
+        </div>
+        <div class="faq-item">
+          <div class="q">Q. 고객과는 어떻게 연락하나요?</div>
+          <div class="a">전화는 대표번호로 연결되고, 쪽지상담으로도 상담할 수 있어요.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sticky-cta">
+      <button class="main" onclick="goToStep('form')">입점 신청하기</button>
+      <button class="ghost" onclick="goToStep('landing')">둘러보기</button>
+    </div>
+  </div>
+
+  <!-- 2. 신청 폼 -->
+  <div class="screen" id="screenForm" style="display:none">
+    <div class="pagebar">
+      <button class="back" onclick="goToStep('landing')">‹</button>
+      <div class="title">입점 신청</div>
+      <div class="sp"></div>
+    </div>
+    <form class="form-wrap" id="applyForm" onsubmit="return submitForm(event)" novalidate>
+      <div class="field" id="f-name">
+        <label class="lbl">이름 <span class="req">*</span></label>
+        <input type="text" placeholder="선생님의 본명을 입력해주세요">
+        <div class="err">이름을 입력해주세요</div>
+      </div>
+
+      <div class="field" id="f-shop">
+        <label class="lbl">상호 <span class="req">*</span></label>
+        <input type="text" maxlength="15" placeholder="사용하시는 상호를 입력해주세요 (15자 이하)">
+        <div class="hint">* 선생님께서 사용하시는 상호명을 입력해주세요</div>
+        <div class="err">상호를 입력해주세요</div>
+      </div>
+
+      <div class="field" id="f-category">
+        <label class="lbl">상담 분야 <span class="req">*</span></label>
+        <select>
+          <option value="" selected disabled>분야를 선택해주세요</option>
+          <option>신점</option>
+          <option>사주</option>
+          <option>타로</option>
+        </select>
+        <div class="err">상담 분야를 선택해주세요</div>
+      </div>
+
+      <div class="field" id="f-time">
+        <label class="lbl">상담 가능 시간대 <span class="req">*</span> (중복 선택)</label>
+        <div class="chips">
+          <span class="chip" onclick="toggleChip(this)">오전 (06-12시)</span>
+          <span class="chip" onclick="toggleChip(this)">오후 (12-18시)</span>
+          <span class="chip" onclick="toggleChip(this)">저녁 (18-24시)</span>
+          <span class="chip" onclick="toggleChip(this)">야간 (00-06시)</span>
+        </div>
+        <div class="hint">대표번호로 전화가 즉시 연결되는 운영 구조상, 가용 시간을 미리
+          확보합니다</div>
+        <div class="err">가능한 시간대를 1개 이상 선택해주세요</div>
+      </div>
+
+      <div class="field" id="f-career">
+        <label class="lbl">경력 연수 <span class="req">*</span></label>
+        <select>
+          <option value="" selected disabled>경력을 선택해주세요</option>
+          <option>1년 미만</option>
+          <option>1~3년</option>
+          <option>3~5년</option>
+          <option>5년 이상</option>
+        </select>
+        <div class="hint">선택지 가칭 — 확정 필요</div>
+        <div class="err">경력 연수를 선택해주세요</div>
+      </div>
+
+      <div class="field" id="f-phone">
+        <label class="lbl">전화번호 <span class="req">*</span></label>
+        <input type="tel" placeholder="연락을 받을 수 있는 전화번호를 입력해주세요">
+        <div class="hint">* 올바른 상담내용 전달을 위해 정확한 전화번호를 입력해주세요</div>
+        <div class="err">올바른 전화번호 형식으로 입력해주세요</div>
+      </div>
+
+      <div class="field" id="f-addr">
+        <label class="lbl">주소 <span class="req">*</span></label>
+        <div class="addr-row">
+          <input type="text" id="addrZip" placeholder="우편번호 검색 결과" readonly>
+          <button type="button" onclick="toggleAddrPanel()">주소 검색</button>
+        </div>
+        <div class="addr-panel" id="addrPanel">
+          <div class="ap-head">검색 결과 (데모 — 실제 우편번호 서비스 아님)</div>
+          <div class="ap-item" onclick="pickAddr('서울 중구 다산로 OO')">서울 중구 다산로 OO
+            [04543]</div>
+          <div class="ap-item" onclick="pickAddr('부산 해운대구 센텀중앙로 OO')">부산 해운대구
+            센텀중앙로 OO [48058]</div>
+        </div>
+        <input type="text" id="addrDetail" placeholder="상세주소를 입력해주세요">
+        <div class="hint">* 정확한 검증을 위해 주소를 정확히 입력해주세요</div>
+        <div class="err">주소를 검색하고 상세주소를 입력해주세요</div>
+      </div>
+
+      <div class="field">
+        <div class="check-row" onclick="toggleCheck(this)">
+          <span class="box"></span>방문 상담이 가능한 사무실(신당)이 있어요 [선택]
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lbl">추천 선생님</label>
+        <input type="text" value="" placeholder="추천 코드로 유입 시 자동 입력됩니다" disabled>
+      </div>
+
+      <div class="agree-box" id="f-agree">
+        <div class="check-row all" onclick="toggleAll(this)">
+          <span class="box"></span>전체 동의
+        </div>
+        <div class="sep"></div>
+        <div class="check-row" onclick="toggleCheck(this)">
+          <span class="box"></span>[필수] 메시지 수신동의
+        </div>
+        <div class="check-row" onclick="toggleCheck(this)">
+          <span class="box"></span>[필수] 통화 녹취 동의 <span class="link" onclick="event.stopPropagation(); openRecordingTerms()">약관 보기</span>
+        </div>
+        <div class="err">필수 동의 2건에 모두 동의해주세요</div>
+      </div>
+
+      <button type="submit" style="width:100%;background:var(--brand);color:#fff;border:none;
+        border-radius:10px;padding:15px 0;font-size:15px;font-weight:700;">신청하기</button>
+    </form>
+  </div>
+
+  <!-- 3. 접수 완료 -->
+  <div class="screen" id="screenComplete" style="display:none">
+    <div class="pagebar">
+      <div class="sp"></div>
+      <div class="title">신청 완료</div>
+      <div class="sp"></div>
+    </div>
+    <div class="complete-wrap">
+      <div class="check">✓</div>
+      <h2>신청이 접수됐어요</h2>
+      <div class="no">접수번호 <span id="receiptNo">00000000</span></div>
+      <div class="steps">
+        <div class="step done"><span class="n">✓</span>신청서 작성<span class="status">완료</span></div>
+        <div class="step"><span class="n">2</span>검토 및 1차 연락</div>
+        <div class="step"><span class="n">3</span>계약 및 상담사 정보 등록</div>
+        <div class="step"><span class="n">4</span>상담 시작</div>
+      </div>
+      <button class="home-btn" onclick="goToStep('landing')">운세당 둘러보기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 통화녹취 동의 약관 모달 (§2 폼 "약관 보기") -->
+<div class="modal-overlay" id="recordingTermsModal" onclick="if(event.target===this) closeRecordingTerms()">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div class="t">통화녹취 동의</div>
+      <button class="x" onclick="closeRecordingTerms()">✕</button>
+    </div>
+    <div class="modal-body">
+      <h4>제1조 수집하는 개인정보</h4>
+      <p>입점 심사 과정에서 진행하는 전화 상담(심사콜)을 녹음해, 이름·상담 사유·생년월일시·
+        연락처 등 통화 중 오가는 음성 데이터를 수집합니다.</p>
+      <h4>제2조 민감정보 수집</h4>
+      <p>상담 특성상 녹취에 사상·신념, 노동조합·정당 가입 여부, 정치적 견해, 건강, 신체적·
+        행동적 특징, 인종·민족, 성생활 등에 관한 정보가 포함될 수 있습니다. 이 정보는 심사
+        목적에만 사용하며, 서비스 품질 개선에 쓰일 경우 100% 비식별화합니다.</p>
+      <h4>제3조 수집 목적</h4>
+      <ul>
+        <li>선생님 자격·실력 검증</li>
+        <li>부정 신청 방지</li>
+        <li>문의·불만사항 처리</li>
+      </ul>
+      <h4>제4조 보관 및 이용 기간</h4>
+      <p>심사가 완료되면 지체 없이 파기합니다. 다만 관련 법령이 정한 기간은 예외로
+        보관합니다 — 계약·청약철회 관련 기록 5년, 대금결제 관련 기록 5년(전자상거래법),
+        소비자 불만·분쟁 처리 기록 3년(전자상거래법), 로그인 기록 3개월(통신비밀보호법).
+        심사콜 녹취파일 자체의 보관기간은 심사 완료 후 1년입니다.</p>
+      <h4>제5조 안전하게 보관하는 방법</h4>
+      <p>내부 관리계획 수립·시행, 접근 권한 차등 관리, 개인정보 암호화 보관, 접속기록 1년
+        이상 보관·주기적 점검, 악성 프로그램 침입 방지 시스템을 운영합니다.</p>
+      <h4>제6조 파기 절차 및 방법</h4>
+      <p>목적을 달성한 개인정보는 일정 기간 분리 보관 후 파기하며, 전자 파일 형태로 저장된
+        정보는 복구할 수 없는 기술적 방법으로 삭제합니다.</p>
+      <h4>제7조 이용자의 권리</h4>
+      <p>언제든 본인 정보의 열람·정정을 요청할 수 있고, 개인정보보호책임자에게 이메일로
+        삭제를 요청할 수 있습니다.</p>
+      <h4>제8조 제3자 제공</h4>
+      <p>이용자가 사전에 동의했거나 관련 법령에 근거가 있는 경우에만 개인정보를 제3자에게
+        제공합니다.</p>
+      <h4>제9조 처리 위탁</h4>
+      <p>클라우드 저장을 위해 구글클라우드코리아(유), 통화 인프라 운영을 위해
+        (주)에스아이메카닉스에 위탁합니다. 심사콜은 AI 텍스트 변환 대상이 아니므로 STT
+        위탁사(OpenAI)는 포함하지 않습니다.</p>
+      <h4>제10조 개인정보 관련 문의처</h4>
+      <p>성명: 임수연 · 이메일: unsedang777@gmail.com</p>
+      <h4>제11조 보안</h4>
+      <p>서비스 이용 시 비밀번호로 보호되며, 전송 정보는 암호화로 보호됩니다. 다만 인터넷
+        환경은 100% 안전하지 않아 전송된 정보의 안전을 완전히 보장할 수는 없습니다.</p>
+      <div class="modal-foot">
+        공고일자 · 시행일자 : 2026.10.23<br>
+        주식회사 운세당 대표 임수연 · 사업자등록번호 741-81-03882 · 통신판매업신고번호 제
+        2026-서울마포-0912호<br>
+        주소 서울특별시 마포구 월드컵북로 98, 2층 202-576호(성산동) · 고객문의
+        unsedang777@gmail.com · 대표전화 070-4466-8979
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function hideAllScreens() {
+    document.querySelectorAll('.screen').forEach(function (s) { s.style.display = 'none'; });
+  }
+
+  function setActiveNav(key) {
+    document.querySelectorAll('.devnav-item').forEach(function (el) {
+      el.classList.toggle('active', el.getAttribute('data-step') === key);
+    });
+  }
+
+  function goToStep(key) {
+    hideAllScreens();
+    var map = { landing: 'screenLanding', form: 'screenForm', complete: 'screenComplete' };
+    document.getElementById(map[key]).style.display = 'block';
+    setActiveNav(key);
+    document.querySelector('.phone').scrollTop = 0;
+  }
+
+  function toggleChip(el) {
+    el.classList.toggle('sel');
+    clearFieldError('f-time');
+  }
+
+  function toggleCheck(row) {
+    var box = row.querySelector('.box');
+    box.classList.toggle('on');
+    syncAllAgree();
+    clearFieldError('f-agree');
+  }
+
+  function toggleAll(row) {
+    var willOn = !row.querySelector('.box').classList.contains('on');
+    document.querySelectorAll('#f-agree .check-row:not(.all) .box').forEach(function (b) {
+      b.classList.toggle('on', willOn);
+    });
+    syncAllAgree();
+    clearFieldError('f-agree');
+  }
+
+  function syncAllAgree() {
+    var subBoxes = document.querySelectorAll('#f-agree .check-row:not(.all) .box');
+    var allOn = Array.prototype.every.call(subBoxes, function (b) { return b.classList.contains('on'); });
+    document.querySelector('#f-agree .all .box').classList.toggle('on', allOn);
+  }
+
+  function toggleAddrPanel() {
+    document.getElementById('addrPanel').classList.toggle('open');
+  }
+
+  function pickAddr(addr) {
+    document.getElementById('addrZip').value = addr;
+    document.getElementById('addrPanel').classList.remove('open');
+    clearFieldError('f-addr');
+  }
+
+  function clearFieldError(id) {
+    document.getElementById(id).classList.remove('has-err');
+  }
+
+  function openRecordingTerms() {
+    document.getElementById('recordingTermsModal').classList.add('open');
+  }
+
+  function closeRecordingTerms() {
+    document.getElementById('recordingTermsModal').classList.remove('open');
+  }
+
+  function submitForm(e) {
+    e.preventDefault();
+    var ok = true;
+
+    function fail(id) { document.getElementById(id).classList.add('has-err'); ok = false; }
+    function pass(id) { document.getElementById(id).classList.remove('has-err'); }
+
+    var name = document.querySelector('#f-name input').value.trim();
+    name ? pass('f-name') : fail('f-name');
+
+    var shop = document.querySelector('#f-shop input').value.trim();
+    shop ? pass('f-shop') : fail('f-shop');
+
+    var category = document.querySelector('#f-category select').value;
+    category ? pass('f-category') : fail('f-category');
+
+    var timeSel = document.querySelectorAll('#f-time .chip.sel').length > 0;
+    timeSel ? pass('f-time') : fail('f-time');
+
+    var career = document.querySelector('#f-career select').value;
+    career ? pass('f-career') : fail('f-career');
+
+    var phone = document.querySelector('#f-phone input').value.replace(/[^0-9]/g, '');
+    (phone.length >= 9 && phone.length <= 11) ? pass('f-phone') : fail('f-phone');
+
+    var addrOk = document.getElementById('addrZip').value.trim() &&
+      document.getElementById('addrDetail').value.trim();
+    addrOk ? pass('f-addr') : fail('f-addr');
+
+    var agreeOk = document.querySelectorAll('#f-agree .check-row:not(.all) .box.on').length === 2;
+    agreeOk ? pass('f-agree') : fail('f-agree');
+
+    if (!ok) {
+      document.querySelector('.has-err').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return false;
+    }
+
+    document.getElementById('receiptNo').textContent =
+      'T' + Math.floor(Math.random() * 90000000 + 10000000);
+    goToStep('complete');
+    return false;
+  }
+</script>

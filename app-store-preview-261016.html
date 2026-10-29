@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>App Store 제품페이지 미리보기 — 운세당</title>
+<style>
+  :root{
+    --accent:#6d4aca; --accent-soft:#f0ebfb; --ink:#1b1430; --sub:#5f5770;
+    --line:#e7e2f2; --bg:#faf9fd; --warn:#9a4b00; --warn-bg:#fff3e0;
+    --ok:#16803c; --ok-bg:#e6f6ec;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;}
+  .notice{
+    background:#1b1430;color:#fff;text-align:center;font-size:14px;font-weight:600;
+    padding:12px 16px;letter-spacing:.2px;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:36px 24px 100px}
+
+  .hero{display:flex;gap:28px;padding:28px 0 32px;border-bottom:1px solid var(--line)}
+  .hero img.icon{width:128px;height:128px;border-radius:28px;box-shadow:0 10px 30px rgba(109,74,202,.25);flex:none}
+  .hero .meta{flex:1;min-width:0}
+  .hero h1{font-size:28px;margin:0 0 6px;line-height:1.3}
+  .hero .subtitle{font-size:17px;color:var(--sub);margin:0 0 14px}
+  .hero .stats{display:flex;gap:28px;flex-wrap:wrap;margin-bottom:16px}
+  .hero .stat{font-size:13px;color:var(--sub);text-align:left}
+  .hero .stat b{display:block;font-size:17px;color:var(--ink);font-weight:700}
+  .get-btn{display:inline-block;background:var(--accent);color:#fff;font-weight:700;font-size:15px;
+    padding:10px 28px;border-radius:999px;border:none;cursor:default}
+
+  section{padding:34px 0;border-bottom:1px solid var(--line)}
+  section:last-child{border-bottom:none}
+  h2{font-size:19px;margin:0 0 16px}
+  .shots{display:flex;gap:16px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch}
+  .shot{flex:none;text-align:center}
+  .shots img{height:420px;border-radius:22px;box-shadow:0 8px 24px rgba(27,20,48,.18);
+    border:1px solid var(--line);display:block}
+  .shot-cap{font-size:12px;color:var(--sub);margin-top:8px}
+
+  .desc{font-size:15px;line-height:1.85;white-space:pre-wrap;color:#2a2340}
+
+  .kw-row{display:flex;flex-wrap:wrap;gap:8px}
+  .kw{background:var(--accent-soft);color:var(--accent);font-size:13.5px;font-weight:600;
+    padding:6px 14px;border-radius:999px}
+  table.meta-table{width:100%;border-collapse:collapse;font-size:14px}
+  table.meta-table th{width:140px;text-align:left;color:var(--sub);font-weight:600;
+    padding:10px 14px 10px 0;vertical-align:top;border-bottom:1px solid var(--line)}
+  table.meta-table td{padding:10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+
+  .box{border-radius:16px;padding:20px 22px;font-size:14.5px;line-height:1.85}
+  .box ul{margin:6px 0 0;padding-left:20px}
+  .box li{margin-bottom:6px}
+  .box.ok{background:var(--ok-bg);border:1px solid #a9ddbc}
+  .box.ok b{color:var(--ok)}
+  .box.todo{background:var(--warn-bg);border:1px solid #f3cf9a;margin-top:18px}
+  .box.todo b{color:var(--warn)}
+
+  .foot-note{font-size:12.5px;color:var(--sub);line-height:1.8;margin-top:10px}
+</style>
+</head>
+<body>
+
+<div class="notice">⚠️ 실제 App Store 화면이 아니라, 등록에 쓸 내용을 미리 모아본 시안입니다.</div>
+
+<div class="wrap">
+
+  <!-- 제품페이지 상단 -->
+  <div class="hero">
+    <div style="text-align:center">
+      <img class="icon" src="img/ios-icon-1024.png" alt="운세당 앱 아이콘">
+      <div class="shot-cap">1024×1024px · 152KB</div>
+    </div>
+    <div class="meta">
+      <h1>운세당 - 전화사주 타로 신점상담</h1>
+      <p class="subtitle">전화상담 사주·타로·신점 AI노트</p>
+      <div class="stats">
+        <div class="stat"><b>출시 전</b>평가 없음</div>
+        <div class="stat"><b>라이프스타일</b>카테고리</div>
+        <div class="stat"><b>KO</b>언어</div>
+      </div>
+      <button class="get-btn">받기</button>
+      <span style="font-size:13px;color:var(--sub);margin-left:10px">무료 · 앱 내 구입</span>
+    </div>
+  </div>
+
+  <!-- 스크린샷 -->
+  <section>
+    <h2>스크린샷</h2>
+    <div class="shots">
+      <div class="shot">
+        <img src="img/ios-screenshot-home.png" alt="홈 화면">
+        <div class="shot-cap">홈 · 1290×2796px · 2.0MB</div>
+      </div>
+      <div class="shot">
+        <img src="img/ios-screenshot-csl.png" alt="상담사 찾기 화면">
+        <div class="shot-cap">상담사 찾기 · 1290×2796px · 2.2MB</div>
+      </div>
+      <div class="shot">
+        <img src="img/ios-screenshot-login.png" alt="로그인 화면">
+        <div class="shot-cap">로그인 · 1290×2796px · 248KB</div>
+      </div>
+      <div class="shot">
+        <img src="img/ios-screenshot-content.png" alt="운세 콘텐츠 화면">
+        <div class="shot-cap">운세 콘텐츠 · 1290×2796px · 428KB</div>
+      </div>
+      <div class="shot">
+        <img src="img/ios-screenshot-mypage.png" alt="마이페이지 화면">
+        <div class="shot-cap">마이페이지 · 1290×2796px · 240KB</div>
+      </div>
+    </div>
+    <p class="foot-note">실제 서비스 화면을 그대로 사용했습니다. 해상도는 App Store가 요구하는
+      iPhone 6.9형 규격(1290×2796px)입니다.</p>
+  </section>
+
+  <!-- 설명 -->
+  <section>
+    <h2>설명</h2>
+    <div class="desc">사주·타로·신점, 전화 한 통으로 바로 상담받으세요.
+
+운세당은 검증된 사주·타로·신점 선생님과 실시간 전화 상담을 연결해주는 서비스입니다.
+
+■ 전화 상담
+타로·사주·신점 전문 선생님을 분야별로 찾아보고, 전화로 바로 상담을 시작할 수 있습니다. 상담 전 요금을 정확히 확인할 수 있는 안내 화면을 거치며, 짧게 체험해볼 수 있는 저가 상담 옵션도 제공합니다.
+
+■ 코인 충전 &amp; 포인트
+코인을 충전해 상담과 콘텐츠 이용에 사용할 수 있습니다. 매일 포춘쿠키·행운 아이템·행운 컬러 확인 등으로 포인트를 적립할 수 있습니다.
+
+■ 오늘의 운세 &amp; 무료 콘텐츠
+오늘의 운세, 띠별 운세 등 다양한 운세 콘텐츠를 확인할 수 있습니다. 일부는 무료로, 일부는 포인트로 이용할 수 있습니다.
+
+■ 후기
+먼저 상담받은 다른 회원들의 실제 후기를 보고 선생님을 선택할 수 있습니다.
+
+■ 간편 로그인
+카카오·네이버·PASS·Apple 계정으로 간편하게 가입하고 이용할 수 있습니다.
+
+운세당 담당팀 드림.</div>
+  </section>
+
+  <!-- 키워드 -->
+  <section>
+    <h2>검색 키워드</h2>
+    <div class="kw-row">
+      <span class="kw">사주</span><span class="kw">타로</span><span class="kw">신점</span>
+      <span class="kw">전화상담</span><span class="kw">오늘의운세</span><span class="kw">철학관</span>
+      <span class="kw">작명</span><span class="kw">궁합</span><span class="kw">이사날짜</span>
+      <span class="kw">금전운</span><span class="kw">연애운</span><span class="kw">무료운세</span>
+      <span class="kw">AI상담</span><span class="kw">쪽지상담</span>
+    </div>
+    <p class="foot-note">검색에 걸렸으면 하는 단어 모음입니다 (화면에는 노출되지 않음).</p>
+  </section>
+
+  <!-- 기본 정보 -->
+  <section>
+    <h2>기본 정보</h2>
+    <table class="meta-table">
+      <tr><th>소개 문구</th><td>신규가입 시 10,000코인 즉시 지급! 사주·타로·신점 선생님과 전화로 바로 상담하고, 오늘의 운세·띠별 운세도 무료로 확인해보세요.</td></tr>
+      <tr><th>공식 웹사이트</th><td>https://unsedang.com</td></tr>
+      <tr><th>고객센터</th><td>https://unsedang.com/view/mypage (마이페이지 내 고객센터)</td></tr>
+      <tr><th>저작권</th><td>© 2026 주식회사 운세당</td></tr>
+    </table>
+  </section>
+
+  <!-- 결정된 것 -->
+  <section>
+    <h2>결정된 것</h2>
+    <div class="box ok">
+      <ul>
+        <li>앱 이름: "운세당 - 전화사주 타로 신점상담"</li>
+        <li>카테고리: 라이프스타일 (비슷한 서비스인 천명·점신도 같은 카테고리)</li>
+        <li>스크린샷은 꾸미지 않고 실제 서비스 화면을 그대로 사용</li>
+        <li>고객센터 페이지를 그대로 지원 연락처로 사용</li>
+      </ul>
+    </div>
+
+    <div class="box todo">
+      <b>🔴 아직 결정되지 않은 것 — 코인 결제 방식</b>
+      <p style="margin:8px 0 0">애플은 앱 안에서 쓰는 유료 콘텐츠 결제를 자체 결제(인앱결제)로만 받도록
+      요구합니다. 지금은 전화 상담과 운세 콘텐츠 구매에 같은 코인을 쓰고 있어서, 이대로 제출하면
+      반려될 가능성이 큽니다. 코인 결제 방식을 어떻게 바꿀지 추가 논의가 필요합니다.</p>
+    </div>
+
+    <div class="box todo">
+      <b>🟡 제출 전에 준비하면 좋은 것</b>
+      <ul>
+        <li>지금은 웹사이트를 그대로 앱으로 감싼 상태라, 애플이 "앱다운 기능이 부족하다"고 반려할 수
+          있습니다. 알림, 공유 기능 같은 걸 더 넣는 걸 추천합니다.</li>
+        <li>심사 담당자가 결제 없이 전체 기능을 둘러볼 수 있는 테스트 계정을 준비해 주세요.</li>
+        <li>지금 쓰인 아이콘은 임시 시안입니다 — 디자인팀 확인 후 정식 버전으로 교체 예정입니다.</li>
+        <li>지금 스크린샷은 베타 화질입니다 — 앱이 완성되면 실제 기기로 다시 찍어 더 선명하게 바꿀
+          예정입니다.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

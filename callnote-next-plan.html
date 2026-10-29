@@ -1,0 +1,276 @@
+<meta charset="utf-8">
+<title>AI 상담노트 2단계 — 재상담 전환 기획 — 운세당</title>
+<style>
+  :root {
+    --ink: #1f2430;
+    --sub: #5b6472;
+    --line: #e3e6ec;
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --accent: #2f5fd6;
+    --accent-soft: #ecf1fd;
+    --note: #b5651d;
+    --note-bg: #fff4e8;
+    --note-line: #f0c896;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 32px 20px 80px 220px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    line-height: 1.65;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+
+  /* 좌측 이동 메뉴 (데모 전용 — 실제 서비스 화면 아님, callnote-next-wireframe.html과 동일한 UI로 구성) */
+  .devnav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 190px;
+    background: #fff;
+    border-right: 1px solid var(--line);
+    padding: 18px 10px;
+    overflow-y: auto;
+    z-index: 200;
+  }
+  .devnav-link {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    padding: 9px 8px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px dashed var(--accent);
+    text-align: center;
+  }
+  .devnav-link:hover { background: var(--accent-soft); }
+
+  header.doc-head {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+  }
+  .doc-category {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  h1 { margin: 6px 0 0; font-size: 23px; }
+
+  table.props {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  table.props th, table.props td {
+    border-bottom: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+  }
+  table.props th:last-child, table.props td:last-child { border-right: none; }
+  table.props tr:last-child td, table.props tr:last-child th { border-bottom: none; }
+  table.props th {
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 700;
+    width: 180px;
+    font-size: 12px;
+  }
+
+  h2.section-title {
+    font-size: 17px;
+    margin: 34px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--ink);
+  }
+  h3.sub-title {
+    font-size: 14.5px;
+    margin: 18px 0 8px;
+    color: var(--ink);
+  }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 26px 0;
+  }
+
+  table.data {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13.5px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  table.data th, table.data td {
+    border-bottom: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    padding: 9px 12px;
+    text-align: left;
+    vertical-align: top;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+  table.data th:last-child, table.data td:last-child { border-right: none; }
+  table.data tr:last-child td { border-bottom: none; }
+  table.data th {
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 12px;
+  }
+  table.data tbody tr:nth-child(even) { background: #fafafb; }
+  table.data td.empty { color: var(--sub); font-style: italic; }
+  table.data td.center { text-align: center; }
+  table.data.kv th:first-child, table.data.kv td:first-child { width: 150px; }
+
+  .message-container {
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 14px 20px;
+    font-family: "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    color: #1f2937;
+    margin-top: 6px;
+  }
+
+  ul.plain { margin: 6px 0 0; padding-left: 20px; font-size: 13.5px; }
+  ul.plain li { margin-bottom: 4px; }
+
+  .note {
+    display: inline-block;
+    background: var(--note-bg);
+    color: var(--note);
+    border: 1px solid var(--note-line);
+    border-radius: 6px;
+    padding: 1px 7px;
+    font-size: 12px;
+  }
+</style>
+
+<div class="devnav">
+  <a class="devnav-link" href="callnote-next-wireframe.html">→ 와이어프레임 보기</a>
+</div>
+
+<div class="wrap">
+
+  <header class="doc-head">
+    <div class="doc-category">Product Feature Plan</div>
+    <h1>AI 상담노트 2단계 — 재상담 전환 기획</h1>
+  </header>
+
+  <h2 class="section-title">OKR</h2>
+  <table class="props">
+    <tbody>
+      <tr><th>상위 목표</th><td>재상담율을 높여 매출(전환) 증대</td></tr>
+      <tr><th>목표(Objective)</th><td>AI 상담노트 2단계 기능(생성 알림 통합·상담 고민 카테고리·유사상담 상담사 추천·7일 미재상담 알림)으로 상담 후 재상담 전환을 끌어올린다</td></tr>
+      <tr><th>기간</th><td>2026-10-08 적용 목표</td></tr>
+      <tr><th>핵심 결과(Key Results)</th>
+        <td>
+          <ul class="plain">
+            <li>KR1. 생성 알림 통합 — 알림톡 확인 후 버튼클릭(CTR) 80%</li>
+            <li>KR2. 유사상담 상담사 추천 — 노출 고객의 당일+익일 재상담율 50%</li>
+            <li>KR3. 7일 미재상담 알림 — 대상 고객의 전체 익일 재상담율 30%</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-title">기능별 KPI 목표치</h3>
+  <table class="data">
+    <thead><tr><th>기능 구분</th><th>전환 기준</th><th>목표 전환율</th><th>예상 전환 건수</th><th>결과</th></tr></thead>
+    <tbody>
+      <tr><td>1. 생성 알림 통합</td><td>알림톡 확인 후 버튼클릭(CTR)</td><td class="center"><strong>80%</strong></td><td class="center">&mdash;</td><td class="empty center">집행 전</td></tr>
+      <tr><td>2. 유사상담 상담사 추천</td><td>노출 고객의 당일+익일 재상담</td><td class="center"><strong>50%</strong></td><td class="center">&mdash;</td><td class="empty center">집행 전</td></tr>
+      <tr><td>3. 7일 미재상담 알림</td><td>대상 고객의 전체 익일 재상담</td><td class="center"><strong>30%</strong></td><td class="center">&mdash;</td><td class="empty center">집행 전</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+
+  <h2 class="section-title">1. 실행 조건 및 운영 정책</h2>
+  <table class="data kv">
+    <thead><tr><th>구분</th><th>내용</th></tr></thead>
+    <tbody>
+      <tr><td>생성 알림 통합</td><td>AI상담노트를 사용(토글 ON)한 고객에게는 별도의 상담완료 알림톡을 발송하지 않는다 — 생성 알림 1건이 상담완료 안내·후기 작성 유도(500코인 적립)·상담노트 안내를 모두 담당한다. 토글 OFF 고객은 기존대로 별도 상담완료 알림톡을 받는다</td></tr>
+      <tr><td>상담 고민 카테고리</td><td>AI가 상담노트 텍스트를 분석해 7종(#재회·#연애/애정·#재물/사업·#건강·#직업/진로·#가족/관계·#기타)으로 자동 태깅한다(사람 검수 없음). 상담노트 목록 화면에 배지로 노출해, 어떤 선생님과 어떤 주제로 상담했는지 사용자가 한눈에 인지하게 한다</td></tr>
+      <tr><td>유사상담 상담사 추천</td><td>상담 가능(온라인) 상태인 선생님 중 최근 40일 기준 재상담 건수 1~10위 안에서 매번 랜덤으로 2명을 노출한다. 방금 상담한 선생님과, 노출 2명 간 중복 인물은 제외한다. 노출 위치는 상담노트 마지막(재상담 하단 고정바 바로 위)</td></tr>
+      <tr><td>7일 미재상담 알림</td><td>가장 마지막 상담 1건을 기준으로 7일·14일 시점에 최대 2회 발송한다(과거 상담 건마다 개별 타이머를 돌리지 않음). AI상담노트 토글을 꺼둔 사용자는 상담노트 자체가 없으므로 자동 제외된다</td></tr>
+      <tr><td>채널</td><td>카카오 알림톡(수신 불가 시 문자 대체) — 생성 알림·7일 미재상담 알림 공통</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+
+  <h2 class="section-title">2. 추적 설정 (GA4·UTM)</h2>
+  <table class="data kv">
+    <thead><tr><th>구분</th><th>내용</th></tr></thead>
+    <tbody>
+      <tr><td>생성 알림 클릭</td><td>utm_source=kakao_alimtalk&amp;utm_medium=push&amp;utm_campaign=callnote_created (1단계와 동일, 재사용)</td></tr>
+      <tr><td>유사상담 카드 노출·클릭</td><td>GA4 이벤트 — 노출 시 callnote_reco_view, 클릭 시 callnote_reco_click_{선생님 고유번호}. in-app 위젯이라 UTM 대신 커스텀 이벤트로 추적한다</td></tr>
+      <tr><td>7일 알림 1차 클릭(7일 시점)</td><td>utm_source=kakao_alimtalk&amp;utm_medium=push&amp;utm_campaign=callnote_recall_1w</td></tr>
+      <tr><td>7일 알림 2차 클릭(14일 시점)</td><td>utm_source=kakao_alimtalk&amp;utm_medium=push&amp;utm_campaign=callnote_recall_2w</td></tr>
+    </tbody>
+  </table>
+
+  <hr class="divider">
+
+  <h2 class="section-title">3. 발송 메시지 전문</h2>
+
+  <h3 class="sub-title">생성 알림(상담완료 통합)</h3>
+  <table class="data kv">
+    <thead><tr><th>구분</th><th>내용</th></tr></thead>
+    <tbody>
+      <tr><td>제목</td><td>[운세당] AI 상담노트가 도착했어요</td></tr>
+      <tr><td>버튼</td><td>상담노트 보러가기</td></tr>
+    </tbody>
+  </table>
+  <div class="message-container">이지은님 안녕하세요 :)
+상담완료, 김도현 선생님과 상담은 어떠셨나요?
+나눈 대화가 AI 상담노트로 완성됐어요.
+
+후기를 작성하면 500코인을 적립해드려요!
+다시 듣고 싶을 때, 문득 생각날 때
+언제든 편하게 열어보세요!</div>
+
+  <h3 class="sub-title">7일 미재상담 알림</h3>
+  <table class="data kv">
+    <thead><tr><th>구분</th><th>내용</th></tr></thead>
+    <tbody>
+      <tr><td>제목</td><td>[운세당] 재물/사업 고민, 잘 풀리고 계세요?</td></tr>
+      <tr><td>버튼</td><td>선생님 상세보기 — 메시지에서 추천한 선생님의 상세 프로필로 이동</td></tr>
+      <tr><td class="empty">비고</td><td class="empty"><span class="note">예시 문구 — 실제 발송 문구·톤은 별도 확정</span></td></tr>
+    </tbody>
+  </table>
+  <div class="message-container">이지은님 안녕하세요 :)
+일주일 전 김도현 선생님과
+재물/사업 이야기 나누셨었죠.
+
+비슷한 고민을 잘 풀어주는
+정은서 선생님은 어떠세요?</div>
+
+</div>

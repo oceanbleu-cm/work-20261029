@@ -1,0 +1,1558 @@
+<meta charset="utf-8">
+<title>상담사 앱 목업 — 운세당</title>
+<style>
+  :root {
+    --brand: #2f4bdb;
+    --brand-soft: #eaedfd;
+    --warn: #b5590a;
+    --warn-bg: #fff2e2;
+    --ink: #1c1c22;
+    --sub: #767683;
+    --line: #ececf1;
+    --bg: #f3f3f6;
+  }
+
+  * {
+    box-sizing: border-box
+  }
+
+  html {
+    background: var(--bg)
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    padding: 24px 0 60px 200px;
+  }
+
+  /* 좌측 단계 이동 메뉴 (데모 전용 — 실제 서비스 화면 아님, callnote-mockup.html 패턴 재사용) */
+  .devnav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 190px;
+    background: #fff;
+    border-right: 1px solid var(--line);
+    padding: 18px 10px;
+    overflow-y: auto;
+    z-index: 400;
+  }
+
+  .devnav-title {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--sub);
+    padding: 0 8px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+  }
+
+  .devnav-item {
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.4;
+    padding: 9px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .devnav-item:hover {
+    background: var(--bg);
+  }
+
+  .devnav-item.active {
+    background: var(--brand-soft);
+    color: var(--brand);
+    font-weight: 700;
+  }
+
+  .devnav-link {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--brand);
+    padding: 9px 8px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px dashed var(--brand);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .devnav-link:hover {
+    background: var(--brand-soft);
+  }
+
+  .phone {
+    width: 100%;
+    max-width: 390px;
+    margin: 0 auto;
+    background: #fff;
+    min-height: 100vh;
+    box-shadow: 0 0 0 1px var(--line), 0 20px 40px rgba(0, 0, 0, .08);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .screen {
+    min-height: 100vh;
+  }
+
+  /* 전화 수신 화면 (앱 없을 때 / 상담사 앱 요약 화면 공용) */
+  .incoming {
+    min-height: 100vh;
+    background: #14141c;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 70px 24px 32px;
+    text-align: center;
+  }
+
+  .incoming .ringtext {
+    font-size: 13px;
+    opacity: .85;
+    margin-bottom: 10px;
+  }
+
+  .incoming .callername {
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .incoming .baseline-spacer {
+    flex: 1 1 auto;
+  }
+
+  .summary-card {
+    width: 100%;
+    background: #fff;
+    color: var(--ink);
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 20px;
+    text-align: left;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+  }
+
+  .sc-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .sc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .sc-tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--brand);
+    background: var(--brand-soft);
+    border-radius: 999px;
+    padding: 3px 9px;
+  }
+
+  .sc-worry {
+    background: #fdeef1;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+
+  .sc-worry .wtype {
+    font-size: 11px;
+    color: #c8272e;
+    margin-bottom: 3px;
+  }
+
+  .sc-worry .wcore {
+    font-size: 11px;
+  }
+
+  .sc-worry .wsub {
+    font-size: 11px;
+    color: var(--sub);
+    margin-top: 3px;
+  }
+
+  .sc-check {
+    background: var(--warn-bg);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+
+  .sc-check .ctitle {
+    font-size: 11px;
+    color: var(--warn);
+    margin-bottom: 4px;
+  }
+
+  .sc-check ul {
+    margin: 0;
+    padding-left: 14px;
+    font-size: 11px;
+    color: var(--ink);
+  }
+
+  .sc-check li {
+    margin-bottom: 2px;
+  }
+
+  .sc-recent {
+    font-size: 11px;
+    color: var(--sub);
+  }
+
+  /* 요약 카드 변형 — 상담 이력이 없는 첫 상담 고객 */
+  .sc-firstcall {
+    text-align: center;
+    padding: 22px 8px;
+  }
+
+  .sc-firstcall .msg {
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  /* 나와의 재상담 여부 배지 — 서비스 전체 재상담 여부(isFirstCall)와는 별개로,
+     "이 상담사" 기준 재상담/첫 상담 여부를 보여준다 */
+  .sc-relation {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    border-radius: 8px;
+    padding: 5px 10px;
+    margin-bottom: 12px;
+  }
+
+  .sc-relation.repeat {
+    color: var(--brand);
+    background: var(--brand-soft);
+  }
+
+  .sc-relation.first {
+    color: var(--warn);
+    background: var(--warn-bg);
+  }
+
+  .incoming .actions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 28px;
+  }
+
+  .incoming .actcol {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .incoming .actbtn {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #fff;
+  }
+
+  .incoming .actbtn.reject {
+    background: #e2403f;
+  }
+
+  .incoming .actbtn.accept {
+    background: #35c759;
+  }
+
+  .incoming .actlabel {
+    font-size: 11px;
+    margin-top: 6px;
+  }
+
+  /* 상단 페이지바 — 상세 정보 화면은 타이틀만(탭 전환으로만 동작하는 단일 페이지라 뒤로가기·
+     더보기 없음), 상담 종료 화면은 뒤로가기 포함(화면 전환이라 별도 네비게이션 필요) */
+  .pagebar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: #fff;
+  }
+
+  .pagebar .back {
+    flex: 0 0 auto;
+    width: 22px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .pagebar .title {
+    flex: 1 1 auto;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .pagebar .more {
+    flex: 0 0 auto;
+    width: 22px;
+    text-align: right;
+    font-size: 16px;
+    color: var(--sub);
+    cursor: pointer;
+  }
+
+  .lockbadge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--brand);
+    padding: 7px 0;
+  }
+
+  .detail-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .detail-profile .nm {
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .detail-profile .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 7px;
+  }
+
+  .detail-profile .tag {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--brand);
+    background: var(--brand-soft);
+    border-radius: 999px;
+    padding: 3px 9px;
+  }
+
+  .detail-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--line);
+    padding: 0 16px;
+    position: sticky;
+    top: 49px;
+    background: #fff;
+    z-index: 19;
+  }
+
+  .detail-tab {
+    flex: 1 1 0;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--sub);
+    padding: 11px 0;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .detail-tab.active {
+    color: var(--brand);
+    border-bottom-color: var(--brand);
+  }
+
+  .detail-body {
+    padding: 16px;
+    max-height: calc(100vh - 230px);
+    overflow-y: auto;
+  }
+
+  .dcard {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+
+  .dcard-head {
+    display: flex;
+    align-items: center;
+    background: var(--bg);
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .dcard-grid {
+    font-size: 12px;
+    padding: 2px 0;
+  }
+
+  .dcard-grid .cell {
+    padding: 10px 14px;
+  }
+
+  .dcard-grid .cell .k {
+    display: block;
+    color: var(--sub);
+    font-size: 11px;
+  }
+
+  .dcard-grid .cell .v {
+    display: block;
+    margin-top: 3px;
+    font-weight: 700;
+  }
+
+  .hist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+  }
+
+  .hist-item:active {
+    background: var(--bg);
+  }
+
+  .hist-item .d {
+    flex: 0 0 auto;
+    width: 56px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--sub);
+    padding-top: 1px;
+  }
+
+  .hist-item .info {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .hist-item .t {
+    font-size: 12px;
+  }
+
+  /* 개인정보를 해치지 않는 선에서 상담 핵심 내용만 요약한 보조 라인 —
+     AI 상담노트가 생성된 건에만 달린다 */
+  .hist-item .s {
+    font-size: 11px;
+    color: var(--sub);
+    line-height: 1.5;
+    margin-top: 3px;
+  }
+
+  .hist-item .chev {
+    flex: 0 0 auto;
+    font-size: 13px;
+    color: var(--sub);
+    padding-top: 1px;
+  }
+
+  /* 고민 프로파일 탭 잠금 — 나와는 첫 상담인 고객 (다른 상담사와의 상담 이력은 있음) */
+  .detail-tab.locked {
+    color: var(--sub);
+  }
+
+  .worry-locked {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .worry-locked .wl-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .worry-locked .wl-title {
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .worry-locked .wl-desc {
+    font-size: 12px;
+    color: var(--sub);
+    line-height: 1.6;
+  }
+
+  /* 상담 종료 — 잠금 안내 */
+  .locked-wrap {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 28px;
+  }
+
+  .locked-wrap .icon {
+    font-size: 40px;
+    margin-bottom: 14px;
+  }
+
+  .locked-wrap .title {
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .locked-wrap .desc {
+    font-size: 13px;
+    color: var(--sub);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .locked-wrap .cta {
+    background: var(--brand);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    border-radius: 10px;
+    padding: 12px 24px;
+    cursor: pointer;
+  }
+
+  /* 최초 실행 — 상담사 선택 (단독 페이지) */
+  .setup-wrap {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 28px;
+  }
+
+  .setup-wrap .stitle {
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .setup-wrap .sdesc {
+    font-size: 13px;
+    color: var(--sub);
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  .setup-wrap .spick {
+    display: inline-block;
+    background: var(--brand);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    border-radius: 10px;
+    padding: 12px 28px;
+    cursor: pointer;
+  }
+
+  .setup-wrap .sselected {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    text-align: left;
+  }
+
+  .setup-wrap .sselected .lbl {
+    font-size: 11px;
+    color: var(--sub);
+    margin-bottom: 6px;
+  }
+
+  .setup-wrap .sselected .nm {
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .setup-wrap .sselected .fld {
+    font-size: 13px;
+    color: var(--brand);
+    font-weight: 700;
+  }
+
+  .setup-wrap .slocked {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--sub);
+  }
+
+  .counselor-pick-item {
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+
+  .counselor-pick-item:active {
+    background: var(--bg);
+  }
+
+  .counselor-pick-item .nm {
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .counselor-pick-item .fld {
+    font-size: 13px;
+    color: var(--brand);
+    font-weight: 700;
+    margin-top: 3px;
+  }
+
+  /* 상담사 선택 — 바텀시트(닉네임 검색) */
+  .sheet-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 200px;
+    background: rgba(20, 20, 28, .5);
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 310;
+  }
+
+  .sheet-box {
+    background: #fff;
+    width: 100%;
+    max-width: 420px;
+    max-height: 78vh;
+    border-radius: 20px 20px 0 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, .25);
+  }
+
+  .sheet-handle {
+    width: 36px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--line);
+    margin: 10px auto 4px;
+  }
+
+  .sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px 12px;
+  }
+
+  .sheet-title {
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .sheet-close {
+    font-size: 16px;
+    color: var(--sub);
+    cursor: pointer;
+  }
+
+  .sheet-search {
+    margin: 0 20px 14px;
+    padding: 11px 13px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+  }
+
+  .sheet-search:focus {
+    border-color: var(--brand);
+  }
+
+  .sheet-list {
+    overflow-y: auto;
+    padding: 0 20px 22px;
+  }
+
+  /* 권한 사용 안내 바텀시트 — 상담사 선택보다 먼저 나오는 최초 1회 동의 화면 */
+  .perm-list {
+    overflow-y: auto;
+    padding: 2px 20px 8px;
+  }
+
+  .perm-item {
+    display: flex;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .perm-item:last-child {
+    border-bottom: none;
+  }
+
+  .perm-item .picon {
+    flex: 0 0 auto;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--brand-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+  }
+
+  .perm-item .pname {
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 3px;
+  }
+
+  .perm-item .pdesc {
+    font-size: 12px;
+    color: var(--sub);
+    line-height: 1.5;
+  }
+
+  .perm-agree {
+    margin: 6px 20px 20px;
+    background: var(--brand);
+    color: #fff;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 800;
+    border-radius: 10px;
+    padding: 13px 0;
+    cursor: pointer;
+  }
+
+  .sheet-empty {
+    display: none;
+    text-align: center;
+    font-size: 13px;
+    color: var(--sub);
+    padding: 26px 0;
+  }
+
+  /* 최초 1회 선택 — 수정 불가 확인 노티 */
+  .confirm-icon {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .confirm-title {
+    font-size: 15px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .confirm-desc {
+    font-size: 13px;
+    color: var(--sub);
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .confirm-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .confirm-btn {
+    flex: 1;
+    padding: 12px 0;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 800;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .confirm-btn.cancel {
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  .confirm-btn.ok {
+    background: var(--brand);
+    color: #fff;
+  }
+
+  /* 데모 토스트 */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 40px;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(28, 28, 34, .92);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 20px;
+    border-radius: 999px;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s, transform .2s;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* API 샘플 레이어 팝업 (데모 전용) */
+  .api-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 200px;
+    background: rgba(20, 20, 28, .55);
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+    padding: 24px;
+  }
+
+  .api-modal-box {
+    background: #fff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 82vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .3);
+  }
+
+  .api-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    background: #fff;
+  }
+
+  .api-modal-title {
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .api-modal-close {
+    font-size: 16px;
+    color: var(--sub);
+    cursor: pointer;
+  }
+
+  .api-modal-body {
+    padding: 18px 20px;
+  }
+
+  .api-modal-note {
+    font-size: 12px;
+    color: var(--warn);
+    background: var(--warn-bg);
+    border-radius: 8px;
+    padding: 9px 11px;
+    margin-bottom: 12px;
+  }
+
+  .api-endpoint {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    background: #1c1c22;
+    border-radius: 8px;
+    padding: 9px 12px;
+    margin-bottom: 12px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .api-modal-body pre {
+    margin: 0;
+    background: #15182b;
+    color: #c7e0ff;
+    font-size: 12px;
+    line-height: 1.6;
+    border-radius: 10px;
+    padding: 14px;
+    overflow-x: auto;
+  }
+
+  .api-modal-body .fields {
+    font-size: 12px;
+    color: var(--sub);
+    margin-top: 10px;
+    line-height: 1.6;
+  }
+</style>
+
+<div class="devnav">
+  <a class="devnav-link" href="counselor-app-wireframe-261012.html">→ 와이어프레임으로 보기</a>
+  <div class="devnav-title">단계 이동 (데모 전용)</div>
+  <div class="devnav-item" data-step="nocall" onclick="goToStep('nocall')">1. 앱이 없을 때 (비교)</div>
+  <div class="devnav-item" data-step="summary" onclick="goToStep('summary')">2. 요약 화면</div>
+  <div class="devnav-item" data-step="summaryEmpty" onclick="goToStep('summaryEmpty')">2b. 요약 화면 — 첫 상담</div>
+  <div class="devnav-item" data-step="summaryFirstWithMe" onclick="goToStep('summaryFirstWithMe')">2c. 요약 화면 — 나와는 첫 상담</div>
+  <div class="devnav-item" data-step="profile" onclick="goToStep('profile')">3. 상세 — 고객 프로파일</div>
+  <div class="devnav-item" data-step="worry" onclick="goToStep('worry')">4. 상세 — 고민 프로파일</div>
+  <div class="devnav-item" data-step="worryLocked" onclick="goToStep('worryLocked')">4b. 상세 — 고민 프로파일(잠김)</div>
+  <div class="devnav-item" data-step="history" onclick="goToStep('history')">5. 상세 — 상담 이력</div>
+  <div class="devnav-item" data-step="locked" onclick="goToStep('locked')">6. 상담 종료 — 잠금</div>
+  <div class="devnav-item" data-step="setupPermission" onclick="goToStep('setupPermission')">7. 최초 실행 — 권한 동의</div>
+  <div class="devnav-item" data-step="setupSheet" onclick="goToStep('setupSheet')">8. 최초 실행 — 바텀시트</div>
+  <div class="devnav-item" data-step="setupConfirm" onclick="goToStep('setupConfirm')">9. 최초 실행 — 수정 불가 노티</div>
+  <div class="devnav-item" data-step="setupLocked" onclick="goToStep('setupLocked')">10. 최초 실행 — 선택 완료(잠김)</div>
+  <div class="devnav-title" style="margin-top:14px;">API 샘플 (데모 전용)</div>
+  <div class="devnav-item" onclick="openModal('apiModalSummary')">🔌 요약 화면 API</div>
+  <div class="devnav-item" onclick="openModal('apiModalDetail')">🔌 상세 정보 화면 API</div>
+  <div class="devnav-item" onclick="openModal('apiModalCounselorList')">🔌 상담사 목록 API</div>
+</div>
+
+<div class="phone">
+
+  <!-- 화면 0: 앱이 없을 때 (비교 참고용) -->
+  <div class="screen" id="screenNoCall">
+    <div class="incoming">
+      <div class="ringtext">전화가 왔습니다.</div>
+      <div class="baseline-spacer"></div>
+      <div class="callername">070-4466-8979</div>
+      <div class="baseline-spacer"></div>
+      <div class="actions">
+        <div class="actcol" onclick="toast('거절 — 데모 범위 밖')"><div class="actbtn reject">⏎</div><div class="actlabel">거절</div></div>
+        <div class="actcol" onclick="toast('통화하기 — 비교용 화면, 다음 단계(요약 화면)에서 실제 흐름을 확인하세요')"><div class="actbtn accept">☎</div><div class="actlabel">통화하기</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 화면 1: 상담사 앱 — 요약 화면. 발신번호가 운세당 대표번호로 고정돼 네이티브 전화
+       화면에는 닉네임을 띄울 수 없다 — 상단은 "앱이 없을 때"와 동일, 식별 정보는 그 아래
+       summary-card에만 담는다. #summaryNormal/#summaryFirstCall로 재상담/첫 상담 두 변형을
+       토글한다 -->
+  <div class="screen" id="screenSummary" style="display:none">
+    <div class="incoming">
+      <div class="ringtext">전화가 왔습니다.</div>
+      <div class="callername">070-4466-8979</div>
+      <div class="summary-card">
+        <div id="summaryNormal">
+          <div class="sc-relation repeat">🔁 재상담 고객 · 나와 3번째 상담</div>
+          <div class="sc-profile">
+            <div class="sc-tags">
+              <div class="sc-tag">20대 후반 여성</div>
+              <div class="sc-tag">반려동물 서비스업</div>
+              <div class="sc-tag">미혼</div>
+            </div>
+          </div>
+          <div class="sc-worry">
+            <div class="wtype">- 결혼운</div>
+            <div class="wcore">6년째 교제 중인 남자친구와의 결혼 가능성</div>
+            <div class="wsub">시댁 가풍·신혼집 마련 방식 이견으로 1년째 논의 정체</div>
+          </div>
+          <div class="sc-check">
+            <div class="ctitle">- 이번 상담에서 확인할 사항</div>
+            <ul>
+              <li>남자친구와 신혼집 마련 방식 논의가 진전됐는지 확인</li>
+              <li>연말 삼재 액막이를 진행했는지 확인</li>
+            </ul>
+          </div>
+          <div class="sc-recent">최근 상담일 2026.9.27. (10일 전)</div>
+        </div>
+        <div id="summaryFirstWithMe" style="display:none">
+          <div class="sc-relation first">🆕 처음 상담하는 고객 · 서비스 상담은 3번째</div>
+          <div class="sc-profile">
+            <div class="sc-tags">
+              <div class="sc-tag">30대 초반 남성</div>
+              <div class="sc-tag">IT 개발자</div>
+              <div class="sc-tag">기혼</div>
+            </div>
+          </div>
+          <div class="sc-worry">
+            <div class="wtype">- 사업운</div>
+            <div class="wcore">올해 안에 개인 사업자 전환을 고민 중</div>
+            <div class="wsub">현재 직장 퇴사 시점과 초기 사업자금 마련 방법으로 고민</div>
+          </div>
+          <div class="sc-check">
+            <div class="ctitle">- 이번 상담에서 확인할 사항</div>
+            <ul>
+              <li>퇴사 시점을 구체적으로 정했는지 확인</li>
+              <li>사업자금 대출 상담을 진행했는지 확인</li>
+            </ul>
+          </div>
+          <div class="sc-recent">최근 상담일 2026.9.10. (다른 상담사와 상담)</div>
+        </div>
+        <div id="summaryFirstCall" class="sc-firstcall" style="display:none">
+          <div class="msg">첫 상담입니다.<br>상담 이력이 없습니다.</div>
+        </div>
+      </div>
+      <div class="actions">
+        <div class="actcol" onclick="toast('거절 — 데모 범위 밖')"><div class="actbtn reject">⏎</div><div class="actlabel">거절</div></div>
+        <div class="actcol" onclick="acceptCall()"><div class="actbtn accept">☎</div><div class="actlabel">통화하기</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 화면 2: 상세 정보 화면 (고객 프로파일 / 고민 프로파일 / 상담 이력 공용) -->
+  <div class="screen" id="screenDetail" style="display:none">
+    <div class="pagebar">
+      <div class="title">고객 정보</div>
+    </div>
+    <div class="lockbadge">🔓 상담 중에만 열람 가능 · 종료 즉시 자동 잠금</div>
+    <div class="detail-profile">
+      <div>
+        <div class="nm" id="detailName">포근한 햇살</div>
+        <div class="tags" id="detailTags">
+          <div class="tag">20대 후반 여성</div>
+          <div class="tag">반려동물 서비스업</div>
+          <div class="tag">미혼</div>
+        </div>
+      </div>
+    </div>
+    <div class="detail-tabs">
+      <div class="detail-tab" data-tab="profile" onclick="switchTab('profile')">고객정보</div>
+      <div class="detail-tab" data-tab="worry" onclick="switchTab('worry')"><span id="worryTabLabel">고민정보</span></div>
+      <div class="detail-tab" data-tab="history" onclick="switchTab('history')">상담이력</div>
+    </div>
+    <div class="detail-body" id="detailBody"></div>
+  </div>
+
+  <!-- 화면 3: 상담 종료 — 잠금 안내 -->
+  <div class="screen" id="screenLocked" style="display:none">
+    <div class="pagebar">
+      <div class="back" onclick="goToStep('summary')">‹</div>
+      <div class="title">상담 종료</div>
+      <div class="more"></div>
+    </div>
+    <div class="locked-wrap">
+      <div class="icon">🔒</div>
+      <div class="title">고객 정보가 잠겼어요</div>
+      <div class="desc">상담이 끝나면 고객정보는 바로 잠겨요.<br>다음 상담이 연결되면 다시 열람할 수
+        있어요.</div>
+      <div class="cta" onclick="goToStep('summary')">확인</div>
+    </div>
+  </div>
+
+  <!-- 화면 4: 최초 실행 — 상담사 선택 (단독 페이지, 기존 플로우와 미연결) -->
+  <div class="screen" id="screenSetup" style="display:none">
+    <div class="setup-wrap">
+      <div class="stitle">상담사 설정</div>
+      <div class="sdesc">이 기기에서 사용할 상담사를<br>선택해주세요</div>
+
+      <div id="setupEmpty">
+        <div class="spick" onclick="openModal('counselorSheet')">선택하기</div>
+      </div>
+
+      <div id="setupSelected" style="display:none; width:100%;">
+        <div class="sselected">
+          <div class="lbl">선택된 상담사</div>
+          <div class="nm" id="pickedName">—</div>
+          <div class="fld" id="pickedField">—</div>
+        </div>
+        <div class="slocked">🔒 최초 선택 후에는 변경할 수 없어요<br>변경을 원하시면 운세당으로
+          연락주세요: 070-4466-8979</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<!-- 요약 화면 API 샘플 (데모 전용) -->
+<div class="api-modal" id="apiModalSummary" onclick="if(event.target===this) closeModal('apiModalSummary')">
+  <div class="api-modal-box">
+    <div class="api-modal-head">
+      <div class="api-modal-title">요약 화면 — API 샘플</div>
+      <div class="api-modal-close" onclick="closeModal('apiModalSummary')">✕</div>
+    </div>
+    <div class="api-modal-body">
+      <div class="api-modal-note">⚠️ 데이터 형태 예시 — 실제 엔드포인트명·인증 방식은 개발팀 확정 필요</div>
+      <div class="api-endpoint">GET /api/v1/counselor/call-summary?callId={통화세션ID}</div>
+      <pre><code>{
+  "callId": "call_20261013_0042",
+  "isFirstCall": false,
+  "relationship": {
+    "isFirstTimeWithThisCounselor": false,
+    "pastSessionsWithThisCounselor": 3
+  },
+  "customer": {
+    "customerId": "cst_8841",
+    "nickname": "포근한 햇살",
+    "tags": ["20대 후반 여성", "반려동물 서비스업", "미혼"]
+  },
+  "worry": {
+    "type": "결혼운",
+    "core": "6년째 교제 중인 남자친구와의 결혼 가능성",
+    "background": "시댁 가풍·신혼집 마련 방식 이견으로 1년째 논의 정체"
+  },
+  "checklist": [
+    "남자친구와 신혼집 마련 방식 논의가 진전됐는지 확인",
+    "연말 삼재 액막이를 진행했는지 확인"
+  ],
+  "lastConsultation": {
+    "date": "2026-09-27",
+    "daysAgo": 10,
+    "withThisCounselor": true
+  }
+}</code></pre>
+      <div class="fields">isFirstCall이 true면 customer·worry·checklist·lastConsultation은 모두
+        null — 화면은 "첫 상담입니다. 상담 이력이 없습니다." 문구만 보여준다. isFirstCall과
+        relationship.isFirstTimeWithThisCounselor는 별개 — isFirstCall은 서비스 전체 기준,
+        relationship은 "이 상담사" 기준이다. relationship.isFirstTimeWithThisCounselor가
+        true면 요약 카드에 "처음 상담하는 고객" 배지를, false면 "재상담 고객" 배지를
+        보여준다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 상세 정보 화면(탭 3개 공용) API 샘플 (데모 전용) -->
+<div class="api-modal" id="apiModalDetail" onclick="if(event.target===this) closeModal('apiModalDetail')">
+  <div class="api-modal-box">
+    <div class="api-modal-head">
+      <div class="api-modal-title">상세 정보 화면 — API 샘플</div>
+      <div class="api-modal-close" onclick="closeModal('apiModalDetail')">✕</div>
+    </div>
+    <div class="api-modal-body">
+      <div class="api-modal-note">⚠️ 데이터 형태 예시 — 실제 엔드포인트명·인증 방식은 개발팀 확정 필요</div>
+      <div class="api-endpoint">GET /api/v1/counselor/customers/{customerId}/detail</div>
+      <pre><code>{
+  "relationship": {
+    "isFirstTimeWithThisCounselor": false
+  },
+  "customer": {
+    "customerId": "cst_8841",
+    "nickname": "포근한 햇살",
+    "tags": ["20대 후반 여성", "반려동물 서비스업", "미혼"]
+  },
+  "profile": {
+    "basic": {
+      "gender": "여성",
+      "ageGroup": "20대 후반",
+      "job": "반려동물 서비스업",
+      "maritalStatus": "미혼",
+      "hasChildren": false,
+      "region": "경기도",
+      "regionEstimated": false
+    },
+    "tendency": {
+      "overall": "예민하고 감정 기복이 있지만 사회생활은 능숙한 성향",
+      "counselingStyle": "다른 곳에서 들은 답과 비교하며 재확인하려는 성향",
+      "interests": ["결혼운", "궁합", "결혼 시기"],
+      "sensitiveKeywords": ["시댁 갈등", "경제적 부담", "삼재"]
+    }
+  },
+  "worries": [
+    {
+      "type": "결혼운",
+      "core": "6년째 만난 남자친구와의 결혼 가능성",
+      "relatedPerson": "남자친구",
+      "relationship": "결혼 전제로 교제 중, 1년째 논의 정체",
+      "background": "다른 경로에서 부정적인 답을 듣고 속상해 상담 신청",
+      "currentStatus": "신혼집 마련 방식 이견으로 정체(목표 시기 30살 전후)",
+      "recentChange": "30살 전후 가능성 있다는 답변, 연말 액막이 권유받음"
+    }
+  ],
+  "history": [
+    { "date": "2026-09-27", "worryType": "결혼운", "durationMin": 10,
+      "summary": "6년째 교제 중인 남자친구와의 결혼 가능성, 시댁 궁합 상담" },
+    { "date": "2026-08-02", "worryType": "연애/이별", "durationMin": 15, "summary": null },
+    { "date": "2026-07-20", "worryType": "재물운", "durationMin": 8, "summary": null }
+  ]
+}</code></pre>
+      <div class="fields">worries는 배열 — 고민 유형이 여러 개면 여러 건이 함께 내려온다.
+        history의 summary는 AI 상담노트가 있는 건만 값이 있고 나머지는 null.
+        relationship.isFirstTimeWithThisCounselor가 true면 서버는 worries를 null로
+        내려주고, 클라이언트는 고민 프로파일 탭에 데이터 대신 잠금 화면을 그린다 —
+        고객 프로파일·상담 이력은 이 값과 무관하게 그대로 내려온다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 상담사 목록 API 샘플 (최초 실행 — 상담사 선택 전용) -->
+<div class="api-modal" id="apiModalCounselorList" onclick="if(event.target===this) closeModal('apiModalCounselorList')">
+  <div class="api-modal-box">
+    <div class="api-modal-head">
+      <div class="api-modal-title">상담사 목록 — API 샘플</div>
+      <div class="api-modal-close" onclick="closeModal('apiModalCounselorList')">✕</div>
+    </div>
+    <div class="api-modal-body">
+      <div class="api-modal-note">⚠️ 데이터 형태 예시 — 실제 엔드포인트명·인증 방식은 개발팀 확정 필요</div>
+      <div class="api-endpoint">GET /api/v1/counselor/list</div>
+      <pre><code>{
+  "counselors": [
+    { "cslKey": 35, "nickname": "다정한 별", "field": "애정운 · 궁합" },
+    { "cslKey": 36, "nickname": "환한 미소", "field": "재물운 · 사업운" },
+    { "cslKey": 37, "nickname": "맑은 하늘", "field": "신점(사주명리)" },
+    { "cslKey": 38, "nickname": "듬직한 나무", "field": "타로" }
+  ]
+}</code></pre>
+      <div class="fields">파라미터 없이 호출하면 전체 목록이 내려온다. cslKey는 상담사
+        고유번호 — 상담사를 선택할 때 서버에 이 값을 전달해 누구를 골랐는지 식별한다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 권한 사용 안내 — 바텀시트 (최초 실행 전용, 상담사 선택 바텀시트보다 먼저 노출) -->
+<div class="sheet-overlay" id="permissionSheet" onclick="if(event.target===this) closeModal('permissionSheet')">
+  <div class="sheet-box">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head">
+      <div class="sheet-title">권한 사용 안내</div>
+      <div class="sheet-close" onclick="closeModal('permissionSheet')">✕</div>
+    </div>
+    <div class="perm-list">
+      <div class="perm-item">
+        <div class="picon">📞</div>
+        <div class="pinfo">
+          <div class="pname">통화 상태</div>
+          <div class="pdesc">전화 수신을 감지해 상담 중에만 고객정보를 보여주기 위해 필요해요</div>
+        </div>
+      </div>
+      <div class="perm-item">
+        <div class="picon">📋</div>
+        <div class="pinfo">
+          <div class="pname">통화 기록 읽기(내역)</div>
+          <div class="pdesc">발신번호로 고객을 식별해 상담 이력을 연결하기 위해 필요해요</div>
+        </div>
+      </div>
+      <div class="perm-item">
+        <div class="picon">🗂️</div>
+        <div class="pinfo">
+          <div class="pname">다른 앱 위에 표시</div>
+          <div class="pdesc">전화가 오는 순간 통화 화면 위에 요약 카드를 띄우기 위해 필요해요</div>
+        </div>
+      </div>
+    </div>
+    <div class="perm-agree" onclick="agreePermission()">동의하고 계속하기</div>
+  </div>
+</div>
+
+<!-- 상담사 선택 — 바텀시트(닉네임 검색) (최초 실행 전용, 예시 데이터) -->
+<div class="sheet-overlay" id="counselorSheet" onclick="if(event.target===this) closeModal('counselorSheet')">
+  <div class="sheet-box">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head">
+      <div class="sheet-title">상담사 선택</div>
+      <div class="sheet-close" onclick="closeModal('counselorSheet')">✕</div>
+    </div>
+    <input class="sheet-search" type="text" placeholder="닉네임 검색" oninput="filterCounselors(this.value)">
+    <div class="sheet-list" id="counselorSheetList">
+      <div class="counselor-pick-item" data-name="다정한 별" onclick="pickCounselor('다정한 별', '애정운 · 궁합')">
+        <div class="nm">다정한 별</div>
+        <div class="fld">애정운 · 궁합</div>
+      </div>
+      <div class="counselor-pick-item" data-name="환한 미소" onclick="pickCounselor('환한 미소', '재물운 · 사업운')">
+        <div class="nm">환한 미소</div>
+        <div class="fld">재물운 · 사업운</div>
+      </div>
+      <div class="counselor-pick-item" data-name="맑은 하늘" onclick="pickCounselor('맑은 하늘', '신점(사주명리)')">
+        <div class="nm">맑은 하늘</div>
+        <div class="fld">신점(사주명리)</div>
+      </div>
+      <div class="counselor-pick-item" data-name="듬직한 나무" onclick="pickCounselor('듬직한 나무', '타로')">
+        <div class="nm">듬직한 나무</div>
+        <div class="fld">타로</div>
+      </div>
+      <div class="sheet-empty" id="sheetEmptyMsg">검색 결과가 없어요</div>
+    </div>
+  </div>
+</div>
+
+<!-- 최초 1회 선택 — 수정 불가 확인 노티 -->
+<div class="api-modal" id="counselorConfirmModal">
+  <div class="api-modal-box" style="max-width:360px;">
+    <div class="api-modal-body">
+      <div class="confirm-icon">⚠️</div>
+      <div class="confirm-title">상담사는 최초 1회만 선택할 수 있어요</div>
+      <div class="confirm-desc"><strong id="confirmName">—</strong>(으)로 선택하면 이후에는
+        변경할 수 없습니다. 선택하시겠어요?</div>
+      <div class="confirm-actions">
+        <div class="confirm-btn cancel" onclick="cancelCounselorPick()">취소</div>
+        <div class="confirm-btn ok" onclick="confirmCounselorPick()">확인</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* 상세 정보 화면 — 탭별 데이터 (전략기획안 Appendix 02 고객/고민 프로파일 필드).
+     profile/worry/history 예시 값은 docs/sample-note.md(결혼운 상담 샘플 1건)을 분석해
+     구성 — 개인정보 보호를 위해 생년월일·직장명 등은 연령대·업종 같은 범주형 값으로 바꿔
+     표기했다. */
+  var TAB_HTML = {
+    profile: ''
+      + '<div class="dcard">'
+      + '<div class="dcard-head">기본 정보</div>'
+      + '<div class="dcard-grid">'
+      + '<div class="cell"><div class="k">성별</div><div class="v">여성</div></div>'
+      + '<div class="cell"><div class="k">연령대</div><div class="v">20대 후반</div></div>'
+      + '<div class="cell"><div class="k">직업</div><div class="v">반려동물 서비스업</div></div>'
+      + '<div class="cell"><div class="k">결혼 여부</div><div class="v">미혼</div></div>'
+      + '<div class="cell"><div class="k">자녀 여부</div><div class="v">없음</div></div>'
+      + '<div class="cell"><div class="k">거주 지역</div><div class="v">경기도</div></div>'
+      + '</div></div>'
+      + '<div class="dcard">'
+      + '<div class="dcard-head">성향 정보</div>'
+      + '<div class="dcard-grid">'
+      + '<div class="cell"><div class="k">전체 성향</div><div class="v">예민하고 감정 기복이 있지만 사회생활은 능숙한 성향</div></div>'
+      + '<div class="cell"><div class="k">상담 성향</div><div class="v">다른 곳에서 들은 답과 비교하며 재확인하려는 성향</div></div>'
+      + '<div class="cell"><div class="k">주요 관심사</div><div class="v">결혼운, 궁합, 결혼 시기</div></div>'
+      + '<div class="cell"><div class="k">민감 키워드</div><div class="v">시댁 갈등, 경제적 부담, 삼재</div></div>'
+      + '</div></div>',
+    worry: ''
+      + '<div class="dcard">'
+      + '<div class="dcard-head">결혼운</div>'
+      + '<div class="dcard-grid">'
+      + '<div class="cell"><div class="k">고민 유형</div><div class="v">결혼운</div></div>'
+      + '<div class="cell"><div class="k">핵심 고민</div><div class="v">6년째 만난 남자친구와의 결혼 가능성</div></div>'
+      + '<div class="cell"><div class="k">관련 인물</div><div class="v">남자친구</div></div>'
+      + '<div class="cell"><div class="k">상대방과의 관계</div><div class="v">결혼 전제로 교제 중, 1년째 논의 정체</div></div>'
+      + '<div class="cell"><div class="k">고민 배경</div><div class="v">다른 경로에서 부정적인 답을 듣고 속상해 상담 신청</div></div>'
+      + '<div class="cell"><div class="k">현재 상황</div><div class="v">신혼집 마련 방식 이견으로 정체(목표 시기 30살 전후)</div></div>'
+      + '<div class="cell"><div class="k">주요 변화</div><div class="v">30살 전후 가능성 있다는 답변, 연말 액막이 권유받음</div></div>'
+      + '</div></div>',
+    history: ''
+      + '<div class="hist-item" onclick="toast(\'→ AI 상담노트 상세 — 데모 범위 밖\')"><div class="d">09.27</div><div class="info"><div class="t">결혼운 상담 · 10분</div><div class="s">6년째 교제 중인 남자친구와의 결혼 가능성, 시댁 궁합 상담</div></div><div class="chev">›</div></div>'
+      + '<div class="hist-item" onclick="toast(\'→ AI 상담노트 상세 — 데모 범위 밖\')"><div class="d">08.02</div><div class="info"><div class="t">연애/이별 상담 · 15분</div></div><div class="chev">›</div></div>'
+      + '<div class="hist-item" onclick="toast(\'→ AI 상담노트 상세 — 데모 범위 밖\')"><div class="d">07.20</div><div class="info"><div class="t">재물운 상담 · 8분</div></div><div class="chev">›</div></div>'
+  };
+
+  /* 상세 정보 화면 — 고객 식별 정보(이름·태그) 전환. 고민 프로파일 잠금 데모에서만
+     "차분한 강"으로 바꿔 보여주고, 그 외에는 항상 기본 샘플(포근한 햇살)로 되돌린다 */
+  var DETAIL_CUSTOMERS = {
+    repeat: { name: '포근한 햇살', tags: ['20대 후반 여성', '반려동물 서비스업', '미혼'] },
+    firstWithMe: { name: '차분한 강', tags: ['30대 초반 남성', 'IT 개발자', '기혼'] }
+  };
+
+  function setDetailCustomer(key) {
+    var c = DETAIL_CUSTOMERS[key];
+    document.getElementById('detailName').textContent = c.name;
+    document.getElementById('detailTags').innerHTML = c.tags.map(function (t) { return '<div class="tag">' + t + '</div>'; }).join('');
+  }
+
+  /* 고민 프로파일 탭 잠금 — 나와는 첫 상담인 고객(다른 상담사와의 상담 이력은 있음) */
+  var worryTabLocked = false;
+  var WORRY_LOCKED_HTML = ''
+    + '<div class="worry-locked">'
+    + '<div class="wl-icon">🔒</div>'
+    + '<div class="wl-title">고민 프로파일은 아직 열 수 없어요</div>'
+    + '<div class="wl-desc">이 고객과는 첫 상담이에요.<br>다른 상담사와의 상담 이력으로 만들어진 고민 프로파일은, 상담사님과 상담이 쌓인 후부터 볼 수 있어요.</div>'
+    + '</div>';
+
+  function setWorryLocked(locked) {
+    worryTabLocked = locked;
+    document.querySelector('.detail-tab[data-tab="worry"]').classList.toggle('locked', locked);
+    document.getElementById('worryTabLabel').textContent = locked ? '🔒 고민정보' : '고민정보';
+  }
+
+  function switchTab(key) {
+    if (key === 'worry' && worryTabLocked) {
+      toast('고민 프로파일은 아직 열 수 없어요 — 상담이 쌓인 후 공개돼요');
+      return;
+    }
+    var tabs = document.querySelectorAll('.detail-tab');
+    for (var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === key);
+    document.getElementById('detailBody').innerHTML = TAB_HTML[key];
+  }
+
+  /* 고민 프로파일 잠금 상태를 바로 미리보기 위한 진입점 — switchTab의 잠금 가드를
+     우회해 탭을 "고민 프로파일"에 고정하고 잠금 화면을 직접 그린다 */
+  function showWorryLockedDemo() {
+    setDetailCustomer('firstWithMe');
+    setWorryLocked(true);
+    var tabs = document.querySelectorAll('.detail-tab');
+    for (var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === 'worry');
+    document.getElementById('detailBody').innerHTML = WORRY_LOCKED_HTML;
+  }
+
+  function acceptCall() {
+    toast('통화 연결 — 상담 중에만 고객정보 열람 가능');
+    hideAllScreens();
+    setDetailCustomer('repeat');
+    setWorryLocked(false);
+    document.getElementById('screenDetail').style.display = 'block';
+    switchTab('profile');
+    window.scrollTo(0, 0);
+  }
+
+  /* 데모 토스트 */
+  var toastTimer = null;
+  function toast(msg) {
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('show'); }, 1800);
+  }
+
+  /* API 샘플 레이어 팝업 (데모 전용) */
+  function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+
+  /* 좌측 단계 이동 메뉴 — 각 단계 화면을 클릭 한 번에 바로 확인 */
+  function hideAllScreens() {
+    document.getElementById('screenNoCall').style.display = 'none';
+    document.getElementById('screenSummary').style.display = 'none';
+    document.getElementById('screenDetail').style.display = 'none';
+    document.getElementById('screenLocked').style.display = 'none';
+    document.getElementById('screenSetup').style.display = 'none';
+  }
+
+  function setActiveNav(key) {
+    var items = document.querySelectorAll('.devnav-item');
+    for (var i = 0; i < items.length; i++) items[i].classList.remove('active');
+    var el = document.querySelector('.devnav-item[data-step="' + key + '"]');
+    if (el) el.classList.add('active');
+  }
+
+  /* 잠금 안내 화면은 "확인" 클릭 또는 3초 경과 중 먼저 일어나는 쪽으로 자동 해제된다 —
+     다른 단계로 이동할 때도 대기 중인 타이머는 취소한다 */
+  var lockedTimer = null;
+
+  function goToStep(key) {
+    hideAllScreens();
+    setActiveNav(key);
+    window.scrollTo(0, 0);
+    clearTimeout(lockedTimer);
+
+    if (key === 'nocall') {
+      document.getElementById('screenNoCall').style.display = 'block';
+    } else if (key === 'summary' || key === 'summaryEmpty' || key === 'summaryFirstWithMe') {
+      document.getElementById('summaryNormal').style.display = key === 'summary' ? '' : 'none';
+      document.getElementById('summaryFirstWithMe').style.display = key === 'summaryFirstWithMe' ? 'block' : 'none';
+      document.getElementById('summaryFirstCall').style.display = key === 'summaryEmpty' ? 'block' : 'none';
+      document.getElementById('screenSummary').style.display = 'block';
+    } else if (key === 'profile' || key === 'worry' || key === 'history') {
+      document.getElementById('screenDetail').style.display = 'block';
+      setDetailCustomer('repeat');
+      setWorryLocked(false);
+      switchTab(key);
+    } else if (key === 'worryLocked') {
+      document.getElementById('screenDetail').style.display = 'block';
+      showWorryLockedDemo();
+    } else if (key === 'locked') {
+      document.getElementById('screenLocked').style.display = 'block';
+      lockedTimer = setTimeout(function () { goToStep('summary'); }, 3000);
+    } else if (key === 'setupPermission' || key === 'setupSheet' || key === 'setupConfirm' || key === 'setupLocked') {
+      /* 최초 실행 — 상담사 선택의 4단계를 각각 바로 미리보기 위한 진입점.
+         실제 플로우(권한 동의 → 바텀시트 → 노티 → 잠김)는 화면 안 버튼을 눌러도
+         그대로 이어진다 — 아래는 메뉴로 특정 단계만 바로 볼 때를 위한 상태 초기화다. */
+      document.getElementById('screenSetup').style.display = 'block';
+      document.getElementById('setupEmpty').style.display = '';
+      document.getElementById('setupSelected').style.display = 'none';
+      closeModal('permissionSheet');
+      closeModal('counselorSheet');
+      closeModal('counselorConfirmModal');
+
+      if (key === 'setupPermission') {
+        openModal('permissionSheet');
+      } else if (key === 'setupSheet') {
+        openModal('counselorSheet');
+      } else if (key === 'setupConfirm') {
+        pendingCounselor = { name: '맑은 하늘', field: '신점(사주명리)' };
+        document.getElementById('confirmName').textContent = pendingCounselor.name;
+        openModal('counselorConfirmModal');
+      } else if (key === 'setupLocked') {
+        document.getElementById('pickedName').textContent = '맑은 하늘';
+        document.getElementById('pickedField').textContent = '신점(사주명리)';
+        document.getElementById('setupEmpty').style.display = 'none';
+        document.getElementById('setupSelected').style.display = 'block';
+      }
+    }
+  }
+
+  /* 상담사 선택 — 바텀시트 검색 + 최초 1회 선택 노티 (데모 전용) */
+  function filterCounselors(query) {
+    var items = document.querySelectorAll('#counselorSheetList .counselor-pick-item');
+    var q = query.trim();
+    var anyVisible = false;
+    for (var i = 0; i < items.length; i++) {
+      var match = items[i].getAttribute('data-name').indexOf(q) !== -1;
+      items[i].style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    }
+    document.getElementById('sheetEmptyMsg').style.display = anyVisible ? 'none' : 'block';
+  }
+
+  /* 권한 사용 안내 — 동의하면 곧바로 상담사 선택 바텀시트로 이어진다 */
+  function agreePermission() {
+    closeModal('permissionSheet');
+    openModal('counselorSheet');
+  }
+
+  var pendingCounselor = null;
+
+  function pickCounselor(name, field) {
+    pendingCounselor = { name: name, field: field };
+    closeModal('counselorSheet');
+    document.getElementById('confirmName').textContent = name;
+    openModal('counselorConfirmModal');
+  }
+
+  function cancelCounselorPick() {
+    pendingCounselor = null;
+    closeModal('counselorConfirmModal');
+  }
+
+  function confirmCounselorPick() {
+    if (!pendingCounselor) return;
+    document.getElementById('pickedName').textContent = pendingCounselor.name;
+    document.getElementById('pickedField').textContent = pendingCounselor.field;
+    document.getElementById('setupEmpty').style.display = 'none';
+    document.getElementById('setupSelected').style.display = 'block';
+    closeModal('counselorConfirmModal');
+  }
+
+  goToStep('nocall');
+</script>

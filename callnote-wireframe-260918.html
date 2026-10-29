@@ -1,0 +1,1906 @@
+<meta charset="utf-8">
+<title>AI 상담노트 — 와이어프레임 — 운세당</title>
+<style>
+  :root {
+    --ink: #1c1c22;
+    --sub: #5b5b66;
+    --line: #e3e3ea;
+    --bg: #f6f6f9;
+    --card: #ffffff;
+    --accent: #5b4bff;
+    --accent-soft: #eeecff;
+    --warn: #b5590a;
+    --warn-bg: #fff2e2;
+    --gray-badge: #5c5c68;
+  }
+
+  * {
+    box-sizing: border-box
+  }
+
+  body {
+    margin: 0;
+    padding: 32px 20px 80px 220px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    line-height: 1.55;
+  }
+
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto
+  }
+
+  /* 좌측 단계 이동 메뉴 (데모 전용 — 실제 서비스 화면 아님, mockup/callnote-mockup.html과
+     동일한 UI로 구성) */
+  .devnav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 190px;
+    background: #fff;
+    border-right: 1px solid var(--line);
+    padding: 18px 10px;
+    overflow-y: auto;
+    z-index: 200;
+  }
+
+  .devnav-title {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--sub);
+    padding: 0 8px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+  }
+
+  .devnav-item {
+    display: block;
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.4;
+    padding: 9px 8px;
+    border-radius: 8px;
+    text-decoration: none;
+  }
+
+  .devnav-item:hover {
+    background: var(--bg);
+  }
+
+  .devnav-link {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    padding: 9px 8px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px dashed var(--accent);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .devnav-link:hover {
+    background: var(--accent-soft);
+  }
+
+  .devnav-sep {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 10px 4px;
+  }
+
+  h1 {
+    font-size: 22px;
+    margin: 0 0 4px
+  }
+
+  .banner {
+    background: var(--warn-bg);
+    color: var(--warn);
+    border: 1px solid #f3d3a6;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 14px 0 28px;
+  }
+
+  .top {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width:720px) {
+    .top {
+      grid-template-columns: 1fr
+    }
+  }
+
+  .top .box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+
+  .top .box h2 {
+    font-size: 14px;
+    margin: 0 0 10px;
+    color: var(--accent)
+  }
+
+  .top .box ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 13px;
+    color: var(--ink)
+  }
+
+  .top .box li {
+    margin-bottom: 6px
+  }
+
+  .top .box .num {
+    font-weight: 700;
+    color: var(--accent)
+  }
+
+  .section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+
+  .section h3 {
+    font-size: 16px;
+    margin: 0 0 12px
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 28px;
+    align-items: start
+  }
+
+  @media (max-width:720px) {
+    .row {
+      grid-template-columns: 1fr
+    }
+  }
+
+  /* 모바일 목업 프레임 */
+  .phone {
+    width: 260px;
+    border: 6px solid #23232b;
+    border-radius: 28px;
+    background: #fff;
+    overflow: hidden;
+    margin: 0 auto;
+  }
+
+  .phone .status {
+    height: 18px;
+    background: #23232b
+  }
+
+  .phone .screen {
+    padding: 12px;
+    min-height: 360px
+  }
+
+  /* 상담 헤더 정보 목업 (분해 1번 전용) */
+  .mock-header {
+    margin: -12px -12px 10px;
+    padding: 12px 12px 10px;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .05);
+  }
+
+  .mock-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mock-profile .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: #dcdcec;
+    flex: 0 0 auto;
+  }
+
+  .mock-profile .profile-info {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .mock-profile .nm {
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .mock-profile .meta {
+    font-size: 10px;
+    color: var(--sub);
+    margin-top: 2px;
+  }
+
+  /* 상담일자 선택 칩 메뉴 목업 (분해 1번 — 2회 이상 상담 시에만 노출, 최근 날짜가
+     가장 좌측에 오고 영역 스크롤로 나머지를 확인) */
+  .date-chips {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    margin-top: 10px;
+  }
+
+  .date-chip {
+    flex: 0 0 auto;
+    font-size: 10px;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 12px;
+    white-space: nowrap;
+  }
+
+  .date-chip.active {
+    color: #fff;
+    background: var(--accent);
+    border-color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* 상담후기 작성 팝업 목업 (신규) */
+  .mock-popup-screen {
+    position: relative;
+  }
+
+  .mock-chat-dim {
+    filter: blur(1px);
+    opacity: .45;
+  }
+
+  .mock-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(28, 28, 34, .55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  .mock-popup {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px 16px;
+    width: 100%;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+  }
+
+  .mock-popup-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .mock-popup-sub {
+    font-size: 10px;
+    color: var(--sub);
+    text-align: center;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .mock-popup-textarea {
+    font-size: 10px;
+    color: var(--sub);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+    min-height: 90px;
+    margin-bottom: 12px;
+  }
+
+  .mock-popup-primary {
+    width: fit-content;
+    margin: 0 auto 8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 8px;
+    padding: 8px 20px;
+  }
+
+  .mock-popup-skip {
+    font-size: 10px;
+    color: var(--sub);
+    text-align: center;
+    text-decoration: underline;
+  }
+
+  /* 상담후기 객관식(복수선택) 목업 (신규 — 1단계 전용) */
+  .mock-popup-step {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .mock-review-group {
+    margin-bottom: 10px;
+  }
+
+  .mock-review-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .mock-review-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  .mock-review-chip {
+    font-size: 9px;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 10px;
+    white-space: nowrap;
+  }
+
+  .mock-review-chip.on {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* 상담후기 별점 목업 (신규 — 2단계 전용) */
+  .mock-stars {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--line);
+    margin-bottom: 12px;
+  }
+
+  .mock-stars .star.on {
+    color: #f5b400;
+  }
+
+  /* 대화 목록 목업 (분해 2·3·4번 공용) */
+  .mock-chat {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mock-bubble {
+    align-self: flex-start;
+    max-width: 78%;
+    background: #f0f0f5;
+    color: var(--ink);
+    border-radius: 12px 12px 12px 2px;
+    padding: 8px 10px;
+    font-size: 10px;
+  }
+
+  .mock-bubble.mine {
+    align-self: flex-end;
+    background: var(--accent-soft);
+    color: var(--ink);
+    border-radius: 12px 12px 2px 12px;
+  }
+
+  .mock-meta {
+    align-self: flex-end;
+    font-size: 8px;
+    color: var(--sub);
+    margin-top: -4px;
+  }
+
+  .mock-meta.left {
+    align-self: flex-start;
+  }
+
+  .mock-scrollcue {
+    align-self: center;
+    font-size: 9px;
+    color: var(--sub);
+  }
+
+  .mock-chunk {
+    align-self: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 2px 10px;
+  }
+
+  /* 재상담 하단 고정바 목업 (분해 5번 — GNB 형식 스티키) */
+  .mock-stickybar-screen {
+    display: flex;
+    flex-direction: column;
+    height: 360px;
+  }
+
+  .mock-stickybar-screen .mock-chat {
+    flex: 1 1 auto;
+  }
+
+  .mock-stickybar {
+    flex: 0 0 auto;
+    margin: 14px -12px -12px;
+    padding: 10px 12px 12px;
+    background: #fff;
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, .05);
+  }
+
+  .mock-player {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .mock-player-btn {
+    flex: 0 0 auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+  }
+
+  .mock-player-track {
+    position: relative;
+    flex: 1 1 auto;
+    height: 4px;
+    background: var(--line);
+    border-radius: 999px;
+  }
+
+  .mock-player-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 32%;
+    background: var(--accent);
+    border-radius: 999px;
+  }
+
+  .mock-player-thumb {
+    position: absolute;
+    left: 32%;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 2px #fff;
+    transform: translate(-50%, -50%);
+  }
+
+  .mock-player-time {
+    flex: 0 0 auto;
+    font-size: 9px;
+    color: var(--sub);
+    white-space: nowrap;
+  }
+
+  .mock-callrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mock-callbtn {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1px;
+    border-radius: 8px;
+    padding: 11px 0;
+    box-shadow: 0 4px 12px rgba(91, 75, 255, .35);
+  }
+
+  .mock-callbtn .status-text {
+    font-size: 10px;
+    font-weight: 400;
+    opacity: .85;
+  }
+
+  .mock-callbtn .sep {
+    width: 1px;
+    height: 12px;
+    background: rgba(255, 255, 255, .35);
+  }
+
+  /* 상담노트 목록 목업 (분해 6번 전용) */
+  .mock-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .mock-listitem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .mock-listitem .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #dcdcec;
+    flex: 0 0 auto;
+  }
+
+  .mock-listitem .info {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .mock-listitem .nm {
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .mock-listitem .meta {
+    font-size: 9px;
+    color: var(--sub);
+    margin-top: 2px;
+  }
+
+  .mock-listitem .chevron {
+    font-size: 12px;
+    color: var(--sub);
+    flex: 0 0 auto;
+  }
+
+  .mock-listitem.active {
+    background: var(--accent-soft);
+    border-radius: 8px;
+  }
+
+  .mock-listitem.active .chevron {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* 뒤로가기 버튼 목업 (신규 — 목록/상세 헤더 공용) */
+  .mock-backbtn {
+    flex: 0 0 auto;
+    width: 20px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+    text-align: center;
+  }
+
+  /* 목록 상단 페이지 타이틀 목업 (분해 6번) */
+  .mock-pagetitle {
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 10px;
+  }
+
+  .mock-pagetitle-text {
+    flex: 1 1 auto;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .mock-pagetitle-spacer {
+    flex: 0 0 auto;
+    width: 20px;
+  }
+
+  .mock-listitem .nm .count {
+    font-weight: 400;
+    color: var(--sub);
+  }
+
+  .flow-arrow {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin: -12px 0 28px;
+  }
+
+  /* 상담노트 목록 — 빈 상태(서비스 소개) 목업 (신규) */
+  .mock-emptystate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 30px 4px 4px;
+  }
+
+  .mock-emptystate .icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+
+  .mock-emptystate .title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .mock-emptystate .desc-text {
+    font-size: 11px;
+    color: var(--sub);
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+
+  .mock-emptystate .features {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .mock-emptystate .feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--ink);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .mock-emptystate .feature .fi {
+    flex: 0 0 auto;
+    font-size: 16px;
+  }
+
+  .mock-emptystate .cta {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 8px;
+    padding: 12px 0;
+  }
+
+  /* 상담하기 — AI 상담노트 안내 토글 목업 (신규) */
+  .mock-callsheet {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+  }
+
+  .mock-callsheet-topbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .mock-callsheet-title {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .mock-callsheet-help {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    border: 1px solid var(--sub);
+    color: var(--sub);
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mock-callsheet-close {
+    margin-left: auto;
+    font-size: 14px;
+    color: var(--sub);
+  }
+
+  .mock-callsheet-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .mock-callsheet-profile .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #dcdcec;
+    flex: 0 0 auto;
+  }
+
+  .mock-callsheet-profile .badge {
+    display: block;
+    font-size: 9px;
+    font-weight: 700;
+    color: #e14e9c;
+    margin-bottom: 1px;
+  }
+
+  .mock-callsheet-profile .nm {
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .mock-callsheet-pricebox {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+
+  .mock-callsheet-price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .mock-callsheet-price-row + .mock-callsheet-price-row {
+    margin-top: 8px;
+  }
+
+  .mock-callsheet-price-row .label {
+    font-size: 10px;
+    color: var(--sub);
+  }
+
+  .mock-callsheet-price-row .value {
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .mock-callsheet-price-row .value .unit {
+    font-size: 9px;
+    font-weight: 400;
+    color: var(--sub);
+  }
+
+  .mock-callsheet-charge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .mock-callsheet-charge-btn {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    padding: 2px 8px;
+  }
+
+  .mock-callsheet-highlight {
+    font-size: 10px;
+    color: var(--ink);
+    background: var(--warn-bg);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin: 8px 0 12px;
+  }
+
+  .mock-callsheet-highlight .em {
+    color: var(--warn);
+    font-weight: 700;
+  }
+
+  .mock-callsheet-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.5;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+  }
+
+  .mock-callsheet-note .note-icon {
+    flex: 0 0 auto;
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  .mock-callsheet-cta-row {
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .mock-callsheet-toggle {
+    flex: 0 0 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--ink);
+    padding: 8px 0;
+  }
+
+  .mock-callsheet-toggle .check {
+    width: 13px;
+    height: 13px;
+    border-radius: 4px;
+    border: 1px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: transparent;
+  }
+
+  .mock-callsheet-toggle.on {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .mock-callsheet-toggle.on .check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .mock-callsheet-btn {
+    flex: 0 0 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ef5b71;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 8px;
+    padding: 8px 0;
+    white-space: nowrap;
+  }
+
+  /* AI 상담노트 이용 동의 팝업 목업 (신규 — 토글 체크 시 노출) */
+  .mock-consent {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+  }
+
+  .mock-consent-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .mock-consent-sub {
+    font-size: 10px;
+    color: var(--sub);
+    margin-bottom: 10px;
+  }
+
+  .mock-consent-body {
+    position: relative;
+    max-height: 150px;
+    overflow: hidden;
+    font-size: 9px;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  .mock-consent-body::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 28px;
+    background: linear-gradient(rgba(255, 255, 255, 0), #fff);
+  }
+
+  .mock-consent-clause {
+    font-weight: 700;
+    margin-top: 8px;
+  }
+
+  .mock-consent-scrollhint {
+    text-align: center;
+    font-size: 9px;
+    color: var(--sub);
+    margin: 8px 0 12px;
+  }
+
+  .mock-consent-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .mock-consent-btn {
+    flex: 1 1 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 10px 0;
+  }
+
+  .mock-consent-btn.cancel {
+    background: var(--bg);
+    color: var(--ink);
+  }
+
+  .mock-consent-btn.agree {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .desc .clause {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 14px 0 6px;
+  }
+
+  .desc .clause:first-child {
+    margin-top: 0;
+  }
+
+  /* 원문(천명 동의서) 대비 추가·수정된 내용 표시 (신규 — 동의 팝업 검수용) */
+  .desc .mod {
+    color: #0f9d58;
+  }
+
+  /* 확인·입력이 필요한 값 표시 (이모지 대신 폰트 색상으로 구분 — 팀 리더 지시) */
+  .desc .check {
+    color: var(--warn);
+  }
+
+  /* 상담노트 생성 알림 목업 (신규 — 카카오 알림톡/문자) */
+  .mock-alarm-screen {
+    padding-top: 10px;
+  }
+
+  .mock-alarm {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+  }
+
+  .mock-alarm-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--sub);
+  }
+
+  .mock-alarm-badge {
+    background: var(--accent);
+    color: #fff;
+    font-size: 8px;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 2px 5px;
+  }
+
+  .mock-alarm-body {
+    padding: 12px;
+  }
+
+  .mock-alarm-title {
+    font-size: 11px;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  .mock-alarm-text {
+    font-size: 10px;
+    color: var(--ink);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .mock-alarm-btn {
+    margin: 10px 12px 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 8px;
+    padding: 10px 0;
+  }
+
+  .mock-alarm-fallback {
+    margin-top: 10px;
+    font-size: 9px;
+    color: var(--sub);
+    text-align: center;
+  }
+
+  .desc h4 {
+    font-size: 13px;
+    margin: 0 0 6px;
+    color: var(--accent)
+  }
+
+  .desc p {
+    font-size: 13px;
+    margin: 0 0 10px
+  }
+
+  .desc ul {
+    margin: 0 0 12px;
+    padding-left: 18px;
+    font-size: 13px
+  }
+
+  .desc li {
+    margin-bottom: 4px
+  }
+</style>
+
+<div class="devnav">
+  <a class="devnav-link" href="./callnote-mockup-260918.html">→ 목업으로 보기</a>
+  <div class="devnav-title">섹션 이동</div>
+  <a class="devnav-item" href="#s-callsheet">상담하기 — AI 상담노트 토글</a>
+  <a class="devnav-item" href="#s-consent">AI 상담노트 이용 동의 팝업</a>
+  <a class="devnav-item" href="#s-alarm">상담노트 생성 알림</a>
+  <a class="devnav-item" href="#s-list">상담노트 목록</a>
+  <a class="devnav-item" href="#s-list-empty">상담노트 목록 — 빈 상태</a>
+  <a class="devnav-item" href="#s-header">상담 헤더 정보</a>
+  <a class="devnav-item" href="#s-review1">상담후기 팝업 (1/2)</a>
+  <a class="devnav-item" href="#s-review2">상담후기 팝업 (2/2)</a>
+  <a class="devnav-item" href="#s-chatlist">대화 목록 뷰</a>
+  <a class="devnav-item" href="#s-scroll">메시지 스크롤 탐색</a>
+  <a class="devnav-item" href="#s-chatrules">대화 내용 표시 규칙</a>
+  <a class="devnav-item" href="#s-stickybar">재상담 하단 고정바</a>
+</div>
+
+<div class="wrap">
+  <h1>AI 상담노트 — 와이어프레임</h1>
+  <div class="banner">⚠️ 와이어프레임 — 실제 서비스 화면이 아닙니다.</div>
+
+  <div class="top">
+    <div class="box">
+      <h2>목적</h2>
+      <ul>
+        <li>상담을 마친 후 녹음된 음성 파일을 활용해, 선생님과 상담자가 서로 대화한 듯한
+          형식의 페이지를 구성한다</li>
+        <li>상담 후기 작성을 유도해 만족도를 기록하고, 리워드(코인) 지급으로 재상담 전환을
+          높인다</li>
+        <li>상담사(선생님)의 상담지수를 분석할 수 있는 데이터를 수집한다</li>
+        <li>고객 데이터와 그 고객이 어떤 고민을 상담했는지에 대한 분석데이터를 수집한다</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h2>성공지표</h2>
+      <ul>
+        <li>해당 페이지를 통한 재상담 진행(동일 선생님 또는 다른 선생님)률 <span class="num">30%</span> 달성</li>
+        <li>상담지수 분석데이터를 활용해 상담지수가 높은 상담사를 우선 노출, 첫 상담율을
+          증가시킨다</li>
+        <li>고객 분석데이터를 활용해 재상담율을 증가시킨다</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 섹션 0-0: 상담하기 — AI 상담노트 안내 토글 (신규) -->
+  <div class="section" id="s-callsheet">
+    <h3>상담하기 — AI 상담노트 안내 토글</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-callsheet">
+            <div class="mock-callsheet-topbar">
+              <div class="mock-callsheet-title">상담하기</div>
+              <div class="mock-callsheet-help">?</div>
+              <div class="mock-callsheet-close">✕</div>
+            </div>
+            <div class="mock-callsheet-profile">
+              <div class="avatar"></div>
+              <div class="info">
+                <div class="badge">신점</div>
+                <div class="nm">보영 선생님</div>
+              </div>
+            </div>
+            <div class="mock-callsheet-pricebox">
+              <div class="mock-callsheet-price-row">
+                <div class="label">선불 상담</div>
+                <div class="value">1,300코인 <span class="unit">(30초)</span></div>
+              </div>
+              <div class="mock-callsheet-price-row">
+                <div class="label mock-callsheet-charge">보유 코인
+                  <span class="mock-callsheet-charge-btn">충전</span>
+                </div>
+                <div class="value">369,000코인</div>
+              </div>
+            </div>
+            <div class="mock-callsheet-highlight">보유 코인으로 약
+              <span class="em">141분</span> 상담 가능해요</div>
+            <div class="mock-callsheet-pricebox">
+              <div class="mock-callsheet-price-row">
+                <div class="label">후불 상담</div>
+                <div class="value">1,600원 <span class="unit">(30초)</span></div>
+              </div>
+            </div>
+            <div class="mock-callsheet-note"><span class="note-icon">✨</span><span>상담을
+              시작하면 AI가 대화를 자동으로 정리해 상담노트로 만들어드려요.</span></div>
+            <div class="mock-callsheet-cta-row">
+              <div class="mock-callsheet-toggle on">
+                <span class="check">✓</span>
+                <span class="toggle-label">AI 상담노트</span>
+              </div>
+              <div class="mock-callsheet-btn">상담하기</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>상담하기 팝업(선생님 프로필, 선불·후불 상담 정보 등 기존 구성은 유지)
+          하단에서, 상담자가 상담을 시작하기 전 AI 상담노트 생성 여부를 직접 선택할
+          수 있게 한다.</p>
+        <ul>
+          <li>기존 전체 폭으로 노출되던 상담하기 버튼을 원래 크기의 3/5 수준으로
+            줄인다</li>
+          <li>버튼 좌측에 체크형태의 토글 버튼을 두어, 원래 상담하기 버튼 크기의 2/5
+            수준으로 배치한다 — 상담자가 AI 상담노트 생성 여부(선택·미선택)를 직접
+            고를 수 있게 한다</li>
+          <li>토글 체크박스 아래에 "AI 상담노트" 라벨을 표기해 무엇을 켜고 끄는지 알
+            수 있게 한다</li>
+          <li>상담하기 버튼 문구는 버튼 중앙에 배치한다</li>
+          <li>토글 위쪽에, 상담을 시작하면 AI가 대화를 자동으로 정리해 상담노트로
+            만들어준다는 안내 문구를 노출해 상담하기 진행 시 이 기능을 알 수 있게
+            한다</li>
+        </ul>
+        <h4>수정요청 항목</h4>
+        <ul>
+          <li>토글 기본값은 ON이며, 사용자가 직접 끄기 전까지 계속 유지된다</li>
+          <li>사용자가 토글을 놓치지 않도록 안내 문구를 accent 색상 배경·테두리
+            박스와 아이콘으로 강조하고, 토글 버튼 테두리도 같은 accent 색으로 맞춰
+            안내 문구와 토글이 한 세트로 보이도록 색상을 연결한다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow">↓ AI 상담노트 토글을 켜면 아래 이용 동의 팝업이 노출됨</div>
+
+  <!-- 섹션 0-0-A: AI 상담노트 이용 동의 팝업 (신규) -->
+  <div class="section" id="s-consent">
+    <h3>AI 상담노트 이용 동의 팝업</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen mock-popup-screen">
+          <div class="mock-callsheet mock-chat-dim">
+            <div class="mock-callsheet-topbar">
+              <div class="mock-callsheet-title">상담하기</div>
+              <div class="mock-callsheet-help">?</div>
+              <div class="mock-callsheet-close">✕</div>
+            </div>
+          </div>
+          <div class="mock-backdrop">
+            <div class="mock-consent">
+              <div class="mock-consent-title">AI 상담노트를 이용하려면 필요해요</div>
+              <div class="mock-consent-sub">AI 상담노트 이용 동의</div>
+              <div class="mock-consent-body">
+                <p>주식회사 운세당(이하 "회사")은 AI 상담노트 서비스를 이용하는
+                  고객·선생님의 개인정보를 보호하기 위해, 수집 항목과 목적, 보관
+                  기간을 아래와 같이 안내합니다.</p>
+                <div class="mock-consent-clause">제1조 수집하는 개인정보</div>
+                <p>상담 내용을 녹음해 이름·상담 사유·생년월일시·연락처 등을
+                  수집합니다.</p>
+                <div class="mock-consent-clause">제2조 민감정보 수집</div>
+                <p>상담 특성상 녹취에 건강, 신념 등 민감정보가 포함될 수 있습니다.</p>
+              </div>
+              <div class="mock-consent-scrollhint">스크롤해서 계속 확인 ↓</div>
+              <div class="mock-consent-actions">
+                <div class="mock-consent-btn cancel">취소</div>
+                <div class="mock-consent-btn agree">동의하기</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p class="mod">상담하기 팝업에서 AI 상담노트 토글을 켜면, 상담자가 상담을
+          시작하기 전에 꼭 읽고 동의해야 하는 이용 동의 팝업을 그 위에 띄운다.
+          "취소"를 누르면 토글이 다시 꺼지고, "동의하기"를 눌러야 토글이 켜진
+          상태로 상담을 진행할 수 있다.</p>
+        <p class="clause">AI 상담노트를 이용하려면 필요해요 / AI 상담노트 이용 동의</p>
+        <p><span class="mod">주식회사 운세당</span>(이하 "회사")은 AI 상담노트
+          서비스를 이용하는 고객과 선생님(이하 "이용자")의 개인정보를 보호하기
+          위해, 수집하는 개인정보 항목·목적·보관 기간과 민감정보 처리 여부를
+          아래와 같이 안내합니다. 동의 버튼을 누르는 순간부터 효력이 발생하며,
+          동의를 거부하셔도 <span class="mod">운세당</span> 상담 서비스 이용에는
+          불이익이 없습니다. 다만 기술적인 제약으로 AI 상담노트 기능은 이용할 수
+          없습니다.</p>
+        <p class="clause">제1조 수집하는 개인정보</p>
+        <p>전화·방문 상담 내용을 녹음해, 이름·상담 사유·생년월일시·연락처 등 상담
+          중 오가는 음성 데이터를 수집합니다.</p>
+        <p class="clause">제2조 민감정보 수집</p>
+        <p>상담 특성상 녹취에 아래와 같은 민감정보가 포함될 수 있습니다. 이 정보는
+          오직 상담노트 제공과 서비스 품질 개선(AI 개발)에만 쓰이며, 품질 개선에
+          쓰이는 정보는 100% 비식별화(개인을 알아볼 수 없게) 처리합니다.</p>
+        <ul>
+          <li>사상·신념에 관한 정보</li>
+          <li>노동조합·정당 가입·탈퇴 여부</li>
+          <li>정치적 견해</li>
+          <li>건강 등에 관한 정보</li>
+          <li>개인의 신체적·행동적 특징</li>
+          <li>인종이나 민족에 관한 정보</li>
+          <li>성생활 등에 관한 정보</li>
+        </ul>
+        <p class="clause">제3조 수집 목적</p>
+        <ul>
+          <li>이용자 확인 및 부정 이용 방지</li>
+          <li>문의·불만사항 처리</li>
+          <li><span class="mod">상담 만족도 판단</span></li>
+          <li>AI 기술력 향상을 위한 데이터 가공</li>
+        </ul>
+        <p class="clause">제4조 보관 및 이용 기간</p>
+        <p>서비스를 제공하는 기간에만 제한적으로 이용하며, 삭제를 요청하시거나
+          목적을 달성하면 지체 없이 파기합니다. 다만 관련 법령에서 정한 아래
+          기간은 예외로 보관합니다.</p>
+        <ul>
+          <li>계약·청약철회 관련 기록: 5년 (전자상거래법)</li>
+          <li>대금결제·재화 공급 관련 기록: 5년 (전자상거래법)</li>
+          <li>소비자 불만·분쟁 처리 기록: 3년 (전자상거래법)</li>
+          <li>전자금융 거래 기록: 5년 (전자금융거래법)</li>
+          <li>로그인 기록: 3개월 (통신비밀보호법)</li>
+        </ul>
+        <p class="clause">제5조 안전하게 보관하는 방법</p>
+        <ul>
+          <li>내부 관리계획 수립·시행</li>
+          <li>접근 권한 차등 관리 및 접근 통제</li>
+          <li>개인정보 암호화 보관</li>
+          <li>접속기록 1년 이상 보관·주기적 점검</li>
+          <li>악성 프로그램 침입 방지 시스템 운영</li>
+        </ul>
+        <p class="clause">제6조 파기 절차 및 방법</p>
+        <p>목적을 달성한 개인정보는 일정 기간 분리 보관 후 파기하며, 전자 파일
+          형태로 저장된 정보는 복구할 수 없는 기술적 방법으로 삭제합니다.</p>
+        <p class="clause">제7조 이용자의 권리</p>
+        <ul>
+          <li>개인정보 수집 시 안내받을 권리</li>
+          <li>언제든 본인 정보를 열람·정정할 권리</li>
+          <li>언제든 본인 정보 삭제를 요청할 권리(개인정보보호책임자에게 이메일로
+            요청)</li>
+        </ul>
+        <p class="clause">제8조 제3자 제공</p>
+        <p>이용자가 사전에 동의했거나, 관련 법령에 근거가 있는 경우에만 개인정보를
+          제3자에게 제공합니다.</p>
+        <p class="clause">제9조 처리 위탁</p>
+        <p class="mod">서비스 제공을 위해 아래 업무를 외부 업체에 위탁할 수
+          있습니다. 위탁받은 업체는 위탁 계약이 끝날 때까지만 개인정보를 보유·
+          이용합니다.</p>
+        <ul>
+          <li class="mod">클라우드 인프라 제공: <span class="check">{업체명}</span></li>
+          <li class="mod">통화 인프라 제공: <span class="check">{업체명}</span></li>
+          <li class="mod">STT(음성→텍스트 변환) 제공: <span class="check">{업체명}</span></li>
+        </ul>
+        <p class="clause">제10조 개인정보 관련 문의처</p>
+        <p class="mod">개인정보 보호에 관한 문의는 아래 담당자에게 연락할 수
+          있습니다.</p>
+        <ul>
+          <li class="mod">성명: 임수연</li>
+          <li class="mod">연락처(이메일): unsedang777@gmail.com</li>
+        </ul>
+        <p class="clause">제11조 보안</p>
+        <p>서비스 이용 시 비밀번호로 보호되며, 결제 시 입력하는 정보는 SSL
+          암호화로 보호됩니다. 다만 인터넷 환경은 100% 안전하지 않아, 전송된
+          정보의 안전을 완전히 보장할 수는 없습니다.</p>
+        <p class="clause">공고일자 / 시행일자</p>
+        <ul>
+          <li class="mod">공고일자: <span class="check">{공고일자}</span></li>
+          <li class="mod">시행일자: <span class="check">{시행일자}</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow">↓ 동의 후 상담 진행, 상담 종료 후 아래 상담노트 생성 알림으로
+    이어짐</div>
+
+  <!-- 섹션 0-A: 상담노트 생성 알림 (신규) -->
+  <div class="section" id="s-alarm">
+    <h3>상담노트 생성 알림</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen mock-alarm-screen">
+          <div class="mock-alarm">
+            <div class="mock-alarm-header">
+              <span class="mock-alarm-badge">알림톡</span>
+              운세당
+            </div>
+            <div class="mock-alarm-body">
+              <p class="mock-alarm-title">[운세당] AI 상담노트가 도착했어요</p>
+              <p class="mock-alarm-text">이지은님 안녕하세요 :)<br>
+                김도현 선생님과의 대화가<br>
+                AI 상담노트로 완성됐어요.<br><br>
+                다시 듣고 싶을 때, 문득 생각날 때<br>
+                언제든 편하게 열어보세요!</p>
+            </div>
+            <div class="mock-alarm-btn">상담노트 보러가기</div>
+          </div>
+          <div class="mock-alarm-fallback">※ 알림톡 수신이 어려운 경우 문자(SMS)로 대체
+            발송</div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>AI 상담노트 생성이 완료되면 고객에게 카카오 알림톡으로 생성 완료를 알린다(알림톡
+          수신이 어려운 경우 문자로 대체 발송).</p>
+        <ul>
+          <li>발송 시점: 상담이 종료되고 AI 상담노트 생성이 끝난 직후</li>
+          <li>메시지에 고객 닉네임과 상담을 진행한 선생님 이름을 넣어, 어떤 상담의 노트인지
+            알 수 있게 한다</li>
+          <li>메시지 하단에 상담노트로 바로 이동하는 버튼을 둔다</li>
+          <li>상담노트 보러가기 클릭 시 utm 적용: utm_source=kakao_alimtalk&amp;utm_medium=push&amp;utm_campaign=callnote_created</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow">↓ 알림 발송 후, 아래 상담노트 목록에서 계속 확인 가능</div>
+
+  <!-- 섹션 0: 상담노트 목록 (분해 6번) -->
+  <div class="section" id="s-list">
+    <h3>상담노트 목록</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-pagetitle">
+            <div class="mock-backbtn">‹</div>
+            <div class="mock-pagetitle-text">운세당 AI 상담노트</div>
+            <div class="mock-pagetitle-spacer"></div>
+          </div>
+          <div class="mock-list">
+            <div class="mock-listitem active">
+              <div class="avatar"></div>
+              <div class="info">
+                <div class="nm">김도현 선생님 <span class="count">· 2회</span></div>
+                <div class="meta">최근: 2026.09.15 14:20 · 10분 상담</div>
+              </div>
+              <div class="chevron">›</div>
+            </div>
+            <div class="mock-listitem">
+              <div class="avatar"></div>
+              <div class="info">
+                <div class="nm">이서연 선생님 <span class="count">· 1회</span></div>
+                <div class="meta">2026.07.20 11:05 · 8분 상담</div>
+              </div>
+              <div class="chevron">›</div>
+            </div>
+            <div class="mock-listitem">
+              <div class="avatar"></div>
+              <div class="info">
+                <div class="nm">박지훈 선생님 <span class="count">· 1회</span></div>
+                <div class="meta">2026.06.11 19:40 · 12분 상담</div>
+              </div>
+              <div class="chevron">›</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>목록 최상단에 "운세당 AI 상담노트" 페이지 타이틀을 노출한다(별도 필터는 두지
+          않는다).</p>
+        <ul>
+          <li>페이지 타이틀 좌측에 뒤로가기 버튼을 둔다 — 누르면 목록 진입 전 화면(예:
+            마이페이지)으로 돌아간다</li>
+          <li>선생님별로 한 줄로 묶어서 나열하고, 이름 옆에 총 상담횟수를 표시한다</li>
+          <li>목록에서 항목(선생님)을 클릭하면 해당 상담노트 상세 화면으로 진입한다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 섹션 0-B: 상담노트 목록 — 빈 상태(서비스 소개, 신규) -->
+  <div class="section" id="s-list-empty">
+    <h3>상담노트 목록 — 빈 상태(서비스 소개)</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-pagetitle">
+            <div class="mock-backbtn">‹</div>
+            <div class="mock-pagetitle-text">운세당 AI 상담노트</div>
+            <div class="mock-pagetitle-spacer"></div>
+          </div>
+          <div class="mock-emptystate">
+            <div class="icon">📝</div>
+            <div class="title">아직 상담노트가 없어요</div>
+            <div class="desc-text">상담을 마치면 선생님과 나눈 대화가<br>이곳에 자동으로
+              정리돼요</div>
+            <div class="features">
+              <div class="feature"><span class="fi">🗨️</span>대화 내용 텍스트로 다시 확인</div>
+              <div class="feature"><span class="fi">🎧</span>상담 음성 다시듣기</div>
+              <div class="feature"><span class="fi">📞</span>선생님과 바로 재상담 연결</div>
+            </div>
+            <div class="cta">상담하러 가기 ›</div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>상담노트 목록 화면에서, 상담 이용 이력이 없는 사용자에게는 상담사별 목록 대신
+          이 서비스 소개 화면을 보여준다.</p>
+        <ul>
+          <li>"아직 상담노트가 없어요" 안내와 함께, AI 상담노트 기능을 3가지로 간단히
+            요약해 보여준다 — 대화 텍스트로 다시보기·음성 다시듣기·재상담 연결</li>
+          <li>하단에 "상담하러 가기" 버튼을 두어 첫 상담으로 바로 이어지는 진입 동선을
+            제공한다</li>
+          <li>페이지 타이틀·뒤로가기 버튼은 이용 이력이 있을 때와 동일하게 유지한다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow">↓ 항목 클릭 시 아래 상세 화면으로 진입</div>
+
+  <!-- 섹션 1: 상담 헤더 정보 -->
+  <div class="section" id="s-header">
+    <h3>상담 헤더 정보</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-header">
+            <div class="mock-profile">
+              <div class="mock-backbtn">‹</div>
+              <div class="avatar"></div>
+              <div class="profile-info">
+                <div class="nm">김도현 선생님</div>
+                <div class="meta">2026.09.15 14:20 · 10분 상담</div>
+              </div>
+            </div>
+            <div class="date-chips">
+              <div class="date-chip active">09.15</div>
+              <div class="date-chip">08.02</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>화면 가장 상단에 상담사 선생님 프로필과 상담 일시·소요 시간을 노출한다.</p>
+        <ul>
+          <li>상담사 프로필(사진·이름), 상담 진행 일시, 소요 시간(몇 분)을 표시한다</li>
+          <li>프로필 좌측에 뒤로가기 버튼을 둔다 — 누르면 상담노트 목록 화면으로 돌아간다</li>
+          <li>프로필 아래에 상담일자 선택 칩 메뉴를 둔다 — 해당 선생님과 상담이 2회
+            이상인 경우에만 노출한다. 칩은 최근 상담일이 가장 좌측에 오도록 배치하고,
+            칩이 많으면 영역 스크롤로 나머지를 확인한다. 다른 날짜 칩을 선택하면 대화
+            목록·표시 규칙 등 상세 화면 전체가 그 상담일자 내용으로 전환된다. 1회뿐인
+            선생님은 칩 메뉴를 노출하지 않는다</li>
+          <li>이 헤더는 화면 상단에 고정(스티키)되어 대화 내용을 스크롤해도 계속
+            노출된다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 섹션 1-B: 상담후기 작성 팝업 (1/2 — 좋은점·아쉬운점 선택) -->
+  <div class="section" id="s-review1">
+    <h3>상담후기 작성 팝업 (1/2 — 좋은점·아쉬운점 선택)</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen mock-popup-screen">
+          <div class="mock-header">
+            <div class="mock-profile">
+              <div class="mock-backbtn">‹</div>
+              <div class="avatar"></div>
+              <div class="profile-info">
+                <div class="nm">김도현 선생님</div>
+                <div class="meta">2026.09.15 14:20 · 10분 상담</div>
+              </div>
+            </div>
+            <div class="date-chips">
+              <div class="date-chip active">09.15</div>
+              <div class="date-chip">08.02</div>
+            </div>
+          </div>
+          <div class="mock-chat mock-chat-dim">
+            <div class="mock-bubble">안녕하세요, 오늘 예약하신 상담 시작할게요.</div>
+            <div class="mock-meta left">14:20</div>
+            <div class="mock-bubble mine">네 안녕하세요, 재회 관련해서 여쭤보고 싶어요.</div>
+            <div class="mock-meta">14:21</div>
+          </div>
+          <div class="mock-backdrop">
+            <div class="mock-popup">
+              <div class="mock-popup-step">1 / 2</div>
+              <div class="mock-popup-title">상담 후기를 남겨주세요</div>
+              <div class="mock-popup-sub">어떤 점이 좋았고 아쉬웠는지 골라주세요.</div>
+              <div class="mock-review-group">
+                <div class="mock-review-label">좋은 점</div>
+                <div class="mock-review-chips">
+                  <div class="mock-review-chip on">편안한 경청</div>
+                  <div class="mock-review-chip">쉬운 설명</div>
+                  <div class="mock-review-chip on">높은 적중률</div>
+                  <div class="mock-review-chip">구체적 조언</div>
+                </div>
+              </div>
+              <div class="mock-review-group">
+                <div class="mock-review-label">아쉬운 점</div>
+                <div class="mock-review-chips">
+                  <div class="mock-review-chip">아쉬운 경청</div>
+                  <div class="mock-review-chip">어려운 설명</div>
+                  <div class="mock-review-chip on">낮은 적중률</div>
+                  <div class="mock-review-chip">두루뭉술한 조언</div>
+                </div>
+              </div>
+              <div class="mock-popup-primary">다음</div>
+              <div class="mock-popup-skip">건너뛰고 상담노트 보기</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>해당 상담에 대한 후기가 아직 작성되지 않았다면, 대화 내용을 한 번 스크롤한
+          시점에 후기 작성을 유도하는 레이어 팝업을 노출한다.</p>
+        <ul>
+          <li>후기 입력은 2단계로 나누고, 팝업 상단에 진행 단계(1/2, 2/2)를 표시한다</li>
+          <li>1단계에서 좋은 점·아쉬운 점을 객관식 복수선택으로 받는다 — 문장형이 아닌
+            키워드 단위로, 경청·설명·적중률·조언 4개 관점을 좋은 점·아쉬운 점 각 4개씩
+            1:1로 짝지어 구성한다. 좋은 점: 편안한 경청·쉬운 설명·높은 적중률·구체적
+            조언. 아쉬운 점: 아쉬운 경청·어려운 설명·낮은 적중률·두루뭉술한 조언</li>
+          <li>1단계 버튼은 "다음"이며, 이 단계에서는 코인을 지급하지 않는다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow">↓ 다음 버튼 클릭 시 아래 2단계로 이어짐</div>
+
+  <!-- 섹션 1-C: 상담후기 작성 팝업 (2/2 — 자유 텍스트 작성) -->
+  <div class="section" id="s-review2">
+    <h3>상담후기 작성 팝업 (2/2 — 자유 텍스트 작성)</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen mock-popup-screen">
+          <div class="mock-header">
+            <div class="mock-profile">
+              <div class="mock-backbtn">‹</div>
+              <div class="avatar"></div>
+              <div class="profile-info">
+                <div class="nm">김도현 선생님</div>
+                <div class="meta">2026.09.15 14:20 · 10분 상담</div>
+              </div>
+            </div>
+            <div class="date-chips">
+              <div class="date-chip active">09.15</div>
+              <div class="date-chip">08.02</div>
+            </div>
+          </div>
+          <div class="mock-chat mock-chat-dim">
+            <div class="mock-bubble">안녕하세요, 오늘 예약하신 상담 시작할게요.</div>
+            <div class="mock-meta left">14:20</div>
+            <div class="mock-bubble mine">네 안녕하세요, 재회 관련해서 여쭤보고 싶어요.</div>
+            <div class="mock-meta">14:21</div>
+          </div>
+          <div class="mock-backdrop">
+            <div class="mock-popup">
+              <div class="mock-popup-step">2 / 2</div>
+              <div class="mock-popup-title">상담은 어떠셨나요?</div>
+              <div class="mock-popup-sub">별점과 함께 느낀 점을 자유롭게 남겨주세요.</div>
+              <div class="mock-stars">
+                <span class="star on">★</span>
+                <span class="star on">★</span>
+                <span class="star on">★</span>
+                <span class="star on">★</span>
+                <span class="star">★</span>
+              </div>
+              <div class="mock-popup-textarea">후기를 자유롭게 남겨주세요.</div>
+              <div class="mock-popup-primary">후기 작성하고 500코인 받기</div>
+              <div class="mock-popup-skip">건너뛰고 상담노트 보기</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>2단계에서는 상담에 대한 별점과 자유 텍스트를 받는다.</p>
+        <ul>
+          <li>별점(5점 만점) 입력을 추가한다</li>
+          <li>별점 아래에 상담에 대한 내용을 자유 텍스트로 받는다</li>
+          <li>2단계 버튼에서 후기 등록과 500코인 지급이 함께 진행되고, 다른 페이지로
+            이동하지 않은 채 같은 화면에서 바로 상담노트(대화 목록 뷰)를 이어서 볼 수
+            있게 한다</li>
+          <li>1·2단계를 모두 작성해야 500코인을 지급한다</li>
+          <li>후기를 작성하지 않고 "건너뛰고 상담노트 보기"를 선택해 상담노트를 계속 볼
+            수 있는 옵션을 1·2단계 모두에서 함께 제공한다</li>
+          <li>이미 후기를 작성한 상담 세션에서는 이 팝업을 다시 노출하지 않는다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow">↓ 후기 작성 또는 건너뛰기 후 아래 대화 목록으로 이어짐</div>
+
+  <!-- 섹션 2: 대화 목록 뷰 -->
+  <div class="section" id="s-chatlist">
+    <h3>대화 목록 뷰</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-header">
+            <div class="mock-profile">
+              <div class="mock-backbtn">‹</div>
+              <div class="avatar"></div>
+              <div class="profile-info">
+                <div class="nm">김도현 선생님</div>
+                <div class="meta">2026.09.15 14:20 · 10분 상담</div>
+              </div>
+            </div>
+            <div class="date-chips">
+              <div class="date-chip active">09.15</div>
+              <div class="date-chip">08.02</div>
+            </div>
+          </div>
+          <div class="mock-chat">
+            <div class="mock-bubble">안녕하세요, 오늘 예약하신 상담 시작할게요.</div>
+            <div class="mock-meta left">14:20</div>
+            <div class="mock-bubble mine">네 안녕하세요, 재회 관련해서 여쭤보고 싶어요.</div>
+            <div class="mock-meta">14:21</div>
+            <div class="mock-bubble">먼저 생년월일 알려주실 수 있을까요?</div>
+            <div class="mock-meta left">14:21</div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>헤더 아래에 선생님과 나눈 대화 목록을 볼 수 있는 기능을 제공한다.</p>
+        <ul>
+          <li>발화자(선생님/상담자)를 말풍선 위치·색상으로 구분해 표시한다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 섹션 3: 메시지 스크롤 탐색 -->
+  <div class="section" id="s-scroll">
+    <h3>메시지 스크롤 탐색</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-header">
+            <div class="mock-profile">
+              <div class="mock-backbtn">‹</div>
+              <div class="avatar"></div>
+              <div class="profile-info">
+                <div class="nm">김도현 선생님</div>
+                <div class="meta">2026.09.15 14:20 · 10분 상담</div>
+              </div>
+            </div>
+            <div class="date-chips">
+              <div class="date-chip active">09.15</div>
+              <div class="date-chip">08.02</div>
+            </div>
+          </div>
+          <div class="mock-chat">
+            <div class="mock-scrollcue">▲ 이전 메시지</div>
+            <div class="mock-bubble">그 사람이랑 마지막 연락한 게 언제였나요?</div>
+            <div class="mock-meta left">14:24</div>
+            <div class="mock-bubble mine">3개월 전쯤이요.</div>
+            <div class="mock-meta">14:24</div>
+            <div class="mock-scrollcue">▼ 다음 메시지</div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>다음 메시지와 이전 메시지는 카카오톡처럼 스크롤하며 볼 수 있도록 한다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 섹션 4: 대화 내용 표시 규칙 -->
+  <div class="section" id="s-chatrules">
+    <h3>대화 내용 표시 규칙</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen">
+          <div class="mock-header">
+            <div class="mock-profile">
+              <div class="mock-backbtn">‹</div>
+              <div class="avatar"></div>
+              <div class="profile-info">
+                <div class="nm">김도현 선생님</div>
+                <div class="meta">2026.09.15 14:20 · 10분 상담</div>
+              </div>
+            </div>
+            <div class="date-chips">
+              <div class="date-chip active">09.15</div>
+              <div class="date-chip">08.02</div>
+            </div>
+          </div>
+          <div class="mock-chat">
+            <div class="mock-meta left">14:20 · 상담 시작</div>
+            <div class="mock-bubble">안녕하세요, 오늘 예약하신 상담 시작할게요. 먼저
+              생년월일부터 여쭤볼게요.</div>
+            <div class="mock-meta left">14:20 · 12초</div>
+            <div class="mock-bubble mine">92년 3월생이고 재회 관련해서 여쭤보고
+              싶어요.</div>
+            <div class="mock-meta">14:21 · 18초</div>
+            <div class="mock-bubble">사주를 보니 올해 하반기에 인연운이 들어오는
+              시기가 있는데, 다만 먼저 연락하시는 것보다는…(이어서 표시)</div>
+            <div class="mock-meta left">14:23 · 2분 40초</div>
+            <div class="mock-chunk">1 / 3</div>
+            <div class="mock-scrollcue">⋯ (중략, 스크롤로 계속 확인)</div>
+            <div class="mock-bubble mine">그럼 제가 먼저 연락해도 괜찮을까요?</div>
+            <div class="mock-meta">14:27 · 9초</div>
+            <div class="mock-bubble">네, 다만 급하게 다가가기보다는 안부 인사부터
+              가볍게 시작하시는 걸 추천드려요.</div>
+            <div class="mock-meta left">14:28 · 1분 5초</div>
+            <div class="mock-bubble">오늘 상담은 여기까지 할게요, 좋은 하루
+              되세요.</div>
+            <div class="mock-meta left">14:30 · 상담 종료(총 10분)</div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>대화 내용은 상담 시간과 길이가 노출되게 한다.</p>
+        <ul>
+          <li>너무 긴 대화는 나눠서 보여질 수 있도록 한다(텍스트 최대 길이 제한, 예: 1/3
+            처럼 분할 표시)</li>
+          <li>샘플데이터를 채워서 10분 정도 상담이 어떻게 보여지는지 데모 화면을
+            생성한다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 섹션 5: 재상담 하단 고정바 -->
+  <div class="section" id="s-stickybar">
+    <h3>재상담 하단 고정바</h3>
+    <div class="row">
+      <div class="phone">
+        <div class="status"></div>
+        <div class="screen mock-stickybar-screen">
+          <div class="mock-header">
+            <div class="mock-profile">
+              <div class="mock-backbtn">‹</div>
+              <div class="avatar"></div>
+              <div class="profile-info">
+                <div class="nm">김도현 선생님</div>
+                <div class="meta">2026.09.15 14:20 · 10분 상담</div>
+              </div>
+            </div>
+            <div class="date-chips">
+              <div class="date-chip active">09.15</div>
+              <div class="date-chip">08.02</div>
+            </div>
+          </div>
+          <div class="mock-chat">
+            <div class="mock-bubble">오늘 상담은 여기까지 할게요, 좋은 하루 되세요.</div>
+            <div class="mock-meta left">14:30 · 상담 종료</div>
+          </div>
+          <div class="mock-stickybar">
+            <div class="mock-player">
+              <div class="mock-player-btn">▶</div>
+              <div class="mock-player-track">
+                <div class="mock-player-fill"></div>
+                <div class="mock-player-thumb"></div>
+              </div>
+              <div class="mock-player-time">03:12 / 10:00</div>
+            </div>
+            <div class="mock-callrow">
+              <div class="mock-callbtn">
+                <span class="status-text">상담가능</span>
+                <span class="sep"></span>
+                <span>📞 상담하기</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="desc">
+        <h4>확정 내용</h4>
+        <p>상담가능여부·상담하기·상담내용 다시듣기를 GNB 형식의 하단 고정(스티키) 바로
+          묶어 제공한다 — 대화 내용을 스크롤해도 화면 하단에 항상 노출된다.</p>
+        <ul>
+          <li>상담가능여부: 별도 배지 없이 상담하기 버튼 안에 선생님의 현재 상태(상담가능·
+            상담중·부재중)를 심플한 텍스트로 노출한다</li>
+          <li>상담하기: 재상담 진행이 가능하도록 통화 버튼을 제공한다(같은 버튼 안에서
+            상태 텍스트 옆에 배치)</li>
+          <li>상담내용 다시듣기: 상담 음성을 재생할 수 있는 플레이어를 제공한다 — 전체
+            길이와 현재 재생 위치(경과 시간)를 표시하고, 재생 바를 드래그해 원하는
+            지점으로 위치를 조정할 수 있다</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

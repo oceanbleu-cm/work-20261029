@@ -1,0 +1,583 @@
+<meta charset="utf-8">
+<title>상담사 앱 원스토어 제출 준비 — 운세당</title>
+<style>
+  :root {
+    --ink: #1c1c22;
+    --sub: #5b5b66;
+    --line: #e3e3ea;
+    --bg: #f6f6f9;
+    --card: #ffffff;
+    --accent: #2f4bdb;
+    --accent-soft: #eaedfd;
+    --warn: #b5590a;
+    --warn-bg: #fff2e2;
+    --bad: #c8272e;
+    --bad-bg: #fdeef1;
+    --ok: #1d8a4a;
+    --ok-bg: #e9f8ef;
+    --gray-badge: #5c5c68;
+  }
+
+  * { box-sizing: border-box }
+
+  body {
+    margin: 0;
+    padding: 32px 20px 80px 220px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    line-height: 1.55;
+  }
+
+  .wrap { max-width: 1080px; margin: 0 auto }
+
+  .devnav {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 190px;
+    background: #fff;
+    border-right: 1px solid var(--line);
+    padding: 18px 10px;
+    overflow-y: auto;
+    z-index: 400;
+  }
+
+  .devnav-title {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--sub);
+    padding: 0 8px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+  }
+
+  .devnav-item {
+    display: block;
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.4;
+    padding: 9px 8px;
+    border-radius: 8px;
+    text-decoration: none;
+  }
+
+  .devnav-item:hover { background: var(--bg) }
+
+  .devnav-sep { border: none; border-top: 1px solid var(--line); margin: 10px 4px; }
+
+  h1 { font-size: 22px; margin: 0 0 4px }
+
+  .banner {
+    background: var(--warn-bg);
+    color: var(--warn);
+    border: 1px solid #f3d3a6;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 14px 0 20px;
+  }
+
+  .meta {
+    font-size: 12px;
+    color: var(--sub);
+    margin: 0 0 28px;
+  }
+
+  .section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+
+  .section h2 { font-size: 18px; margin: 0 0 4px }
+  .section h3 { font-size: 15px; margin: 22px 0 8px; color: var(--accent) }
+  .section .sub { font-size: 12px; color: var(--sub); margin-bottom: 16px; }
+
+  p { font-size: 13.5px; margin: 0 0 10px; }
+  ul, ol { margin: 0 0 12px; padding-left: 20px; font-size: 13.5px; }
+  li { margin-bottom: 5px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 13px; }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #f6f6f9; font-weight: 700; }
+
+  .cite {
+    font-size: 11.5px;
+    color: var(--sub);
+    background: #f6f6f9;
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin: -4px 0 14px;
+    display: inline-block;
+  }
+  .cite a { color: var(--accent); }
+
+  .flag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 2px 9px;
+    margin-right: 4px;
+  }
+  .flag.unknown { background: var(--warn-bg); color: var(--warn); }
+  .flag.todo { background: #eef0f6; color: #42465c; }
+  .flag.ok { background: var(--ok-bg); color: var(--ok); }
+  .flag.bad { background: var(--bad-bg); color: var(--bad); }
+
+  .risk-card {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .risk-card.sev-red { border-left: 4px solid var(--bad); }
+  .risk-card.sev-yellow { border-left: 4px solid var(--warn); }
+  .risk-card .risk-title { font-size: 14.5px; font-weight: 800; margin-bottom: 6px; }
+  .risk-card .risk-verdict {
+    font-size: 12.5px;
+    font-weight: 700;
+    margin: 8px 0;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: #f6f6f9;
+  }
+
+  .shot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 18px;
+    margin-top: 12px;
+  }
+
+  .shot-card {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fafafb;
+  }
+  .shot-card.redo { border-color: #f0b4b8; background: #fff8f8; }
+
+  .shot-card img {
+    width: 100%;
+    display: block;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .shot-card .shot-body { padding: 10px 12px 12px; }
+  .shot-card .shot-no { font-size: 10px; color: var(--sub); font-weight: 700; }
+  .shot-card .shot-name { font-size: 12.5px; font-weight: 700; margin: 2px 0 6px; }
+  .shot-card .shot-note { font-size: 11px; color: var(--sub); line-height: 1.5; }
+
+  .draft-box {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    background: #fafafb;
+  }
+  .draft-box .label { font-size: 11px; font-weight: 700; color: var(--sub); margin-bottom: 4px; }
+  .draft-box .val { font-size: 13.5px; white-space: pre-wrap; }
+
+  .toc-list { list-style: none; padding: 0; margin: 0; font-size: 13px; }
+  .toc-list li { margin-bottom: 6px; }
+</style>
+
+<div class="devnav">
+  <div class="devnav-title">섹션 이동</div>
+  <a class="devnav-item" href="#s1">1. 대상 앱 개요</a>
+  <a class="devnav-item" href="#s2">2. 원스토어 등록 절차</a>
+  <a class="devnav-item" href="#s3">3. 제품페이지 콘텐츠 규격</a>
+  <a class="devnav-item" href="#s4">4. 제품페이지 콘텐츠 초안</a>
+  <a class="devnav-item" href="#s5">5. 제출용 스크린샷</a>
+  <a class="devnav-item" href="#s6">6. 심사 리스크 체크리스트</a>
+  <a class="devnav-item" href="#s7">7. 미해결 사항 총괄</a>
+</div>
+
+<div class="wrap">
+  <h1>상담사 앱 — 원스토어(ONE Store) 제출 준비</h1>
+  <div class="banner">⚠️ 내부 검토 문서 — 실제 제출용 산출물이 아닙니다. 제출 전 개발팀·사업팀 확정이 필요한
+    항목을 🔧, 공식 출처로 확인하지 못한 항목을 ⚠️로 표기했습니다.</div>
+  <div class="meta">대상: unsedang.com 상담사 전용 Android 앱(가칭 "운세당 상담사") · 작성일 2026-10-20 ·
+    실측 근거: <code>html/img/onestore-*.png</code> 스크린샷 14장(2026-10-20 촬영) ·
+    설계 참고: <a href="counselor-app-wireframe-261012.html">counselor-app-wireframe-261012.html</a></div>
+
+  <!-- 1. 대상 앱 개요 -->
+  <div class="section" id="s1">
+    <h2>1. 대상 앱 개요</h2>
+    <div class="sub">아래 서술은 전부 스크린샷 14장(2026-10-20 촬영) 실측 기반이다. 설계 의도는
+      와이어프레임을, 실제 동작은 스크린샷을 근거로 한다.</div>
+
+    <h3>1-1. 무엇을 하는 앱인가</h3>
+    <p>unsedang.com 전화 상담 서비스의 상담사가 쓰는 전용 Android 앱이다. 상담사 기기에 설치해두면,
+      내담자에게서 전화가 오는 순간 통화 화면 위에 그 내담자의 과거 상담 요약 카드가 자동으로 뜬다.
+      통화 중에는 더 상세한 고객정보(기본정보·성향정보·고민정보·상담이력)를 탭으로 열람할 수 있고,
+      통화가 끝나면 고객정보가 즉시 잠긴다.</p>
+
+    <h3>1-2. 화면별 실측 기능 (14장 기준)</h3>
+    <table>
+      <thead><tr><th style="width:140px">단계</th><th>스크린샷</th><th>확인된 기능</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>최초 설치 온보딩</td>
+          <td>01, 06, 07, 08, 09</td>
+          <td>앱 최초 실행 시 "상담사 설정" 화면에서 권한 사용 안내 바텀시트(①통화 상태 ②통화
+            기록 읽기(내역) ③다른 앱 위에 표시, 각 권한의 용도를 1줄로 설명)를 띄우고 "동의하고
+            계속하기"를 눌러야 다음 단계로 진행된다. 이어서 닉네임 검색이 되는 상담사 선택
+            바텀시트(가이아·강산·고결·고요·구름동자·금빛신당·금혜령 등 목록, 검색어 불일치 시
+            "검색 결과가 없어요")가 뜨고, 상담사를 고르면 확인 다이얼로그("가이아(으)로
+            선택할까요?")를 거쳐 선택이 확정된다.</td>
+        </tr>
+        <tr>
+          <td>시스템 권한 요청</td>
+          <td>02, 03</td>
+          <td>안드로이드 표준 권한 다이얼로그로 "운세당 상담사에서 통화 기록에 액세스하도록
+            허용하시겠습니까?"(통화 기록 읽기)와 "운세당 상담사에서 전화를 걸고 관리하도록
+            허용하시겠습니까?"(전화 상태)를 각각 요청한다.</td>
+        </tr>
+        <tr>
+          <td>오버레이 권한</td>
+          <td>04, 05</td>
+          <td>삼성 OneUI 설정 앱의 "다른 앱 위에 표시" 권한 목록 화면에서 "운세당 상담사" 항목을
+            찾아 토글을 켜는 과정이 확인된다. 이 권한이 있어야 전화 수신 화면 위에 요약 카드를
+            띄울 수 있다.</td>
+        </tr>
+        <tr>
+          <td>설정 완료 화면</td>
+          <td>09</td>
+          <td>선택된 상담사(닉네임+상담 분야), 3개 권한의 허용 상태("허용됨"), "조회 대상 번호"
+            입력값이 한 화면에 요약돼 보인다.</td>
+        </tr>
+        <tr>
+          <td>전화 수신 — 요약 카드</td>
+          <td>10</td>
+          <td>발신 화면 상단에 전화번호가 표시되고, 그 아래 흰색 카드에 관심사 칩 6개(예:
+            과거 연인 집착·정치 집회 참여·사회적 소외감·우울증 의심 등), "연애/이별" 고민 요약
+            문단, "이번 상담에서 확인할 사항" 체크리스트 3항목, 최근 상담일("다른 상담사와
+            상담" 표기 포함)이 순서대로 나열된다. 거부·통화 버튼은 하단에 고정된다. 화면에
+            표기된 번호는 운세당 대표번호이며 내담자 개인번호가 아니다(팀 리더 확인 완료).</td>
+        </tr>
+        <tr>
+          <td>상담 중 — 상세 정보</td>
+          <td>11, 12, 13</td>
+          <td>통화 연결 중에만 열리는 "고객 정보" 화면. 상단에 🔒 "상담 중에만 열람 가능 ·
+            종료 즉시 자동 잠금" 배너가 고정 표시되고, 탭 3개(고객정보·고민정보·상담이력)로
+            전환된다. 고객정보 탭은 기본정보(직업)와 성향정보(전체 성향·상담 성향·주요 관심사·
+            민감 키워드)를, 고민정보 탭은 고민 유형·핵심 고민·관련 인물·상대방과의 관계·고민
+            배경·현재 상황·주요 변화 7개 항목을, 상담이력 탭은 과거 상담을 날짜·소요시간·
+            한줄요약으로 최신순 나열한다.</td>
+        </tr>
+        <tr>
+          <td>통화 종료 — 잠금</td>
+          <td>14</td>
+          <td>통화가 끝나면 "상담 종료" 화면으로 전환되며 🔒 아이콘과 "고객 정보가 잠겼어요 /
+            상담이 끝나면 고객정보는 바로 잠겨요. 다음 상담이 연결되면 다시 열람할 수 있어요"
+            안내, "확인" 버튼이 표시된다.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>1-3. 요청 권한 요약</h3>
+    <ul>
+      <li><strong>통화 상태(전화 걸기·관리, READ_PHONE_STATE / CALL_PHONE 계열)</strong> — 전화
+        수신을 감지해 상담 중에만 고객정보를 보여주기 위함(앱 내 권한 안내 문구, 01번 스크린샷)</li>
+      <li><strong>통화 기록 읽기(내역, READ_CALL_LOG 계열)</strong> — 발신번호로 고객을 식별해
+        상담 이력을 연결하기 위함(동일 출처)</li>
+      <li><strong>다른 앱 위에 표시(SYSTEM_ALERT_WINDOW)</strong> — 전화가 오는 순간 통화 화면
+        위에 요약 카드를 띄우기 위함(동일 출처)</li>
+    </ul>
+  </div>
+
+  <!-- 2. 원스토어 등록 절차 -->
+  <div class="section" id="s2">
+    <h2>2. 원스토어 등록 절차</h2>
+    <div class="sub">원스토어 공식 개발자 문서(onestore-dev.gitbook.io) 기준. 전 항목 조회일
+      2026-10-20.</div>
+
+    <ol>
+      <li><strong>개발자센터 회원가입·로그인</strong> — ONEconsole(원스토어 개발자센터)에
+        회원가입 후 로그인한다.
+        <div class="cite">[조사: 원스토어 개발자 문서 안내 요약, 조회 2026-10-20]</div>
+      </li>
+      <li><strong>신규 상품 등록</strong> — [APPS] 메뉴에서 신규 상품 등록을 선택하고, 상품
+        제목(출시되는 앱 이름)과 패키지 네임(애플리케이션 고유 ID)을 입력한다.
+        <div class="cite">[조사: 원스토어 개발자 문서 "상품등록과 관리" 안내 요약, 조회
+          2026-10-20 — <a href="https://onestore-dev.gitbook.io/dev/docs/apps" target="_blank">onestore-dev.gitbook.io/dev/docs/apps</a>]</div>
+      </li>
+      <li><strong>기본 정보 입력</strong> — 상품유형(카테고리), 이용등급(§3-3 연령등급 참고),
+        개인정보 처리방침 URL을 입력한다. 개인정보 처리방침 URL 등록은 원스토어 검증
+        가이드라인상 <strong>필수</strong>다: "개인정보의 처리에 관한 사항을 이용자가 알기
+        쉽도록 개인정보 처리방침을 공개하여야 하며"라는 문구가 명시돼 있다.
+        <div class="cite">[실측: 원스토어 상품 검증 가이드라인 "개인정보 보호, 보안" 섹션 원문
+          인용, 조회 2026-10-20 — <a href="https://onestore-dev.gitbook.io/dev/docs/review/one-store-review-guideline/undefined-2.md" target="_blank">onestore-dev.gitbook.io/dev/.../undefined-2</a>]</div>
+      </li>
+      <li><strong>제품페이지 콘텐츠·이미지 등록</strong> — 상품명·한줄설명·상품설명·키워드·
+        아이콘·스크린샷을 등록한다(규격은 §3 참고).</li>
+      <li><strong>가격·배포정보 설정</strong> — 유료/무료 판매 여부를 선택한다. 배포 시점은
+        검증 요청 단계에서 세 가지 옵션 중 선택한다: <strong>즉시 적용</strong>(검증 완료 후
+        즉시 배포) · <strong>직접 적용</strong>(검증 완료돼도 배포 안 됨, 개발자가 "적용하기"를
+        눌러야 배포) · <strong>예약 적용</strong>(지정 날짜에 배포, 변경 가능).
+        <div class="cite">[실측: 원스토어 "검증절차 — 배포옵션" 섹션 원문 인용, 조회
+          2026-10-20 — <a href="https://onestore-dev.gitbook.io/dev/docs/review.md" target="_blank">onestore-dev.gitbook.io/dev/docs/review</a>]</div>
+      </li>
+      <li><strong>앱 파일(APK/AAB) 업로드</strong> — 원스토어는 APK 또는 AAB 파일 중 하나를
+        선택해 제출한다.
+        <div class="cite">[조사: 원스토어 개발자 문서 안내 요약, 조회 2026-10-20]</div>
+      </li>
+      <li><strong>검증(심사) 요청</strong> — 검증요청 → 검증단계 → 검증 상태·결과·히스토리
+        확인의 흐름으로 진행된다. ⚠️ <strong>심사 소요 기간은 공식 문서에서 구체적 수치를
+        확인하지 못했다</strong> — 다른 매체 보도에 "반나절 만에 끝나는 신속한 심의"라는 표현이
+        있으나(게임 등급분류 맥락, 비공식 보도) 비게임 B2B 앱에도 동일하게 적용되는지는
+        미확인.
+        <div class="cite">[조사: 원스토어 "검증절차" 목차 구성(개요·검증요청·검증단계·검증
+          상태·검증 결과·검증 히스토리·배포옵션) 원문 확인, 조회 2026-10-20 — <a href="https://onestore-dev.gitbook.io/dev/docs/review.md" target="_blank">onestore-dev.gitbook.io/dev/docs/review</a>]</div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- 3. 제품페이지 콘텐츠 규격 -->
+  <div class="section" id="s3">
+    <h2>3. 제품페이지 콘텐츠 규격</h2>
+    <div class="sub">전부 원스토어 공식 개발자 문서 "판매정보" 페이지 원문 수치. 조회일
+      2026-10-20.</div>
+    <div class="cite">[실측: 원스토어 개발자 문서 원문 인용 — <a href="https://onestore-dev.gitbook.io/dev/docs/apps/product/android/app-info" target="_blank">onestore-dev.gitbook.io/dev/docs/apps/product/android/app-info</a>, 조회 2026-10-20]</div>
+
+    <table>
+      <thead><tr><th style="width:160px">항목</th><th>규격</th></tr></thead>
+      <tbody>
+        <tr><td>상품명(앱 이름)</td><td>최대 50자</td></tr>
+        <tr><td>한줄설명(짧은 설명)</td><td>최대 100자</td></tr>
+        <tr><td>상품설명(긴 설명)</td><td>최대 1,300자</td></tr>
+        <tr><td>키워드</td><td>최소 1개 ~ 최대 10개</td></tr>
+        <tr><td>아이콘 이미지</td><td>512×512px, JPG 또는 PNG</td></tr>
+        <tr><td>스크린샷 이미지</td><td>최소 2개 ~ 최대 8개, 1MB 이내, JPG 또는 PNG,
+          1,300×1,300px 이하(권장: 가로 1280×720px / 세로 720×1280px)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3-1. 심사 가이드라인상 콘텐츠 원칙</h3>
+    <p>원스토어 상품 검증 가이드라인은 "불법, 음란, 폭력 정보 등의 불건전 정보로부터 이용자 및
+      청소년을 보호하면서 개발자의 표현의 권리를 보장"을 기본 원칙으로 명시한다. 접근권한
+      관련해서는 "접근권한을 서비스에 필요한 범위 내로 최소화해야 합니다"라는 원칙만 있고,
+      개별 권한(통화기록·전화·오버레이)별 세부 기준은 공식 문서에서 확인하지 못했다(§6-b 참고).
+      <div class="cite">[실측: 원스토어 상품 검증 가이드라인 원문 인용, 조회 2026-10-20 — <a href="https://onestore-dev.gitbook.io/dev/docs/review.md" target="_blank">onestore-dev.gitbook.io/dev/docs/review</a>, <a href="https://onestore-dev.gitbook.io/dev/docs/review/one-store-review-guideline/undefined-2.md" target="_blank">.../undefined-2</a>]</div>
+    </p>
+
+    <h3>3-2. 테스트 계정</h3>
+    <p>⚠️ 원스토어 FAQ에 "검증 참고용으로 꼭 필요한 경우에만 등록을 할 수 있습니다"라는 문구가
+      있어, 상품 등록 화면에 테스트 계정을 입력하는 란이 존재하는 것으로 보인다. 다만 구체적인
+      입력 절차·형식을 설명하는 전용 문서는 찾지 못했다(§6-d 참고).
+      <div class="cite">[조사: 원스토어 FAQ "상품" 페이지 요약 인용, 조회 2026-10-20 — <a href="https://onestore-dev.gitbook.io/dev/help/faq/apps" target="_blank">onestore-dev.gitbook.io/dev/help/faq/apps</a>]</div>
+    </p>
+
+    <h3>3-3. 연령등급(이용등급)</h3>
+    <p>원스토어는 IARC(국제등급분류연합) 기준 설문을 ONEconsole에서 작성해 등급을 받는 방식이다.
+      비게임 앱도 대한민국 서비스를 위한 앱 연령등급을 추가로 설정해야 한다. 등급 구간과 기준
+      원문:</p>
+    <table>
+      <thead><tr><th style="width:70px">등급</th><th>기준(원문)</th></tr></thead>
+      <tbody>
+        <tr><td>3+</td><td>모든 연령대가 이용할 수 있습니다. 코믹하거나 판타지적인 맥락에서
+          일부 폭력이 포함될 수 있지만, 욕설은 허용되지 않습니다.</td></tr>
+        <tr><td>7+</td><td>어린이에게 무서울 수 있는 몇몇 장면이나 소리가 포함될 수 있습니다.
+          암시적이거나 비현실적인 경미한 폭력은 허용됩니다.</td></tr>
+        <tr><td>12+</td><td>비그래픽적 누드, 경미한 언어 사용, 시뮬레이션 도박도 허용되지만,
+          성적 욕설은 허용되지 않습니다.</td></tr>
+        <tr><td>16+</td><td>현실적인 폭력, 성행위, 강한 언어 사용, 담배와 약물 사용, 범죄 행위
+          묘사가 허용됩니다.</td></tr>
+        <tr><td>19+</td><td>그래픽 폭력과 성적 폭력이 허용됩니다.</td></tr>
+      </tbody>
+    </table>
+    <div class="cite">[실측: 원스토어 "ONE store Rating Classification" 원문 인용, 조회
+      2026-10-20 — <a href="https://onestore-dev.gitbook.io/dev/docs/apps/product/common-info/age-rating/onestorerating.md" target="_blank">onestore-dev.gitbook.io/dev/.../onestorerating</a>]</div>
+    <p>⚠️ 위 5단계 등급은 폭력·성행위·언어 수위 중심의 콘텐츠 등급 기준이고, 이 앱의 상담이력에
+      노출되는 내담자 민감정보(정신건강 의심, 성적 지향 관련 키워드 등, §6-c 참고)가 이 기준
+      어디에 해당하는지는 설문 응답으로 판정되는 구조라 사전 예측이 어렵다 — 원스토어 공식
+      문서에서 "민감정보 노출 앱"에 대한 별도 등급 기준은 찾지 못했다.</p>
+  </div>
+
+  <!-- 4. 제품페이지 콘텐츠 초안 -->
+  <div class="section" id="s4">
+    <h2>4. 제품페이지 콘텐츠 초안</h2>
+    <div class="sub">🔧 아래는 모두 초안이다 — 실제 등록값은 사업팀·개발팀이 확정해야 한다. 스크린샷
+      실측 기능을 바탕으로 문구만 제시한다.</div>
+
+    <div class="draft-box">
+      <div class="label">🔧 상품명(앱 이름) — 최대 50자</div>
+      <div class="val">운세당 상담사 — 전화 상담 고객정보 요약</div>
+    </div>
+    <div class="draft-box">
+      <div class="label">🔧 한줄설명 — 최대 100자</div>
+      <div class="val">전화가 오는 순간, 내담자의 상담 이력과 확인할 사항을 요약 카드로 바로 확인하세요.</div>
+    </div>
+    <div class="draft-box">
+      <div class="label">🔧 상품설명(긴 설명) — 최대 1,300자</div>
+      <div class="val">운세당 상담사는 unsedang.com 소속 상담사 전용 앱입니다.
+
+전화가 오는 순간, 발신 화면 위에 내담자의 과거 상담 핵심 내용과 이번 상담에서 확인할 사항이 요약 카드로 자동 표시됩니다. 통화 중에는 고객정보·고민정보·상담이력을 탭으로 열람할 수 있고, 통화가 끝나면 고객정보는 즉시 잠겨 상담 목적 외에는 열람할 수 없습니다.
+
+※ 이 앱은 운세당 소속 상담사만 사용할 수 있으며, 앱 내 상담사 등록은 소속 상담사 본인 확인 후에만 가능합니다.</div>
+    </div>
+    <div class="draft-box">
+      <div class="label">🔧 키워드 (최대 10개)</div>
+      <div class="val">상담사, 콜센터, 고객관리, 전화상담, CRM, 발신자 정보, 상담 이력, 사주, 타로, 운세당</div>
+    </div>
+  </div>
+
+  <!-- 5. 제출용 스크린샷 -->
+  <div class="section" id="s5">
+    <h2>5. 제출용 스크린샷</h2>
+    <div class="sub">§3 규격상 제출 스크린샷은 최소 2개 ~ 최대 8개다. 실측 14장 중 핵심 흐름을
+      보여주는 5장만 제출 후보로 추린다. 나머지 9장(시스템 권한 다이얼로그 4장, 상담사 선택
+      보조 상태 2장, 상세정보 탭 3장)은 삭제하지 않고 <code>html/img/</code>에 그대로 두되,
+      §1-2·§6의 근거 인용에서만 쓰인다 — 제출용 후보에서는 뺀다. 상대경로
+      <code>img/onestore-NN-*.png</code>로 참조한다.</div>
+    <div class="cite">[실측: 2026-10-20 촬영 14장 중 5장 선별 — 제외한 9장은 html/img/에 보존,
+      §1-2·§6 근거 인용용]</div>
+
+    <div class="shot-grid">
+      <div class="shot-card">
+        <img src="img/onestore-01-onboarding-permission-sheet.png" alt="온보딩 권한 안내 시트">
+        <div class="shot-body">
+          <div class="shot-no">01 · <span class="flag ok">🟢 사용 가능</span></div>
+          <div class="shot-name">온보딩 권한 안내 시트</div>
+          <div class="shot-note">최초 실행 시 3개 권한의 용도를 설명하는 바텀시트.</div>
+        </div>
+      </div>
+      <div class="shot-card">
+        <img src="img/onestore-06-counselor-sheet.png" alt="상담사 선택 바텀시트">
+        <div class="shot-body">
+          <div class="shot-no">06 · <span class="flag ok">🟢 사용 가능</span></div>
+          <div class="shot-name">상담사 선택 바텀시트</div>
+          <div class="shot-note">닉네임 검색 가능한 상담사 목록.</div>
+        </div>
+      </div>
+      <div class="shot-card">
+        <img src="img/onestore-09-settings-selected.png" alt="선택된 상담사 설정 완료">
+        <div class="shot-body">
+          <div class="shot-no">09 · <span class="flag ok">🟢 사용 가능</span></div>
+          <div class="shot-name">선택된 상담사 설정 완료 화면</div>
+          <div class="shot-note">선택 상담사 + 권한 상태 + 조회 대상 번호 요약.</div>
+        </div>
+      </div>
+      <div class="shot-card">
+        <img src="img/onestore-10-incoming-call-card-summary.png" alt="수신 전화 요약 카드">
+        <div class="shot-body">
+          <div class="shot-no">10 · <span class="flag ok">🟢 사용 가능</span></div>
+          <div class="shot-name">수신 전화 시 요약 카드</div>
+          <div class="shot-note">화면 상단 번호는 운세당 대표번호(팀 리더 확인 완료, 내담자
+            개인번호 아님). 앱의 핵심 가치를 가장 잘 보여주는 화면.</div>
+        </div>
+      </div>
+      <div class="shot-card">
+        <img src="img/onestore-14-call-ended-lock.png" alt="통화 종료 후 잠금 안내">
+        <div class="shot-body">
+          <div class="shot-no">14 · <span class="flag ok">🟢 사용 가능</span></div>
+          <div class="shot-name">통화 종료 후 잠금 안내</div>
+          <div class="shot-note">"고객 정보가 잠겼어요" 안내 화면.</div>
+        </div>
+      </div>
+    </div>
+
+    <p>⚠️ 고객정보 상세 화면(고객정보·고민정보·상담이력 3탭, §1-2 기준 11·12·13번
+      스크린샷)은 이 앱의 핵심 차별화 기능이지만 더미 데이터 문제로 아직 🔴 재촬영 대기라
+      제출 후보 5장에서 뺐다. 개발팀 재촬영 후에는 위 5장 중 1장(예: 09번, 상대적으로
+      소구력이 약한 상태 요약 화면)과 교체하는 것을 권장한다.</p>
+  </div>
+
+  <!-- 6. 심사 리스크 체크리스트 -->
+  <div class="section" id="s6">
+    <h2>6. 심사 리스크 체크리스트</h2>
+    <div class="sub">원스토어 공식 문서 기준 확인 결과. 공식 문서에서 명시적 답을 찾지 못한 항목은
+      ⚠️로 표기한다.</div>
+
+    <div class="risk-card sev-red">
+      <div class="risk-title">a. 🔴 공개 스토어 등록 적합성</div>
+      <p>이 앱은 상담사만 쓸 수 있는 B2B 성격 앱이다 — 일반 사용자는 최초 실행 시 상담사 선택
+        단계(§1-2 참고)부터 막히므로, 운세당 소속 상담사가 아니면 사실상 쓸 수 없다.</p>
+      <p><strong>조사 결과</strong>: 원스토어 공식 문서(상품 검증 가이드라인의 "제한된 콘텐츠"·
+        "앱기능"·"상품 등록정보" 섹션, 검증절차의 "배포옵션" 섹션)를 전부 확인했으나, 특정
+        회원·직원 전용 앱의 공개 스토어 등록 가부를 명시한 조항은 찾지 못했다. 배포옵션은
+        즉시/직접/예약 적용 3가지뿐이고, "비공개 배포"나 "제한된 사용자 대상 배포" 같은 별도
+        옵션은 공식 문서에 없다.</p>
+      <p>서드파티(앱 등록대행사) 문서에 "회사 내부에서만 사용되거나 특정 사용자만 이용하게끔
+        하는 앱은 앱스토어 출시 불가"라는 설명이 있었으나, 이는 원스토어 공식 출처가 아니라
+        일반적 앱마켓 관행을 설명한 것으로 보여 신뢰도를 낮게 본다.</p>
+      <div class="risk-verdict">⚠️ 판정 미확정 — 원스토어 공식 문서만으로는 B2B 전용 앱의 공개
+        등록 가부를 확인할 수 없다. 제출 전 원스토어 고객센터(ONEconsole &gt; 문의하기 &gt;
+        기술지원)에 사전 문의가 필요하다.</div>
+    </div>
+
+    <div class="risk-card sev-red">
+      <div class="risk-title">b. 🔴 전화 관련 권한</div>
+      <p>02·03·04·05번 스크린샷에서 통화 기록 읽기, 전화 상태(통화 걸기·관리), 다른 앱 위에
+        표시 3개 권한 요청이 확인된다.</p>
+      <p><strong>조사 결과</strong>: 원스토어 "개인정보 보호, 보안" 가이드라인에는 "접근권한을
+        서비스에 필요한 범위 내로 최소화해야 합니다"라는 일반 원칙과, FAQ의 "개인정보를
+        침해하는 수준의 불필요한 퍼미션 허용은 검증에서 불이익을 받을 수 있습니다"라는 문구만
+        있다. Google Play처럼 통화기록·SMS류 민감 권한에 대해 별도 선언 양식이나 "기본 앱
+        핸들러 지정" 같은 구체적 심사 절차가 공식 문서에 명시돼 있는지는 확인하지 못했다.</p>
+      <div class="risk-verdict">⚠️ 판정 미확정 — "서비스에 필요한 범위 내 최소화" 원칙은
+        충족한다고 주장할 근거(권한별 용도를 01번 스크린샷의 온보딩 시트에서 명확히 설명)는
+        있으나, 통화기록 접근 자체가 심사에서 추가 소명을 요구받을 가능성을 배제할 수 없다.</div>
+    </div>
+
+    <div class="risk-card sev-yellow">
+      <div class="risk-title">c. 🟡 개인정보 처리방침·연령 등급</div>
+      <p>11·12·13번 스크린샷의 "민감 키워드" 항목에는 우울증 의심, 성적 지향 관련 단어 등
+        내담자의 민감정보로 분류될 수 있는 키워드가 노출된다.</p>
+      <p><strong>조사 결과</strong>: 개인정보 처리방침 URL 등록은 원스토어 공식 문서상
+        <strong>필수</strong>로 명시돼 있다(§2-3 인용 참고). 연령등급은 IARC 설문 기반으로
+        3+~19+ 5단계로 판정되며(§3-3 표 참고), 기준 문구는 폭력·성행위·언어 수위 중심이다.
+        이 앱처럼 "민감정보(정신건강·성적 지향 관련 키워드 등)를 상담사에게 노출하는 B2B
+        도구"에 적용될 별도 등급 기준은 원스토어 공식 문서에서 찾지 못했다.</p>
+      <div class="risk-verdict">🟡 처리방침 URL 등록은 확정 요건, 연령등급 판정 기준은
+        설문 응답에 달려 있어 사전 예측 불가 — 설문 작성 시 내담자 민감정보 노출 사실을
+        있는 그대로 기재해야 한다.</div>
+    </div>
+
+    <div class="risk-card sev-yellow">
+      <div class="risk-title">d. 🟡 심사용 테스트 계정</div>
+      <p>상담사 계정이 없으면(§1-2 온보딩 — 상담사 선택 단계) 심사원이 앱의 핵심 기능(요약
+        카드·상세정보·잠금)을 볼 수 없다.</p>
+      <p><strong>조사 결과</strong>: 원스토어 FAQ에 "검증 참고용으로 꼭 필요한 경우에만 등록을
+        할 수 있습니다"라는 문구가 있어 상품 등록 화면에 테스트 계정 입력란이 존재하는 것으로
+        보이나, 구체적인 입력 절차·심사원이 실제로 그 계정을 사용해 전화 수신 흐름까지
+        재현하는지 여부를 설명하는 공식 문서는 찾지 못했다.</p>
+      <div class="risk-verdict">⚠️ 판정 미확정 — 전화 수신이라는 특수한 트리거가 필요한 앱
+        특성상, 테스트 계정 입력만으로 심사원이 핵심 기능을 확인할 수 있을지 불확실하다.
+        심사 설명란(있다면)에 "전화가 와야 카드가 뜬다"는 동작 조건을 별도로 기재하거나,
+        스크린샷/영상으로 보완하는 방안을 사업팀과 논의해야 한다.</div>
+    </div>
+  </div>
+
+  <!-- 7. 미해결 사항 총괄 -->
+  <div class="section" id="s7">
+    <h2>7. 미해결 사항 총괄</h2>
+    <table>
+      <thead><tr><th style="width:60px">구분</th><th>항목</th><th>내용</th></tr></thead>
+      <tbody>
+        <tr><td>⚠️</td><td>B2B 전용 앱 공개 등록 가부</td><td>원스토어 공식 문서에서 명시적
+          조항을 찾지 못함(§6-a). 원스토어 고객센터 사전 문의 필요.</td></tr>
+        <tr><td>⚠️</td><td>민감 권한(통화기록 등) 개별 심사 기준</td><td>"필요 범위 내 최소화"
+          원칙만 확인, 구체적 절차는 미확인(§6-b).</td></tr>
+        <tr><td>⚠️</td><td>민감정보 노출 앱의 연령등급 판정 기준</td><td>IARC 설문 기반 판정
+          구조라 사전 예측 불가(§3-3, §6-c).</td></tr>
+        <tr><td>⚠️</td><td>테스트 계정 제공 절차·심사 방식</td><td>입력란 존재는 추정되나
+          전화 수신 트리거 재현 가능 여부 등 세부 절차 미확인(§3-2, §6-d).</td></tr>
+        <tr><td>⚠️</td><td>심사 소요 기간</td><td>공식 문서에 구체적 수치 없음, 비공식 보도의
+          "반나절" 표현은 게임 등급분류 맥락이라 이 앱에 그대로 적용 가능한지 불확실(§2
+          6단계).</td></tr>
+        <tr><td>🔧</td><td>제품페이지 콘텐츠 확정값</td><td>앱 이름·짧은 설명·긴 설명·키워드
+          전부 초안 상태, 사업팀·개발팀 확정 필요(§4).</td></tr>
+        <tr><td>🔴</td><td>11·12·13번 스크린샷 재촬영</td><td>더미 데이터 인물명이 실존
+          공인과 동일 — 개발팀이 가명으로 교체 후 재촬영해야 공개 스토어 제출 가능(§5).
+          재촬영 완료 시 현재 제출 후보 5장(01·06·09·10·14) 중 09번과 교체 권장.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
